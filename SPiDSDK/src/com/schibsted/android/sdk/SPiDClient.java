@@ -1,7 +1,6 @@
 package com.schibsted.android.sdk;
 
 import android.net.Uri;
-import android.util.Log;
 
 import java.net.URLEncoder;
 
@@ -21,7 +20,12 @@ public class SPiDClient {
 
     private SPiDAccessToken token;
 
+    private SPiDAuthorizationRequest authorizationRequest;
+
     private SPiDClient() {
+        config = null;
+        token = null; // TODO: load from keychain?
+        authorizationRequest = null;
     }
 
     public static SPiDClient getInstance() {
@@ -47,35 +51,36 @@ public class SPiDClient {
         }
     }
 
-    public void getAccessToken() {
-        isEmptyString(config.getCode(), "No code available");
-
-        SPiDRequest request = new SPiDRequest("POST", "https://stage.payment.schibsted.no/oauth/token");
-        request.addBodyParameter("grant_type", "authorization_code");
-        request.addBodyParameter("client_id", config.getClientID());
-        request.addBodyParameter("client_secret", config.getClientSecret());
-        request.addBodyParameter("code", config.getCode());
-        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "login");
-
-        SPiDResponse response = sendRequest(request);
-        token = new SPiDAccessToken(response.getJsonObject());
-    }
-
-    public SPiDResponse sendRequest(SPiDRequest request) {
-        SPiDResponse response = null;
-        try {
-            response = request.send();
-        } catch (Exception e) {
-            Log.i("asdf", "asdf");
-        }
-        return response;
-    }
-
     public void getCurrentUserRequest() {
-        SPiDRequest request = new SPiDRequest("GET", "https://stage.payment.schibsted.no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken());
+        //SPiDRequest request = new SPiDRequest("GET", "https://stage.payment.schibsted.no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), new AccessTokenCallback());
 
-        SPiDResponse response = sendRequest(request);
-        Log.i("SPiD", response.getJsonObject().toString());
+        //SPiDResponse response = sendRequest(request);
+        //Log.i("SPiD", response.getJsonObject().toString());
     }
+
+    public boolean handleIntent(Uri data) {
+        if (authorizationRequest != null) {
+            return authorizationRequest.handleIntent(data);
+        }
+        return false;
+    }
+
+    public void authorize(SPiDAsyncTaskCompleteListener<Void> authorizationCallback) {
+        if (authorizationRequest == null) {
+            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+        } else {
+            // TODO: throw exception, only one authorization request can be running at a single time
+        }
+    }
+
+    public SPiDConfiguration getConfig() {
+        return config;
+    }
+
+    public void setAccessToken(SPiDAccessToken accessToken) {
+        this.token = accessToken;
+    }
+
+
 }
 

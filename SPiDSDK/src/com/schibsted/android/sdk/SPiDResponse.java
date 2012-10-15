@@ -7,9 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -19,34 +17,27 @@ import java.util.Map;
  * Time: 8:40 AM
  */
 public class SPiDResponse {
-    private int code;
+    private Integer code;
     private String body;
-    private InputStream stream;
     private Map<String, String> headers;
     private JSONObject jsonObject;
 
-    SPiDResponse(HttpURLConnection connection) throws IOException {
+    public SPiDResponse(Integer code, Map<String, String> headers, InputStream inputStream) throws IOException {
         try {
-            //connection.setDoOutput(false);
             Log.i("SPiD", "Trying to connect");
-            connection.connect();
             Log.i("SPiD", "Connected");
-            code = connection.getResponseCode();
             Log.i("SPiD", String.format("code: %d", code));
-            stream = isSuccessful() ? connection.getInputStream() : connection.getErrorStream();
-            headers = new HashMap<String, String>();
-            for (String key : connection.getHeaderFields().keySet()) {
-                headers.put(key, connection.getHeaderFields().get(key).get(0));
-            }
+            this.headers = headers;
             BufferedReader reader = null;
             try {
                 String result = "";
-                reader = new BufferedReader(new InputStreamReader(stream));
+                reader = new BufferedReader(new InputStreamReader(inputStream));
                 for (String line; (line = reader.readLine()) != null; ) {
                     result += line;
                 }
+                Log.i("SPiD", "Result:");
+                Log.i("SPiD", result);
                 jsonObject = new JSONObject(result);
-
             } catch (UnknownHostException error) {
                 throw error;
             }
@@ -54,7 +45,7 @@ public class SPiDResponse {
             Log.i("SPiD", e.toString());
             Log.i("SPiD", e.getMessage());
         } finally {
-            connection.disconnect();
+            //connection.disconnect();
         }
     }
 

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import com.schibsted.android.sdk.SPiDAsyncTaskCompleteListener;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.SPiDConfiguration;
 import com.schibsted.android.sdk.SPiDConfigurationBuilder;
@@ -89,77 +90,31 @@ public class SPiDExampleApp extends Activity {
 
         setContentView(R.layout.login);
 
-        Log.i("SPiD", "contentview");
-
         if (getIntent() != null && getIntent().getData() != null) {
-            Log.i("SPiD", "Intent: ".concat(getIntent().getData().toString()));
+            Log.i("SPiD", "Processing intent: ".concat(getIntent().getData().toString()));
             if (getIntent().getData().toString().startsWith("sdktest://login")) {
-                Log.i("SPiD", "getToken");
-                //Verifier verifier = new Verifier(getIntent().getData().getQueryParameter("code"));
-                Log.i("SPiD", getIntent().getData().getQueryParameter("code"));
-                SPiDClient.getInstance().getCode(getIntent().getData());
-                SPiDClient.getInstance().getAccessToken();
-
-                //getUserRequestWithCurrentUserAndCompletionHandler
-                SPiDClient.getInstance().getCurrentUserRequest();
-                //Log.i("SPiD", verifier.getValue());
-                //try {
-                //Token token = service.getAccessToken(null, verifier);
-                //    Log.i("SPiD", token.getRawResponse());
-                //} catch (Exception e) {
-                //    Log.i("SPiDError", e.getMessage());
-                //}
+                SPiDClient.getInstance().handleIntent(getIntent().getData());
             }
         }
-
-        //Token token = service.getAccessToken(null, new Verifier("2a79ff90ad0a844db98e96805740c242a329ce52"));
-
-        /*
-        // TODO: check for accessToken
-        if (true) {////!accessToken) {
-            final Intent myIntent = new Intent(getApplicationContext(), SPiDLogin.class);
-            startActivity(myIntent);
-        }
-        */
-
-        // get all the view components
-        //table = (RelativeLayout) findViewById(R.id.View);
-
-        //loginButton = (Button) findViewById(R.id.LoginButton);
-        //if ( ! authInProgress ) {
-        //    authInProgress = true;
-        /*
-        OAuthService service = new ServiceBuilder()
-                .provider(SPiDAPI.class)
-                .apiKey("504dffb6efd04b4512000000")
-                .apiSecret("iossecret")
-                .callback("sdktest://login")
-                .build();
-
-        Log.i("SPiD","=== SPiD's OAuth Workflow ===");
-
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(service.getAuthorizationUrl(null))));
-        */
-        // Obtain the Request Token
-        /*
-        Log.i("SPiD","Fetching the Request Token...");
-        Token requestToken;
-        Verifier verifier;
-        requestToken = service.getRequestToken();
-        Log.i("SPiD","Got the Request Token!");
-
-        Log.i("SPiD","Now go and authorize Scribe here:");
-        Log.i("SPiD",service.getAuthorizationUrl(requestToken));
-
-        Toast.makeText(this, "Please authorize " + getString(R.string.app_name), Toast.LENGTH_LONG).show();
-
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(service.getAuthorizationUrl(requestToken))));
-*/
     }
 
     public void loginToSPiD(View view) {
+        // Set callback
+        SPiDClient.getInstance().authorize(new AuthorizationCallback());
         Log.i("SPiD", SPiDClient.getInstance().getAuthorizationURL());
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDClient.getInstance().getAuthorizationURL())));
     }
 
+    class AuthorizationCallback implements SPiDAsyncTaskCompleteListener<Void> {
+
+        @Override
+        public void onComplete(Void result) {
+            Log.i("SPiD", "Logged on to SPiD");
+        }
+
+        @Override
+        public void onError(Void result) {
+            Log.i("SPiD", "Logged on to SPiD");
+        }
+    }
 }

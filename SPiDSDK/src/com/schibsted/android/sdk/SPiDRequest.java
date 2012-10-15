@@ -1,11 +1,9 @@
 package com.schibsted.android.sdk;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,22 +17,48 @@ import java.util.Map;
  * Date: 10/8/12
  * Time: 9:20 PM
  */
-public class SPiDRequest {
+
+/*
+conn.setRequestProperty("User-Agent", System.getProperties().
+                getProperty("http.agent") + " FacebookAndroidSDK");
+ */
+public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
+    private SPiDAsyncTaskCompleteListener<SPiDResponse> callback;
+
+/*
+
+        public A(Context context, AsyncTaskCompleteListener<String> cb) {
+            this.context = context;
+            this.callback = cb;
+        }
+
+        protected void onPostExecute(String result) {
+            finalResult = result;
+            progressDialog.dismiss();
+            System.out.println("on Post execute called");
+            callback.onTaskComplete(result);
+        }
+    }
+    */
 
     private String url;
     private String method;
+    private Map<String, String> headers;
     private Map<String, String> query;
     private Map<String, String> body;
 
-    public SPiDRequest(String method, String url) {
+    public SPiDRequest(String method, String url, SPiDAsyncTaskCompleteListener<SPiDResponse> callback) {
         this.url = url;
         this.method = method;
+        this.headers = new HashMap<String, String>();
         this.query = new HashMap<String, String>();
         this.body = new HashMap<String, String>();
+
+        this.callback = callback;
     }
 
-    public SPiDRequest(String url) {
-        this("GET", url);
+    public SPiDRequest(String url, SPiDAsyncTaskCompleteListener<SPiDResponse> callback) {
+        this("GET", url, callback);
     }
 
     public String getMethod() {
@@ -54,7 +78,6 @@ public class SPiDRequest {
     }
 
     public String getCompleteURL() {
-        Log.i("SPiD", url + getQueryAsString());
         return url + getQueryAsString();
     }
 
@@ -84,20 +107,21 @@ public class SPiDRequest {
         return builder.toString();
     }
 
+    public boolean isSuccessful(Integer code) {
+        return code >= 200 && code < 400;
+    }
+
     public SPiDResponse send() {
+        doInBackground();
         // Assert URL
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
             connection.setRequestMethod(this.method);
-            //connection.setConnectTimeout(60000); // TODO: should not be hardcoded
-            //connection.setReadTimeout(600000);
 
             // Add headers
-            /*
             for (Map.Entry<String, String> entry : headers.entrySet()) {
-                connection.setRequestProperty(key, value);
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
             }
-             */
 
             if (method.equals("POST")) { // || method.equals("PUT")) {
                 connection.setDoOutput(true);
@@ -107,10 +131,20 @@ public class SPiDRequest {
                 writer = new BufferedWriter(new OutputStreamWriter(stream));
                 writer.write(getBodyAsString());
                 writer.close();
-                Log.i("SPiD", getBodyAsString());
+            } else {
+                connection.setDoOutput(false);
+            }
+            connection.connect();
+
+            // response
+            Integer code = connection.getResponseCode();
+            InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
+            Map<String, String> headers = new HashMap<String, String>();
+            for (String key : connection.getHeaderFields().keySet()) {
+                headers.put(key, connection.getHeaderFields().get(key).get(0));
             }
 
-            return new SPiDResponse(connection);
+            callback.onComplete(new SPiDResponse(code, headers, stream));
         } catch (MalformedURLException e) {
             Log.i("SPiD", "MalformedURL");
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -118,6 +152,58 @@ public class SPiDRequest {
             Log.i("SPiD", "Error");
             Log.i("SPiD", e.toString());
             Log.i("SPiD", e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
+        }
+        return null;
+    }
+
+    public void execute() {
+        execute((Void) null);
+    }
+
+    @Override
+    protected SPiDResponse doInBackground(Void... voids) {
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
+            connection.setRequestMethod(this.method);
+
+            // Add headers
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+
+            if (method.equals("POST")) { // || method.equals("PUT")) {
+                connection.setDoOutput(true);
+                OutputStream stream = connection.getOutputStream();
+                BufferedWriter writer = null;
+
+                writer = new BufferedWriter(new OutputStreamWriter(stream));
+                writer.write(getBodyAsString());
+                writer.close();
+            } else {
+                connection.setDoOutput(false);
+            }
+            connection.connect();
+
+            // response
+            Integer code = connection.getResponseCode();
+            InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
+            Map<String, String> headers = new HashMap<String, String>();
+            for (String key : connection.getHeaderFields().keySet()) {
+                headers.put(key, connection.getHeaderFields().get(key).get(0));
+            }
+            callback.onComplete(new SPiDResponse(code, headers, stream));
+        } catch (MalformedURLException e) {
+            Log.e("SPiD", "MalformedURL");
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            Log.i("SPiD", "Error");
+            Log.i("SPiD", e.toString());
+            Log.i("SPiD", e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
+
+        } finally {
+            if (connection != null)
+                connection.disconnect();
         }
         return null;
     }
