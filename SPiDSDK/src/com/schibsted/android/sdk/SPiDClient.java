@@ -93,6 +93,16 @@ public class SPiDClient {
         this.token = accessToken;
     }
 
+    public void getCurrentUser() {
+        //SPiDRequest request = new SPiDRequest("GET", "https://stage.payment.schibsted.no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), new AccessTokenCallback());
+    }
 
+    public void refreshAccessToken(SPiDAsyncCallback sPiDAsyncCallback) {
+    }
+
+    public void logoutSPiDAPI(SPiDAsyncCallback sPiDAsyncCallback) {
+        SPiDRequest request = new SPiDRequest("POST", "/api/{version}/me", sPiDAsyncCallback);
+        //To change body of created methods use File | Settings | File Templates.
+    }
 }
 

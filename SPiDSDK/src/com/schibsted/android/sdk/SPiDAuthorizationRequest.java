@@ -2,6 +2,7 @@ package com.schibsted.android.sdk;
 
 import android.content.Context;
 import android.net.Uri;
+import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -19,8 +20,6 @@ conn.setRequestProperty("User-Agent", System.getProperties().
                 getProperty("http.agent") + " FacebookAndroidSDK");
  */
 public class SPiDAuthorizationRequest {
-    private String code = "";
-
     private SPiDAsyncAuthorizationCallback callback;
 
     public SPiDAuthorizationRequest(SPiDAsyncAuthorizationCallback authorizationCallback) {
@@ -28,10 +27,12 @@ public class SPiDAuthorizationRequest {
     }
 
     public WebView getAuthorizationWebView(final Context context, String url) {
-        SPiDLogger.log("test");
         WebView webview = new WebView(context);
 
         webview.getSettings().setJavaScriptEnabled(true);
+
+        // This is because we do not want to logout through a webview
+        CookieManager.getInstance().removeAllCookie();
 
         webview.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -43,7 +44,6 @@ public class SPiDAuthorizationRequest {
                 Uri uri = Uri.parse(url);
                 if (url.startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
                     if (uri.getPath().endsWith("login")) {
-                        SPiDLogger.log("asdfasdf");
                         String code = uri.getQueryParameter("code");
                         if (code.length() > 0) {
                             getAccessToken(code);
@@ -78,26 +78,20 @@ public class SPiDAuthorizationRequest {
         request.addBodyParameter("code", code);
         request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
         request.execute();
-        SPiDLogger.log("Executing");
     }
 
     public boolean handleIntent(Uri data) {
         if (data.toString().startsWith("sdktest://spid/login")) {
-            code = data.getQueryParameter("code");
+            String code = data.getQueryParameter("code");
             if (code.length() > 0) {
                 getAccessToken(code);
                 return true;
             } else {
-
+                callback.onError(new Exception());
             }
         }
         return false;
     }
-/*
-    public void startLoginActivity(SPiDConfiguration config) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDClient.getInstance().getAuthorizationURL())));
-    }
-*/
 
     class AccessTokenCallback implements SPiDAsyncCallback {
         private SPiDAsyncAuthorizationCallback callback;
@@ -110,15 +104,14 @@ public class SPiDAuthorizationRequest {
         @Override
         public void onComplete(SPiDResponse result) {
             try {
-                String error = (String) result.getJsonObject().get("error");
-                if ((error == null) || (error.length() <= 0)) {
+                if ((result.getJsonObject().has("error")) && ((String) result.getJsonObject().get("error")).length() > 0) {
+                    callback.onError(new Exception());
+                } else {
                     SPiDClient.getInstance().setAccessToken(new SPiDAccessToken(result.getJsonObject()));
                     callback.onComplete();
-                } else {
-                    callback.onError(new Exception());
                 }
             } catch (JSONException e) {
-                callback.onError(e);
+                callback.onError(new Exception());
             }
         }
 

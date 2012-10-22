@@ -4,4 +4,6 @@
     <string name="LastLogin">Get last login</string>
     <string name="RefreshToken">Refresh token</string>
     <string name="Logout">Logout from SPiD</string>
+    <string name="SPiDLogo">SPiD Logo</string>
+    <string name="OneTimeCode">Get one time token</string>
 </resources>
