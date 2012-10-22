@@ -1,6 +1,5 @@
 package com.schibsted.android.sdk;
 
-import android.util.Log;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -24,9 +23,9 @@ public class SPiDResponse {
 
     public SPiDResponse(Integer code, Map<String, String> headers, InputStream inputStream) throws IOException {
         try {
-            Log.i("SPiD", "Trying to connect");
-            Log.i("SPiD", "Connected");
-            Log.i("SPiD", String.format("code: %d", code));
+            SPiDLogger.log("Trying to connect");
+            SPiDLogger.log("Connected");
+            SPiDLogger.log(String.format("code: %d", code));
             this.headers = headers;
             BufferedReader reader = null;
             try {
@@ -35,18 +34,23 @@ public class SPiDResponse {
                 for (String line; (line = reader.readLine()) != null; ) {
                     result += line;
                 }
-                Log.i("SPiD", "Result:");
-                Log.i("SPiD", result);
+                SPiDLogger.log("Result:");
+                SPiDLogger.log(result);
                 jsonObject = new JSONObject(result);
             } catch (UnknownHostException error) {
                 throw error;
             }
         } catch (Exception e) {
-            Log.i("SPiD", e.toString());
-            Log.i("SPiD", e.getMessage());
+            SPiDLogger.log("Exception");
+            SPiDLogger.log(e.toString());
+            SPiDLogger.log(e.getMessage());
         } finally {
             //connection.disconnect();
         }
+    }
+
+    public SPiDResponse() {
+        //To change body of created methods use File | Settings | File Templates.
     }
 
     public boolean isSuccessful() {

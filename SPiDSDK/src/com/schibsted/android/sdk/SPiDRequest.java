@@ -23,23 +23,7 @@ conn.setRequestProperty("User-Agent", System.getProperties().
                 getProperty("http.agent") + " FacebookAndroidSDK");
  */
 public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
-    private SPiDAsyncTaskCompleteListener<SPiDResponse> callback;
-
-/*
-
-        public A(Context context, AsyncTaskCompleteListener<String> cb) {
-            this.context = context;
-            this.callback = cb;
-        }
-
-        protected void onPostExecute(String result) {
-            finalResult = result;
-            progressDialog.dismiss();
-            System.out.println("on Post execute called");
-            callback.onTaskComplete(result);
-        }
-    }
-    */
+    private SPiDAsyncCallback callback;
 
     private String url;
     private String method;
@@ -47,7 +31,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     private Map<String, String> query;
     private Map<String, String> body;
 
-    public SPiDRequest(String method, String url, SPiDAsyncTaskCompleteListener<SPiDResponse> callback) {
+    public SPiDRequest(String method, String url, SPiDAsyncCallback callback) {
+        super();
         this.url = url;
         this.method = method;
         this.headers = new HashMap<String, String>();
@@ -57,7 +42,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.callback = callback;
     }
 
-    public SPiDRequest(String url, SPiDAsyncTaskCompleteListener<SPiDResponse> callback) {
+    public SPiDRequest(String url, SPiDAsyncCallback callback) {
         this("GET", url, callback);
     }
 
@@ -110,7 +95,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     public boolean isSuccessful(Integer code) {
         return code >= 200 && code < 400;
     }
-
+/*
     public SPiDResponse send() {
         doInBackground();
         // Assert URL
@@ -143,8 +128,6 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             for (String key : connection.getHeaderFields().keySet()) {
                 headers.put(key, connection.getHeaderFields().get(key).get(0));
             }
-
-            callback.onComplete(new SPiDResponse(code, headers, stream));
         } catch (MalformedURLException e) {
             Log.i("SPiD", "MalformedURL");
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
@@ -154,12 +137,66 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             Log.i("SPiD", e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
         }
         return null;
+    }*/
+
+    @Override
+    protected SPiDResponse doInBackground(Void... voids) {
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
+            connection.setRequestMethod(this.method);
+
+            // Add headers
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+
+            if (method.equals("POST")) { // || method.equals("PUT")) {
+                connection.setDoOutput(true);
+                OutputStream stream = connection.getOutputStream();
+                BufferedWriter writer = null;
+
+                writer = new BufferedWriter(new OutputStreamWriter(stream));
+                writer.write(getBodyAsString());
+                writer.close();
+            } else {
+                connection.setDoOutput(false);
+            }
+            connection.connect();
+
+            // response
+            Integer code = connection.getResponseCode();
+            InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
+            Map<String, String> headers = new HashMap<String, String>();
+            for (String key : connection.getHeaderFields().keySet()) {
+                headers.put(key, connection.getHeaderFields().get(key).get(0));
+            }
+            return new SPiDResponse(code, headers, stream);
+        } catch (MalformedURLException e) {
+            Log.i("SPiD", "MalformedURL");
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.i("SPiD", "Error");
+            Log.i("SPiD", e.toString());
+            Log.i("SPiD", e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(SPiDResponse result) {
+        super.onPostExecute(result);
+        if (result != null) {
+            callback.onComplete(result);
+        } else {
+            callback.onError(new EOFException());
+        }
     }
 
     public void execute() {
         execute((Void) null);
     }
 
+    /*
     @Override
     protected SPiDResponse doInBackground(Void... voids) {
         HttpURLConnection connection = null;
@@ -192,19 +229,22 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             for (String key : connection.getHeaderFields().keySet()) {
                 headers.put(key, connection.getHeaderFields().get(key).get(0));
             }
-            callback.onComplete(new SPiDResponse(code, headers, stream));
+            SPiDLogger.log("new spidresponse");
+            return new SPiDResponse(code, headers, stream);
+            //callback.onComplete();
         } catch (MalformedURLException e) {
-            Log.e("SPiD", "MalformedURL");
+            SPiDLogger.log("MalformedURL");
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (IOException e) {
-            Log.i("SPiD", "Error");
-            Log.i("SPiD", e.toString());
-            Log.i("SPiD", e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
+            SPiDLogger.log("Error");
+            SPiDLogger.log(e.toString());
+            SPiDLogger.log(e.getMessage());  //To change body of catch statement use File | Settings | File Templates.
 
         } finally {
             if (connection != null)
                 connection.disconnect();
         }
+        SPiDLogger.log("null?");
         return null;
-    }
+    }*/
 }

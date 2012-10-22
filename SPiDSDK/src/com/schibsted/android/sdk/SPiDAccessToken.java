@@ -21,7 +21,7 @@ public class SPiDAccessToken {
     private String userID;
 
     public SPiDAccessToken(JSONObject jsonObject) {
-        Log.i("SPiD", String.format("Got JSON: %s", jsonObject.toString()));
+        SPiDLogger.log(String.format("Got JSON: %s", jsonObject.toString()));
         try {
             this.accessToken = jsonObject.getString("access_token");
             this.refreshToken = jsonObject.getString("refresh_token");

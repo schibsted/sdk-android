@@ -1,6 +1,8 @@
 package com.schibsted.android.sdk;
 
+import android.content.Context;
 import android.net.Uri;
+import android.webkit.WebView;
 
 import java.net.URLEncoder;
 
@@ -37,8 +39,18 @@ public class SPiDClient {
     }
 
     public String getAuthorizationURL() {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login");
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+    }
+
+    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        if (authorizationRequest == null) {
+            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+        }
+        // TODO: should we have this assert?
+        assert authorizationRequest != null;
+        SPiDLogger.log("Context: " + context.toString() + " url: " + getAuthorizationURL());
+        return authorizationRequest.getAuthorizationWebView(context, getAuthorizationURL());
     }
 
     public void getCode(Uri data) {
@@ -65,7 +77,7 @@ public class SPiDClient {
         return false;
     }
 
-    public void authorize(SPiDAsyncTaskCompleteListener<Void> authorizationCallback) {
+    public void authorize(SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {

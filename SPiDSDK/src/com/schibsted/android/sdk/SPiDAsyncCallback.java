@@ -8,8 +8,8 @@ package com.schibsted.android.sdk;
  * To change this template use File | Settings | File Templates.
  */
 
-public interface SPiDAsyncTaskCompleteListener<T> {
-    public void onComplete(T result);
+public interface SPiDAsyncCallback {
+    public void onComplete(SPiDResponse result);
 
-    public void onError(T result);
+    public void onError(Exception exception);
 }
