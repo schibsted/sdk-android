@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.webkit.WebView;
 
 import java.net.URLEncoder;
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,9 +47,8 @@ public class SPiDClient {
     public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
-        }
-        // TODO: should we have this assert?
-        assert authorizationRequest != null;
+        } // TODO: else? clear authorizationRequest
+
         SPiDLogger.log("Context: " + context.toString() + " url: " + getAuthorizationURL());
         return authorizationRequest.getAuthorizationWebView(context, getAuthorizationURL());
     }
@@ -85,6 +85,12 @@ public class SPiDClient {
         }
     }
 
+    public void refreshAccessToken(SPiDAsyncAuthorizationCallback callback) {
+        // TODO!!!
+        authorizationRequest = new SPiDAuthorizationRequest(callback);
+        authorizationRequest.refreshAccessToken(token.getRefreshToken());
+    }
+
     public SPiDConfiguration getConfig() {
         return config;
     }
@@ -110,12 +116,15 @@ public class SPiDClient {
         apiGetRequest("/user/" + token.getUserID(), callback);
     }
 
-    public void refreshAccessToken(SPiDAsyncCallback callback) {
-    }
-
     public void logoutSPiDAPI(SPiDAsyncCallback callback) {
         SPiDRequest request = new SPiDRequest("POST", "/api/{version}/me", callback);
 
+    }
+
+    public Date getTokenExpiresAt() {
+        if (token != null)
+            return token.getExpiresAt();
+        return null;
     }
 }
 

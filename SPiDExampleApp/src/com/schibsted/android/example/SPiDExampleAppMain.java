@@ -8,10 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.schibsted.android.sdk.SPiDAsyncCallback;
-import com.schibsted.android.sdk.SPiDClient;
-import com.schibsted.android.sdk.SPiDLogger;
-import com.schibsted.android.sdk.SPiDResponse;
+import com.schibsted.android.sdk.*;
 import org.json.JSONException;
 
 /**
@@ -36,6 +33,10 @@ public class SPiDExampleAppMain extends Activity {
 
         Button logoutButton = (Button) findViewById(R.id.LogoutButton);
         logoutButton.setOnClickListener(new LogoutButtonListener(this));
+
+        TextView tokenExpiresTextView = (TextView) findViewById(R.id.TokenExpiresTextView);
+        String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
+        tokenExpiresTextView.setText("Token expires at: " + expiresAt);
 
         getUserName(this);
     }
@@ -72,10 +73,12 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncCallback() {
+            SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
                 @Override
-                public void onComplete(SPiDResponse result) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                public void onComplete() {
+                    TextView tokenExpiresTextView = (TextView) findViewById(R.id.TokenExpiresTextView);
+                    String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
+                    tokenExpiresTextView.setText("Token expires at: " + expiresAt);
                 }
 
                 @Override
@@ -95,6 +98,7 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
+            /*
             SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncCallback() {
                 @Override
                 public void onComplete(SPiDResponse result) {
@@ -107,6 +111,7 @@ public class SPiDExampleAppMain extends Activity {
                     Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                 }
             });
+            */
         }
     }
 

@@ -80,6 +80,20 @@ public class SPiDAuthorizationRequest {
         request.execute();
     }
 
+    public void refreshAccessToken(String refreshToken) {
+        //isEmptyString(config.getCode(), "No code available");
+        // TODO: prevent multiple calls
+
+        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenCallback(callback));
+        request.addBodyParameter("grant_type", "refresh_token");
+        request.addBodyParameter("client_id", config.getClientID());
+        request.addBodyParameter("client_secret", config.getClientSecret());
+        request.addBodyParameter("refresh_token", refreshToken);
+        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        request.execute();
+    }
+
     public boolean handleIntent(Uri data) {
         if (data.toString().startsWith("sdktest://spid/login")) {
             String code = data.getQueryParameter("code");
