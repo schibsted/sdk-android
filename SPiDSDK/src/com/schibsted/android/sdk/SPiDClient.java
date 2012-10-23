@@ -16,7 +16,6 @@ import java.util.Date;
 public class SPiDClient {
     private static final SPiDClient instance = new SPiDClient();
 
-    private static final String API_VERSION = "2";
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
 
     private SPiDConfiguration config;
@@ -27,7 +26,6 @@ public class SPiDClient {
 
     private SPiDClient() {
         config = null;
-        token = null; // TODO: load from keychain?
         authorizationRequest = null;
     }
 
@@ -37,6 +35,8 @@ public class SPiDClient {
 
     public void configure(SPiDConfiguration config) {
         this.config = config;
+
+        token = SPiDKeychain.decryptAccessTokenFromSharedPreferences(config.getContext(), config.getClientSecret());
     }
 
     public String getAuthorizationURL() {
@@ -100,7 +100,7 @@ public class SPiDClient {
     }
 
     public void apiGetRequest(String path, SPiDAsyncCallback callback) {
-        SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + API_VERSION + path, callback);
+        SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + config.getApiVersion() + path, callback);
         request.addQueryParameter("oauth_token", token.getAccessToken());
         request.execute();
     }
@@ -125,6 +125,12 @@ public class SPiDClient {
         if (token != null)
             return token.getExpiresAt();
         return null;
+    }
+
+    public boolean isAuthorized() {
+        if (token != null)
+            return true;
+        return false;
     }
 }
 

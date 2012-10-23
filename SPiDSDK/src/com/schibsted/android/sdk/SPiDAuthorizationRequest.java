@@ -121,7 +121,9 @@ public class SPiDAuthorizationRequest {
                 if ((result.getJsonObject().has("error")) && ((String) result.getJsonObject().get("error")).length() > 0) {
                     callback.onError(new Exception());
                 } else {
-                    SPiDClient.getInstance().setAccessToken(new SPiDAccessToken(result.getJsonObject()));
+                    SPiDAccessToken token = new SPiDAccessToken(result.getJsonObject());
+                    SPiDClient.getInstance().setAccessToken(token);
+                    SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
                     callback.onComplete();
                 }
             } catch (JSONException e) {

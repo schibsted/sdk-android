@@ -39,6 +39,15 @@ public class SPiDAccessToken {
         }
     }
 
+    public SPiDAccessToken(String accessToken, Long expiresAt, String refreshToken, String userID) {
+        SPiDLogger.log(String.format("Loaded from SharedPref: %s, %s, %s, %s", accessToken, expiresAt, refreshToken, userID));
+        this.accessToken = accessToken;
+        this.expiresAt = new Date(expiresAt);
+        this.refreshToken = refreshToken;
+        this.userID = userID;
+        SPiDLogger.log(String.format("Loaded from SharedPref: %s, %s, %s, %s", accessToken, this.expiresAt.toString(), refreshToken, userID));
+    }
+
     public String getAccessToken() {
         return accessToken;
     }

@@ -1,5 +1,7 @@
 package com.schibsted.android.sdk;
 
+import android.content.Context;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mikaellindstrom
@@ -17,9 +19,11 @@ public class SPiDConfiguration {
     private String redirectURL;
     private String apiVersion;
 
+    private Context context;
+
     private String code;
 
-    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String tokenURL, String apiVersion) {
+    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String tokenURL, String apiVersion, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.appURLScheme = appURLScheme;
@@ -28,6 +32,7 @@ public class SPiDConfiguration {
         this.authorizationURL = authorizationURL;
         this.tokenURL = tokenURL;
         this.apiVersion = apiVersion;
+        this.context = context;
     }
 
     public String getClientID() {
@@ -92,6 +97,14 @@ public class SPiDConfiguration {
 
     public void setApiVersion(String apiVersion) {
         this.apiVersion = apiVersion;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
     public String getCode() {
