@@ -25,16 +25,16 @@ public class SPiDExampleAppMain extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        Button refreshTokenButton = (Button) findViewById(R.id.RefreshTokenButton);
+        Button refreshTokenButton = (Button) findViewById(R.id.refreshTokenButton);
         refreshTokenButton.setOnClickListener(new RefreshTokenButtonListener(this));
 
-        Button oneTimeCodeButton = (Button) findViewById(R.id.OneTimeCodeButton);
+        Button oneTimeCodeButton = (Button) findViewById(R.id.oneTimeCodeButton);
         oneTimeCodeButton.setOnClickListener(new OneTimeCodeButtonListener(this));
 
-        Button logoutButton = (Button) findViewById(R.id.LogoutButton);
+        Button logoutButton = (Button) findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(new LogoutButtonListener(this));
 
-        TextView tokenExpiresTextView = (TextView) findViewById(R.id.TokenExpiresTextView);
+        TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
         String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
         tokenExpiresTextView.setText("Token expires at: " + expiresAt);
 
@@ -45,7 +45,7 @@ public class SPiDExampleAppMain extends Activity {
         SPiDClient.getInstance().getCurrentUser(new SPiDAsyncCallback() {
             @Override
             public void onComplete(SPiDResponse result) {
-                TextView userTextView = (TextView) findViewById(R.id.UserTextView);
+                TextView userTextView = (TextView) findViewById(R.id.userTextView);
                 String user = "unknown";
                 try {
                     user = result.getJsonObject().getJSONObject("data").getString("displayName");
@@ -76,7 +76,7 @@ public class SPiDExampleAppMain extends Activity {
             SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
                 @Override
                 public void onComplete() {
-                    TextView tokenExpiresTextView = (TextView) findViewById(R.id.TokenExpiresTextView);
+                    TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
                     String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
                     tokenExpiresTextView.setText("Token expires at: " + expiresAt);
                 }
@@ -99,7 +99,7 @@ public class SPiDExampleAppMain extends Activity {
 
         public void onClick(View v) {
             /*
-            SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncCallback() {
+            SPiDClient.getInstance().getOneTimeCode(new SPiDAsyncCallback() {
                 @Override
                 public void onComplete(SPiDResponse result) {
                     //To change body of implemented methods use File | Settings | File Templates.

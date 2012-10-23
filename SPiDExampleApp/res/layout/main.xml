@@ -16,7 +16,7 @@
             android:contentDescription="@string/SPiDLogo"/>
 
     <TextView
-            android:id="@+id/UserTextView"
+            android:id="@+id/userTextView"
             android:text="Welcome Unknown user!"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,55 +27,55 @@
             android:layout_marginBottom="5dp"/>
 
     <TextView
-            android:id="@+id/TokenExpiresTextView"
+            android:id="@+id/tokenExpiresTextView"
             android:text="Token expires at: unknown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/UserTextView"
+            android:layout_below="@+id/userTextView"
             android:textColor="#000000"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
     <TextView
-            android:id="@+id/OneTimeCodeTextView"
+            android:id="@+id/oneTimeCodeTextView"
             android:text="One time code: none"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/TokenExpiresTextView"
+            android:layout_below="@+id/tokenExpiresTextView"
             android:textColor="#000000"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
     <Button
-            android:id="@+id/RefreshTokenButton"
+            android:id="@+id/refreshTokenButton"
             android:text="@string/RefreshToken"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/OneTimeCodeTextView"
+            android:layout_below="@+id/oneTimeCodeTextView"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
     <Button
-            android:id="@+id/OneTimeCodeButton"
-            android:text="@string/OneTimeCode"
+            android:id="@+id/oneTimeCodeButton"
+            android:text="@string/oneTimeCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/RefreshTokenButton"
+            android:layout_below="@+id/refreshTokenButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 
     <Button
-            android:id="@+id/LogoutButton"
-            android:text="@string/Logout"
+            android:id="@+id/logoutButton"
+            android:text="@string/logout"
             android:singleLine="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/OneTimeCodeButton"
+            android:layout_below="@+id/oneTimeCodeButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"/>
 </RelativeLayout>
