@@ -15,8 +15,8 @@ import java.net.URLEncoder;
 public class SPiDClient {
     private static final SPiDClient instance = new SPiDClient();
 
+    private static final String API_VERSION = "2";
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
-    //private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=authorization_code&response_type=code&platform=mobile&force=1";
 
     private SPiDConfiguration config;
 
@@ -93,16 +93,29 @@ public class SPiDClient {
         this.token = accessToken;
     }
 
-    public void getCurrentUser() {
-        //SPiDRequest request = new SPiDRequest("GET", "https://stage.payment.schibsted.no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), new AccessTokenCallback());
+    public void apiGetRequest(String path, SPiDAsyncCallback callback) {
+        SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + API_VERSION + path, callback);
+        request.addQueryParameter("oauth_token", token.getAccessToken());
+        request.execute();
     }
 
-    public void refreshAccessToken(SPiDAsyncCallback sPiDAsyncCallback) {
+    /*
+    public void apiPostRequest(String path, String body, SPiDAsyncCallback callback) {
+        SPiDRequest request = new SPiDRequest("POST", "no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), callback);
+
+        request.execute();
+    }*/
+
+    public void getCurrentUser(SPiDAsyncCallback callback) {
+        apiGetRequest("/user/" + token.getUserID(), callback);
     }
 
-    public void logoutSPiDAPI(SPiDAsyncCallback sPiDAsyncCallback) {
-        SPiDRequest request = new SPiDRequest("POST", "/api/{version}/me", sPiDAsyncCallback);
-        //To change body of created methods use File | Settings | File Templates.
+    public void refreshAccessToken(SPiDAsyncCallback callback) {
+    }
+
+    public void logoutSPiDAPI(SPiDAsyncCallback callback) {
+        SPiDRequest request = new SPiDRequest("POST", "/api/{version}/me", callback);
+
     }
 }
 

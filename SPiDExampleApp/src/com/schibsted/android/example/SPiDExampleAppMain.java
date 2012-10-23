@@ -2,13 +2,17 @@ package com.schibsted.android.example;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.schibsted.android.sdk.SPiDAsyncCallback;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.SPiDLogger;
 import com.schibsted.android.sdk.SPiDResponse;
+import org.json.JSONException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +27,41 @@ public class SPiDExampleAppMain extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        Button refreshTokenButton = (Button) findViewById(R.id.RefreshTokenButton);
+        refreshTokenButton.setOnClickListener(new RefreshTokenButtonListener(this));
+
+        Button oneTimeCodeButton = (Button) findViewById(R.id.OneTimeCodeButton);
+        oneTimeCodeButton.setOnClickListener(new OneTimeCodeButtonListener(this));
+
+        Button logoutButton = (Button) findViewById(R.id.LogoutButton);
+        logoutButton.setOnClickListener(new LogoutButtonListener(this));
+
+        getUserName(this);
+    }
+
+    private void getUserName(final Context context) {
+        SPiDClient.getInstance().getCurrentUser(new SPiDAsyncCallback() {
+            @Override
+            public void onComplete(SPiDResponse result) {
+                TextView userTextView = (TextView) findViewById(R.id.UserTextView);
+                String user = "unknown";
+                try {
+                    user = result.getJsonObject().getJSONObject("data").getString("displayName");
+
+                } catch (JSONException e) {
+                    SPiDLogger.log("Error parsing response");
+                    Toast.makeText(context, "Error parsing response", Toast.LENGTH_LONG).show();
+                }
+                userTextView.setText("Welcome " + user + "!");
+            }
+
+            @Override
+            public void onError(Exception exception) {
+                SPiDLogger.log("Error getting username");
+                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     protected class RefreshTokenButtonListener implements View.OnClickListener {
@@ -82,12 +121,15 @@ public class SPiDExampleAppMain extends Activity {
             SPiDClient.getInstance().logoutSPiDAPI(new SPiDAsyncCallback() {
                 @Override
                 public void onComplete(SPiDResponse result) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Intent intent = new Intent(context, SPiDExampleAppLogin.class);
+                    startActivity(intent);
                 }
 
                 @Override
                 public void onError(Exception exception) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, SPiDExampleAppLogin.class);
+                    startActivity(intent);
                 }
             });
         }

@@ -40,6 +40,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.body = new HashMap<String, String>();
 
         this.callback = callback;
+
+        SPiDLogger.log("Created request: " + url);
     }
 
     public SPiDRequest(String url, SPiDAsyncCallback callback) {
