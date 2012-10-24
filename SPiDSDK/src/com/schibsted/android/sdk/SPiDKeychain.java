@@ -59,6 +59,16 @@ public class SPiDKeychain {
         }
     }
 
+    protected static void clearAccessTokenFromSharedPreferences(Context context) {
+        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".spid", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = secure.edit();
+        editor.remove("access_token");
+        editor.remove("expires_at");
+        editor.remove("refresh_token");
+        editor.remove("user_id");
+        editor.commit();
+    }
+
     private static String encryptString(Context context, String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
         final byte[] bytes = value != null ? value.getBytes(UTF8) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
