@@ -102,6 +102,17 @@ public class SPiDAuthorizationRequest {
         return false;
     }
 
+    public void softLogout(SPiDAccessToken token) {
+        String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
+        SPiDRequest request = new SPiDRequest(SPiDClient.getInstance().getConfig().getTokenURL(), new LogoutCallback(callback));
+        request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
+        request.addQueryParameter("oauth_token", token.getAccessToken());
+        // if (useMobileWeb)
+        request.addQueryParameter("platform", "mobile");
+        request.addQueryParameter("force", "1");
+        request.execute();
+    }
+
     class AccessTokenCallback implements SPiDAsyncCallback {
         private SPiDAsyncAuthorizationCallback callback;
 
@@ -119,11 +130,32 @@ public class SPiDAuthorizationRequest {
                     SPiDAccessToken token = new SPiDAccessToken(result.getJsonObject());
                     SPiDClient.getInstance().setAccessToken(token);
                     SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
+                    SPiDClient.getInstance().runWaitingRequests();
                     callback.onComplete();
                 }
             } catch (JSONException e) {
                 callback.onError(new Exception());
             }
+        }
+
+        @Override
+        public void onError(Exception exception) {
+            callback.onError(new Exception());
+        }
+    }
+
+    class LogoutCallback implements SPiDAsyncCallback {
+        private SPiDAsyncAuthorizationCallback callback;
+
+        public LogoutCallback(SPiDAsyncAuthorizationCallback callback) {
+            super();
+            this.callback = callback;
+        }
+
+        @Override
+        public void onComplete(SPiDResponse result) {
+            SPiDClient.getInstance().clearAccessToken();
+            callback.onComplete();
         }
 
         @Override

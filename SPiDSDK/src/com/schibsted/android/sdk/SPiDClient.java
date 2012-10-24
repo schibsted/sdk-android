@@ -5,7 +5,9 @@ import android.net.Uri;
 import android.webkit.WebView;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,9 +26,12 @@ public class SPiDClient {
 
     private SPiDAuthorizationRequest authorizationRequest;
 
+    private List<SPiDRequest> waitingRequests;
+
     private SPiDClient() {
         config = null;
         authorizationRequest = null;
+        waitingRequests = new ArrayList<SPiDRequest>();
     }
 
     public static SPiDClient getInstance() {
@@ -102,9 +107,12 @@ public class SPiDClient {
         apiGetRequest("/user/" + token.getUserID(), callback);
     }
 
-    public void logoutSPiDAPI(SPiDAsyncCallback callback) {
-        SPiDRequest request = new SPiDRequest("POST", "/api/{version}/me", callback);
-
+    public void logoutSPiDAPI(SPiDAsyncAuthorizationCallback callback) {
+        if (token != null) {
+            // TODO: multiple authreq?
+            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest.softLogout(token);
+        }
     }
 
     public Date getTokenExpiresAt() {
@@ -115,6 +123,20 @@ public class SPiDClient {
 
     public boolean isAuthorized() {
         return token != null;
+    }
+
+    public void runWaitingRequests() {
+        for (SPiDRequest request : waitingRequests) {
+            // TODO: rerun!
+        }
+    }
+
+    public void clearAccessToken() {
+        token = null;
+
+        SPiDKeychain.clearAccessTokenFromSharedPreferences(config.getContext());
+
+        waitingRequests.clear();
     }
 }
 
