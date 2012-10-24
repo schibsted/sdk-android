@@ -12,6 +12,12 @@ import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * Created with IntelliJ IDEA.
+ * User: mikaellindstrom
+ * Date: 10/22/12
+ * Time: 13:33 PM
+ */
 public class SPiDKeychain {
     protected static final String UTF8 = "utf-8";
 

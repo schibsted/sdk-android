@@ -63,13 +63,6 @@ public class SPiDClient {
         }
     }
 
-    public void getCurrentUserRequest() {
-        //SPiDRequest request = new SPiDRequest("GET", "https://stage.payment.schibsted.no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), new AccessTokenCallback());
-
-        //SPiDResponse response = sendRequest(request);
-        //Log.i("SPiD", response.getJsonObject().toString());
-    }
-
     public boolean handleIntent(Uri data) {
         if (authorizationRequest != null) {
             return authorizationRequest.handleIntent(data);
@@ -105,13 +98,6 @@ public class SPiDClient {
         request.execute();
     }
 
-    /*
-    public void apiPostRequest(String path, String body, SPiDAsyncCallback callback) {
-        SPiDRequest request = new SPiDRequest("POST", "no/api/2/user/" + token.getUserID() + "?oauth_token=" + token.getAccessToken(), callback);
-
-        request.execute();
-    }*/
-
     public void getCurrentUser(SPiDAsyncCallback callback) {
         apiGetRequest("/user/" + token.getUserID(), callback);
     }
@@ -128,9 +114,7 @@ public class SPiDClient {
     }
 
     public boolean isAuthorized() {
-        if (token != null)
-            return true;
-        return false;
+        return token != null;
     }
 }
 

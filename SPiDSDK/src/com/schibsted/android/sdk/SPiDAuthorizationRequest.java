@@ -14,11 +14,6 @@ import org.json.JSONException;
  * Date: 10/8/12
  * Time: 9:20 PM
  */
-
-/*
-conn.setRequestProperty("User-Agent", System.getProperties().
-                getProperty("http.agent") + " FacebookAndroidSDK");
- */
 public class SPiDAuthorizationRequest {
     private SPiDAsyncAuthorizationCallback callback;
 
