@@ -136,8 +136,6 @@ public class SPiDExampleAppMain extends Activity {
                 @Override
                 public void onError(Exception exception) {
                     Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, SPiDExampleAppLogin.class);
-                    startActivity(intent);
                 }
             });
         }

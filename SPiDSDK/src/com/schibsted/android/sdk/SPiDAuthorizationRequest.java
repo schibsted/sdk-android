@@ -104,7 +104,7 @@ public class SPiDAuthorizationRequest {
 
     public void softLogout(SPiDAccessToken token) {
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
-        SPiDRequest request = new SPiDRequest(SPiDClient.getInstance().getConfig().getTokenURL(), new LogoutCallback(callback));
+        SPiDRequest request = new SPiDRequest(requestURL, new LogoutCallback(callback));
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
         // if (useMobileWeb)

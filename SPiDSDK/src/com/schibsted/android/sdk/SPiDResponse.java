@@ -31,7 +31,11 @@ public class SPiDResponse {
                 for (String line; (line = reader.readLine()) != null; ) {
                     body += line;
                 }
+                if (body.length() > 0) {
                 jsonObject = new JSONObject(body);
+                } else {
+                    jsonObject = new JSONObject("{}");
+                }
             } catch (UnknownHostException error) {
                 throw error;
             }

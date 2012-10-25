@@ -140,6 +140,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             connection.connect();
 
             // response
+            connection.setFollowRedirects(false);
             Integer code = connection.getResponseCode();
             InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
             Map<String, String> headers = new HashMap<String, String>();
@@ -149,6 +150,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             return new SPiDResponse(code, headers, stream);
         } catch (MalformedURLException e) {
             Log.i("SPiD", "MalformedURL");
+            Log.i("SPiD", e.toString());
             e.printStackTrace();
         } catch (IOException e) {
             Log.i("SPiD", "Error");
