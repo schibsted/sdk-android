@@ -7,6 +7,7 @@ import android.webkit.WebView;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -26,6 +27,7 @@ public class SPiDClient {
 
     private SPiDClient() {
         config = null;
+        token = null;
         authorizationRequest = null;
         waitingRequests = new ArrayList<SPiDRequest>();
     }
@@ -36,7 +38,6 @@ public class SPiDClient {
 
     public void configure(SPiDConfiguration config) {
         this.config = config;
-
         token = SPiDKeychain.decryptAccessTokenFromSharedPreferences(config.getContext(), config.getClientSecret());
     }
 
@@ -98,15 +99,30 @@ public class SPiDClient {
     }
 
     // Requests
-    public void apiGetRequest(String path, SPiDAsyncCallback callback) {
+    public SPiDRequest apiGetRequest(String path, SPiDAsyncCallback callback) {
         SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + config.getApiVersion() + path, callback);
         request.addQueryParameter("oauth_token", token.getAccessToken());
-        request.execute();
+        return request;
+    }
+
+    public SPiDRequest apiPostRequest(String path, SPiDAsyncCallback callback) {
+        SPiDRequest request = new SPiDRequest("POST", config.getServerURL() + "/api/" + config.getApiVersion() + path, callback);
+        request.addBodyParameter("oauth_token", token.getAccessToken());
+        return request;
     }
 
     // Request wrappers
+    public void getOneTimeCode(SPiDAsyncCallback callback) {
+        SPiDRequest request = apiPostRequest("/oauth/exchange", callback);
+        request.addBodyParameter("clientId", config.getClientID());
+        request.addBodyParameter("client_id", config.getClientID());
+        request.addBodyParameter("type", "code");
+        request.execute();
+    }
+
     public void getCurrentUser(SPiDAsyncCallback callback) {
-        apiGetRequest("/user/" + token.getUserID(), callback);
+        SPiDRequest request = apiGetRequest("/user/" + token.getUserID(), callback);
+        request.execute();
     }
 
     // Protected methods
@@ -115,8 +131,18 @@ public class SPiDClient {
     }
 
     protected void runWaitingRequests() {
-        for (SPiDRequest request : waitingRequests) {
-            // TODO: rerun!
+        SPiDLogger.log("Running waiting requests");
+        List<SPiDRequest> requests = new ArrayList<SPiDRequest>(waitingRequests);
+        waitingRequests.clear();
+        ;
+
+        for (SPiDRequest request : requests) {
+            if (request.getMethod().equals("GET")) {
+                request.addQueryParameter("oauth_token", token.getAccessToken());
+            } else { // POST
+                request.addBodyParameter("oauth_token", token.getAccessToken());
+            }
+            request.execute();
         }
     }
 
@@ -126,6 +152,11 @@ public class SPiDClient {
         SPiDKeychain.clearAccessTokenFromSharedPreferences(config.getContext());
 
         waitingRequests.clear();
+    }
+
+    protected void addWaitingRequest(SPiDRequest request) {
+        SPiDLogger.log("Adding request");
+        waitingRequests.add(request);
     }
 
     // Private methods

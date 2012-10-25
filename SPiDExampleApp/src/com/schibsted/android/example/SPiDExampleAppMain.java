@@ -49,10 +49,8 @@ public class SPiDExampleAppMain extends Activity {
                 String user = "unknown";
                 try {
                     user = result.getJsonObject().getJSONObject("data").getString("displayName");
-
                 } catch (JSONException e) {
-                    SPiDLogger.log("Error parsing response");
-                    Toast.makeText(context, "Error parsing response", Toast.LENGTH_LONG).show();
+                    onError(e);
                 }
                 userTextView.setText("Welcome " + user + "!");
             }
@@ -98,11 +96,17 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            /*
             SPiDClient.getInstance().getOneTimeCode(new SPiDAsyncCallback() {
                 @Override
                 public void onComplete(SPiDResponse result) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    String oneTimeCode = "none";
+                    try {
+                        oneTimeCode = result.getJsonObject().getJSONObject("data").getString("code");
+                    } catch (JSONException e) {
+                        onError(e);
+                    }
+                    TextView oneTimeCodeTextView = (TextView) findViewById(R.id.oneTimeCodeTextView);
+                    oneTimeCodeTextView.setText("One time code: " + oneTimeCode);
                 }
 
                 @Override
@@ -111,7 +115,6 @@ public class SPiDExampleAppMain extends Activity {
                     Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                 }
             });
-            */
         }
     }
 
@@ -123,9 +126,9 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().logoutSPiDAPI(new SPiDAsyncCallback() {
+            SPiDClient.getInstance().logoutSPiDAPI(new SPiDAsyncAuthorizationCallback() {
                 @Override
-                public void onComplete(SPiDResponse result) {
+                public void onComplete() {
                     Intent intent = new Intent(context, SPiDExampleAppLogin.class);
                     startActivity(intent);
                 }

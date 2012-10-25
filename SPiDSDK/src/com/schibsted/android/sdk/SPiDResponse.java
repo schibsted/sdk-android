@@ -23,20 +23,15 @@ public class SPiDResponse {
 
     public SPiDResponse(Integer code, Map<String, String> headers, InputStream inputStream) throws IOException {
         try {
-            SPiDLogger.log("Trying to connect");
-            SPiDLogger.log("Connected");
-            SPiDLogger.log(String.format("code: %d", code));
             this.headers = headers;
             BufferedReader reader = null;
             try {
-                String result = "";
+                body = "";
                 reader = new BufferedReader(new InputStreamReader(inputStream));
                 for (String line; (line = reader.readLine()) != null; ) {
-                    result += line;
+                    body += line;
                 }
-                SPiDLogger.log("Result:");
-                SPiDLogger.log(result);
-                jsonObject = new JSONObject(result);
+                jsonObject = new JSONObject(body);
             } catch (UnknownHostException error) {
                 throw error;
             }
@@ -61,8 +56,8 @@ public class SPiDResponse {
         return code;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public String getBody() {
+        return body;
     }
 
     public JSONObject getJsonObject() {

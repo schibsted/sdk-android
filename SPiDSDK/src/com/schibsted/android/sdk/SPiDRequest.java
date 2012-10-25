@@ -2,6 +2,7 @@ package com.schibsted.android.sdk;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import org.json.JSONException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -93,6 +94,27 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         return code >= 200 && code < 400;
     }
 
+    // Used since AsyncTask can only be used once
+    public SPiDRequest copy() {
+        SPiDRequest request = new SPiDRequest(method, url, callback);
+        request.setHeaders(headers);
+        request.setQuery(query);
+        request.setBody(body);
+        return request;
+    }
+
+    private void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
+    private void setQuery(Map<String, String> query) {
+        this.query = query;
+    }
+
+    private void setBody(Map<String, String> body) {
+        this.body = body;
+    }
+
     @Override
     protected SPiDResponse doInBackground(Void... voids) {
         try {
@@ -139,11 +161,37 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     @Override
     protected void onPostExecute(SPiDResponse result) {
         super.onPostExecute(result);
+        // TODO: this is really messy
         if (result != null) {
-            callback.onComplete(result);
-        } else {
-            callback.onError(new EOFException());
+            try {
+                if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
+                    String error = result.getJsonObject().getString("error");
+                    if (error.equals("invalid_token") || error.equals("expired_token")) {
+                        SPiDLogger.log("Adding request to waiting list: " + url);
+                        SPiDClient.getInstance().addWaitingRequest(this.copy());
+                        SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
+                            @Override
+                            public void onComplete() {
+                                // Do nothing...
+                            }
+
+                            @Override
+                            public void onError(Exception exception) {
+                                // Do nothing...
+                            }
+                        });
+                        return;
+                    }
+                    callback.onError(new EOFException());
+                } else {
+                    callback.onComplete(result);
+                }
+            } catch (JSONException e) {
+                callback.onError(new EOFException());
+            }
+            return;
         }
+        callback.onError(new EOFException());
     }
 
     public void execute() {
