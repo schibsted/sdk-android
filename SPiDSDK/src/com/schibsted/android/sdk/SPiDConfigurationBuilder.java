@@ -107,27 +107,27 @@ public class SPiDConfigurationBuilder {
         isEmptyString(serverURL, "ServerURL is missing");
         isNull(context, "Context is missing");
 
-        if (redirectURL == null || !redirectURL.trim().equals("")) {
+        if (redirectURL == null || redirectURL.trim().equals("")) {
             redirectURL = appURLScheme + "://";
         }
 
-        if (authorizationURL == null || !authorizationURL.trim().equals("")) {
+        if (authorizationURL == null || authorizationURL.trim().equals("")) {
             authorizationURL = serverURL + "/auth/login";
         }
 
-        if (tokenURL == null || !tokenURL.trim().equals("")) {
+        if (tokenURL == null || tokenURL.trim().equals("")) {
             tokenURL = serverURL + "/oauth/token";
         }
 
-        if (registrationURL == null || !registrationURL.trim().equals("")) {
+        if (registrationURL == null || registrationURL.trim().equals("")) {
             registrationURL = serverURL + "/auth/signup";
         }
 
-        if (lostPasswordURL == null || !lostPasswordURL.trim().equals("")) {
+        if (lostPasswordURL == null || lostPasswordURL.trim().equals("")) {
             lostPasswordURL = serverURL + "/auth/forgotpassword";
         }
 
-        if (serverClientID == null || !serverClientID.trim().equals("")) {
+        if (serverClientID == null || serverClientID.trim().equals("")) {
             serverClientID = clientID;
         }
 
