@@ -20,13 +20,11 @@ public class SPiDConfiguration {
     private String tokenURL;
     private String redirectURL;
     private String serverClientID;
+    private Boolean useMobileWeb;
     private String apiVersion;
-
     private Context context;
 
-    private String code;
-
-    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, String apiVersion, Context context) {
+    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.appURLScheme = appURLScheme;
@@ -37,6 +35,7 @@ public class SPiDConfiguration {
         this.lostPasswordURL = lostPasswordURL;
         this.tokenURL = tokenURL;
         this.serverClientID = serverClientID;
+        this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
         this.context = context;
     }
@@ -121,27 +120,27 @@ public class SPiDConfiguration {
         this.apiVersion = apiVersion;
     }
 
-    public Context getContext() {
-        return context;
+    public String getServerClientID() {
+        return serverClientID;
     }
 
     public void setServerClientID(String serverClientID) {
         this.serverClientID = serverClientID;
     }
 
-    public String getCode() {
-        return code;
+    public Boolean getUseMobileWeb() {
+        return useMobileWeb;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setUseMobileWeb(Boolean useMobileWeb) {
+        this.useMobileWeb = useMobileWeb;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void setContext(Context context) {
         this.context = context;
-    }
-
-    public String getServerClientID() {
-        return serverClientID;
     }
 }

@@ -20,6 +20,7 @@ public class SPiDConfigurationBuilder {
     private String lostPasswordURL;
     private String tokenURL;
     private String serverClientID;
+    private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
     private Context context;
 
@@ -130,6 +131,6 @@ public class SPiDConfigurationBuilder {
             serverClientID = clientID;
         }
 
-        return new SPiDConfiguration(clientID, clientSecret, appURLScheme, serverURL, redirectURL, authorizationURL, registrationURL, lostPasswordURL, tokenURL, serverClientID, apiVersion, context);
+        return new SPiDConfiguration(clientID, clientSecret, appURLScheme, serverURL, redirectURL, authorizationURL, registrationURL, lostPasswordURL, tokenURL, serverClientID, useMobileWeb, apiVersion, context);
     }
 }

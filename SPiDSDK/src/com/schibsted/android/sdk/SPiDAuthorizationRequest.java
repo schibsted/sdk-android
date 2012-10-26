@@ -107,9 +107,6 @@ public class SPiDAuthorizationRequest {
         SPiDRequest request = new SPiDRequest(requestURL, new LogoutCallback(callback));
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
-        // if (useMobileWeb)
-        request.addQueryParameter("platform", "mobile");
-        request.addQueryParameter("force", "1");
         request.execute();
     }
 
@@ -123,6 +120,7 @@ public class SPiDAuthorizationRequest {
 
         @Override
         public void onComplete(SPiDResponse result) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
             try {
                 if ((result.getJsonObject().has("error")) && ((String) result.getJsonObject().get("error")).length() > 0) {
                     callback.onError(new Exception());
@@ -140,6 +138,7 @@ public class SPiDAuthorizationRequest {
 
         @Override
         public void onError(Exception exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
             callback.onError(new Exception());
         }
     }
@@ -154,12 +153,14 @@ public class SPiDAuthorizationRequest {
 
         @Override
         public void onComplete(SPiDResponse result) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
             SPiDClient.getInstance().clearAccessToken();
             callback.onComplete();
         }
 
         @Override
         public void onError(Exception exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
             callback.onError(new Exception());
         }
     }

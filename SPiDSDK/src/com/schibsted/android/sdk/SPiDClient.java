@@ -41,10 +41,11 @@ public class SPiDClient {
     }
 
     // Browser redirect
-    public void authorize(SPiDAsyncAuthorizationCallback authorizationCallback) {
+    public void authorize(SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {
+            throw new Exception("Authorization already running");
             // TODO: throw exception, only one authorization request can be running at a single time
         }
     }
@@ -60,7 +61,10 @@ public class SPiDClient {
     public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
-        } // TODO: else? clear authorizationRequest
+        } else {
+            authorizationCallback.onError(new Exception("Authorization already running"));
+        }
+        // TODO: else? clear authorizationRequest
 
         String url = getAuthorizationURL().concat("&webview=1");
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
@@ -70,7 +74,10 @@ public class SPiDClient {
     public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
-        } // TODO: else? clear authorizationRequest
+        } else {
+            authorizationCallback.onError(new Exception("Authorization already running"));
+        }
+        // TODO: else? clear authorizationRequest
 
         String url = getRegistrationURL().concat("&webview=1");
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
@@ -81,7 +88,9 @@ public class SPiDClient {
     public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
-        } // TODO: else? clear authorizationRequest
+        } else {
+            authorizationCallback.onError(new Exception("Authorization already running"));
+        }// TODO: else? clear authorizationRequest
 
         String url = getLostPasswordURL().concat("&webview=1");
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
@@ -90,17 +99,23 @@ public class SPiDClient {
 
     // Refresh token
     public void refreshAccessToken(SPiDAsyncAuthorizationCallback callback) {
-        // TODO!!!
-        authorizationRequest = new SPiDAuthorizationRequest(callback);
-        authorizationRequest.refreshAccessToken(token.getRefreshToken());
+        if (authorizationRequest == null) {
+            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest.refreshAccessToken(token.getRefreshToken());
+        } else {
+            callback.onError(new Exception("Authorization already running"));
+        }
     }
 
     // Logout
     public void logoutSPiDAPI(SPiDAsyncAuthorizationCallback callback) {
         if (token != null) {
-            // TODO: multiple authreq?
-            authorizationRequest = new SPiDAuthorizationRequest(callback);
-            authorizationRequest.softLogout(token);
+            if (authorizationRequest == null) {
+                authorizationRequest = new SPiDAuthorizationRequest(callback);
+                authorizationRequest.softLogout(token);
+            } else {
+                callback.onError(new Exception("Authorization already running"));
+            }
         }
     }
 
@@ -178,6 +193,10 @@ public class SPiDClient {
     protected void addWaitingRequest(SPiDRequest request) {
         SPiDLogger.log("Adding request");
         waitingRequests.add(request);
+    }
+
+    protected void clearAuthorizationRequest() {
+        authorizationRequest = null;
     }
 
     // Private methods
