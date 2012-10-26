@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.webkit.WebView;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,10 +52,7 @@ public class SPiDClient {
     }
 
     public boolean handleIntent(Uri data) {
-        if (authorizationRequest != null) {
-            return authorizationRequest.handleIntent(data);
-        }
-        return false;
+        return authorizationRequest != null && authorizationRequest.handleIntent(data);
     }
 
     // Webview
@@ -66,7 +64,12 @@ public class SPiDClient {
         }
         // TODO: else? clear authorizationRequest
 
-        String url = getAuthorizationURL().concat("&webview=1");
+        String url = null;
+        try {
+            url = getAuthorizationURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
         return authorizationRequest.getWebView(context, url);
     }
@@ -79,12 +82,16 @@ public class SPiDClient {
         }
         // TODO: else? clear authorizationRequest
 
-        String url = getRegistrationURL().concat("&webview=1");
+        String url = null;
+        try {
+            url = getRegistrationURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
         return authorizationRequest.getWebView(context, url);
     }
 
-    // Webview
     public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
@@ -92,7 +99,12 @@ public class SPiDClient {
             authorizationCallback.onError(new Exception("Authorization already running"));
         }// TODO: else? clear authorizationRequest
 
-        String url = getLostPasswordURL().concat("&webview=1");
+        String url = null;
+        try {
+            url = getLostPasswordURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
         SPiDLogger.log("Context: " + context.toString() + " url: " + url);
         return authorizationRequest.getWebView(context, url);
     }
@@ -200,18 +212,18 @@ public class SPiDClient {
     }
 
     // Private methods
-    private String getAuthorizationURL() {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
+    private String getAuthorizationURL() throws UnsupportedEncodingException {
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    private String getRegistrationURL() {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
+    private String getRegistrationURL() throws UnsupportedEncodingException {
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    private String getLostPasswordURL() {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
+    private String getLostPasswordURL() throws UnsupportedEncodingException {
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 }
