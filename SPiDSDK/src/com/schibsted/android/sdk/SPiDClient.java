@@ -7,7 +7,6 @@ import android.webkit.WebView;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -63,9 +62,63 @@ public class SPiDClient {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } // TODO: else? clear authorizationRequest
 
-        SPiDLogger.log("Context: " + context.toString() + " url: " + getAuthorizationURL());
-        return authorizationRequest.getAuthorizationWebView(context, getAuthorizationURL());
+        String url = getAuthorizationURL().concat("&webview=1");
+        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
+        return authorizationRequest.getWebView(context, url);
     }
+
+    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        if (authorizationRequest == null) {
+            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+        } // TODO: else? clear authorizationRequest
+
+        String url = getRegistrationURL().concat("&webview=1");
+        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
+        return authorizationRequest.getWebView(context, url);
+    }
+
+    // Webview
+    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        if (authorizationRequest == null) {
+            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+        } // TODO: else? clear authorizationRequest
+
+        String url = getLostPasswordURL().concat("&webview=1");
+        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
+        return authorizationRequest.getWebView(context, url);
+    }
+
+    /*
+
+    - (UIWebView *)authorizeWithWebView {
+    NSString *url = [[self generateAuthorizationURL] absoluteString];
+    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
+    SPiDDebugLog(@"Trying to authorize using webview");
+    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
+    UIWebView *webView = [self createWebView:[self requestURL]];
+    return webView;
+}
+
+- (UIWebView *)registerWithWebView {
+    NSString *url = [[self generateRegistrationURL] absoluteString];
+    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
+    SPiDDebugLog(@"Trying to register using webview");
+    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
+    UIWebView *webView = [self createWebView:[self requestURL]];
+    return webView;
+}
+
+- (UIWebView *)lostPasswordWithWebView {
+    NSString *url = [[self generateLostPasswordURL] absoluteString];
+    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
+    SPiDDebugLog(@"Trying to get lost password using webview");
+    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
+    UIWebView *webView = [self createWebView:[self requestURL]];
+    return webView;
+}
+
+
+     */
 
     // Refresh token
     public void refreshAccessToken(SPiDAsyncAuthorizationCallback callback) {
@@ -163,6 +216,16 @@ public class SPiDClient {
     private String getAuthorizationURL() {
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+    }
+
+    private String getRegistrationURL() {
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
+        return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+    }
+
+    private String getLostPasswordURL() {
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login");
+        return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 }
 

@@ -135,6 +135,7 @@ public class SPiDExampleAppMain extends Activity {
 
                 @Override
                 public void onError(Exception exception) {
+                    SPiDLogger.log("Error logging out...");
                     Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
                 }
             });

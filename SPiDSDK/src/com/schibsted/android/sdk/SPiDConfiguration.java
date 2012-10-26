@@ -15,6 +15,8 @@ public class SPiDConfiguration {
     private String appURLScheme;
     private String serverURL;
     private String authorizationURL;
+    private String registrationURL;
+    private String lostPasswordURL;
     private String tokenURL;
     private String redirectURL;
     private String apiVersion;
@@ -23,13 +25,15 @@ public class SPiDConfiguration {
 
     private String code;
 
-    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String tokenURL, String apiVersion, Context context) {
+    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String apiVersion, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.appURLScheme = appURLScheme;
         this.serverURL = serverURL;
         this.redirectURL = redirectURL;
         this.authorizationURL = authorizationURL;
+        this.registrationURL = registrationURL;
+        this.lostPasswordURL = lostPasswordURL;
         this.tokenURL = tokenURL;
         this.apiVersion = apiVersion;
         this.context = context;
@@ -81,6 +85,22 @@ public class SPiDConfiguration {
 
     public void setAuthorizationURL(String authorizationURL) {
         this.authorizationURL = authorizationURL;
+    }
+
+    public String getRegistrationURL() {
+        return registrationURL;
+    }
+
+    public void setRegistrationURL(String registrationURL) {
+        this.registrationURL = registrationURL;
+    }
+
+    public String getLostPasswordURL() {
+        return lostPasswordURL;
+    }
+
+    public void setLostPasswordURL(String lostPasswordURL) {
+        this.lostPasswordURL = lostPasswordURL;
     }
 
     public String getTokenURL() {

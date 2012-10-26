@@ -21,7 +21,7 @@ public class SPiDAuthorizationRequest {
         this.callback = authorizationCallback;
     }
 
-    public WebView getAuthorizationWebView(final Context context, String url) {
+    public WebView getWebView(final Context context, String url) {
         WebView webview = new WebView(context);
 
         webview.getSettings().setJavaScriptEnabled(true);
