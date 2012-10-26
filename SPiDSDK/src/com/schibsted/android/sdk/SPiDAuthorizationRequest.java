@@ -8,6 +8,9 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import org.json.JSONException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mikaellindstrom
@@ -15,10 +18,42 @@ import org.json.JSONException;
  * Time: 9:20 PM
  */
 public class SPiDAuthorizationRequest {
+    private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
+
     private SPiDAsyncAuthorizationCallback callback;
 
     public SPiDAuthorizationRequest(SPiDAsyncAuthorizationCallback authorizationCallback) {
         this.callback = authorizationCallback;
+    }
+
+    protected WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        String url = null;
+        try {
+            url = getAuthorizationURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
+        return getWebView(context, url);
+    }
+
+    protected WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        String url = null;
+        try {
+            url = getRegistrationURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
+        return getWebView(context, url);
+    }
+
+    protected WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+        String url = null;
+        try {
+            url = getLostPasswordURL().concat("&webview=1");
+        } catch (UnsupportedEncodingException e) {
+            authorizationCallback.onError(e);
+        }
+        return getWebView(context, url);
     }
 
     public WebView getWebView(final Context context, String url) {
@@ -108,6 +143,25 @@ public class SPiDAuthorizationRequest {
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
         request.execute();
+    }
+
+    // Private methods
+    private String getAuthorizationURL() throws UnsupportedEncodingException {
+        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+    }
+
+    private String getRegistrationURL() throws UnsupportedEncodingException {
+        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+    }
+
+    private String getLostPasswordURL() throws UnsupportedEncodingException {
+        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
     class AccessTokenCallback implements SPiDAsyncCallback {

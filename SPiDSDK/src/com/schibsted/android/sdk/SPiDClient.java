@@ -18,7 +18,6 @@ import java.util.List;
  */
 public class SPiDClient {
     private static final SPiDClient instance = new SPiDClient();
-    private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
 
     private SPiDConfiguration config;
     private SPiDAccessToken token;
@@ -56,57 +55,34 @@ public class SPiDClient {
     }
 
     // Webview
-    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {
-            authorizationCallback.onError(new Exception("Authorization already running"));
+            throw new Exception("Authorization already running");
         }
-        // TODO: else? clear authorizationRequest
 
-        String url = null;
-        try {
-            url = getAuthorizationURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
-        }
-        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
-        return authorizationRequest.getWebView(context, url);
+        return authorizationRequest.getAuthorizationWebView(context, authorizationCallback);
     }
 
-    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {
-            authorizationCallback.onError(new Exception("Authorization already running"));
+            throw new Exception("Authorization already running");
         }
-        // TODO: else? clear authorizationRequest
 
-        String url = null;
-        try {
-            url = getRegistrationURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
-        }
-        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
-        return authorizationRequest.getWebView(context, url);
+        return authorizationRequest.getRegistrationWebView(context, authorizationCallback);
     }
 
-    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {
-            authorizationCallback.onError(new Exception("Authorization already running"));
+            throw new Exception("Authorization already running");
         }// TODO: else? clear authorizationRequest
 
-        String url = null;
-        try {
-            url = getLostPasswordURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
-        }
-        SPiDLogger.log("Context: " + context.toString() + " url: " + url);
-        return authorizationRequest.getWebView(context, url);
+        return authorizationRequest.getLostPasswordWebView(context, authorizationCallback);
     }
 
     // Refresh token
@@ -209,22 +185,6 @@ public class SPiDClient {
 
     protected void clearAuthorizationRequest() {
         authorizationRequest = null;
-    }
-
-    // Private methods
-    private String getAuthorizationURL() throws UnsupportedEncodingException {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
-    }
-
-    private String getRegistrationURL() throws UnsupportedEncodingException {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
-    }
-
-    private String getLostPasswordURL() throws UnsupportedEncodingException {
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 }
 

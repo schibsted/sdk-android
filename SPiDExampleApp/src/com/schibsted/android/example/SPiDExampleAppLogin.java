@@ -22,6 +22,7 @@ import java.util.UUID;
  * Time: 1:39 PM
  */
 public class SPiDExampleAppLogin extends Activity {
+    private WebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,6 @@ public class SPiDExampleAppLogin extends Activity {
             startActivity(intent);
         }
 
-        // TODO: change id to lower_case_with_underscore
         setContentView(R.layout.login);
         Button loginButton = (Button) findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(new LoginButtonListener(this));
@@ -61,25 +61,31 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             SPiDLogger.log("onClick");
 
-            WebView webView = SPiDClient.getInstance().getAuthorizationWebView(context, new SPiDAsyncAuthorizationCallback() {
-                @Override
-                public void onComplete() {
-                    SPiDLogger.log("Successful login");
-                    Intent intent = new Intent(context, SPiDExampleAppMain.class);
-                    startActivity(intent);
-                }
+            WebView webView = null;
+            try {
+                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new SPiDAsyncAuthorizationCallback() {
+                    @Override
+                    public void onComplete() {
+                        SPiDLogger.log("Successful login");
+                        Intent intent = new Intent(context, SPiDExampleAppMain.class);
+                        startActivity(intent);
+                    }
 
-                @Override
-                public void onError(Exception exception) {
-                    SPiDLogger.log("Error while preforming login");
-                    Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+                    @Override
+                    public void onError(Exception exception) {
+                        SPiDLogger.log("Error while preforming login");
+                        Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
 
-                    setContentView(R.layout.login);
-                    Button loginButton = (Button) findViewById(R.id.LoginButton);
-                    loginButton.setOnClickListener(new LoginButtonListener(context));
-                }
-            });
-            setContentView(webView);
+                        setContentView(R.layout.login);
+                        Button loginButton = (Button) findViewById(R.id.LoginButton);
+                        loginButton.setOnClickListener(new LoginButtonListener(context));
+                    }
+                });
+                setContentView(webView);
+            } catch (Exception e) {
+                SPiDLogger.log("Error loading WebView");
+                Toast.makeText(context, "Error loading WebView", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
