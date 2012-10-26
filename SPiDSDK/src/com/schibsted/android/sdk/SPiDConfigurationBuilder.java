@@ -19,6 +19,7 @@ public class SPiDConfigurationBuilder {
     private String registrationURL;
     private String lostPasswordURL;
     private String tokenURL;
+    private String serverClientID;
     private String apiVersion = "2";
     private Context context;
 
@@ -67,6 +68,11 @@ public class SPiDConfigurationBuilder {
 
     public SPiDConfigurationBuilder tokenURL(String tokenURL) {
         this.tokenURL = tokenURL;
+        return this;
+    }
+
+    public SPiDConfigurationBuilder serverClientID(String serverClientID) {
+        this.serverClientID = serverClientID;
         return this;
     }
 
@@ -120,6 +126,10 @@ public class SPiDConfigurationBuilder {
             lostPasswordURL = serverURL + "/auth/forgotpassword";
         }
 
-        return new SPiDConfiguration(clientID, clientSecret, appURLScheme, serverURL, redirectURL, authorizationURL, registrationURL, lostPasswordURL, tokenURL, apiVersion, context);
+        if (serverClientID == null || !serverClientID.trim().equals("")) {
+            serverClientID = clientID;
+        }
+
+        return new SPiDConfiguration(clientID, clientSecret, appURLScheme, serverURL, redirectURL, authorizationURL, registrationURL, lostPasswordURL, tokenURL, serverClientID, apiVersion, context);
     }
 }

@@ -88,38 +88,6 @@ public class SPiDClient {
         return authorizationRequest.getWebView(context, url);
     }
 
-    /*
-
-    - (UIWebView *)authorizeWithWebView {
-    NSString *url = [[self generateAuthorizationURL] absoluteString];
-    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
-    SPiDDebugLog(@"Trying to authorize using webview");
-    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
-    UIWebView *webView = [self createWebView:[self requestURL]];
-    return webView;
-}
-
-- (UIWebView *)registerWithWebView {
-    NSString *url = [[self generateRegistrationURL] absoluteString];
-    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
-    SPiDDebugLog(@"Trying to register using webview");
-    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
-    UIWebView *webView = [self createWebView:[self requestURL]];
-    return webView;
-}
-
-- (UIWebView *)lostPasswordWithWebView {
-    NSString *url = [[self generateLostPasswordURL] absoluteString];
-    [self setRequestURL:[NSURL URLWithString:[url stringByAppendingFormat:@"&webview=1"]]];
-    SPiDDebugLog(@"Trying to get lost password using webview");
-    SPiDDebugLog(@"URL: %@", [[self requestURL] absoluteString]);
-    UIWebView *webView = [self createWebView:[self requestURL]];
-    return webView;
-}
-
-
-     */
-
     // Refresh token
     public void refreshAccessToken(SPiDAsyncAuthorizationCallback callback) {
         // TODO!!!
@@ -167,8 +135,8 @@ public class SPiDClient {
     // Request wrappers
     public void getOneTimeCode(SPiDAsyncCallback callback) {
         SPiDRequest request = apiPostRequest("/oauth/exchange", callback);
-        request.addBodyParameter("clientId", config.getClientID());
-        request.addBodyParameter("client_id", config.getClientID());
+        request.addBodyParameter("clientId", config.getServerClientID());
+        request.addBodyParameter("client_id", config.getServerClientID());
         request.addBodyParameter("type", "code");
         request.execute();
     }
