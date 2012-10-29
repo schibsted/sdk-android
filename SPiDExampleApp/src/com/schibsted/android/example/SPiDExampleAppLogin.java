@@ -31,6 +31,7 @@ public class SPiDExampleAppLogin extends Activity {
                 .clientSecret("your-client-secret")
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
+                .authorizationCompleteCallback(new LoginCallback(this))
                 .context(this)
                 .build();
 
