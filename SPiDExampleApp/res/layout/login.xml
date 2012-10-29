@@ -9,7 +9,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/SPiDLogo" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
             android:src="@drawable/spidlogo" android:adjustViewBounds="true" android:cropToPadding="false"
-            />
+            android:contentDescription="SPiDLogo"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

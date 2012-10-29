@@ -26,45 +26,47 @@ public class SPiDAuthorizationRequest {
         this.callback = authorizationCallback;
     }
 
-    protected WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getAuthorizationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
         String url = null;
         try {
             url = getAuthorizationURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
             authorizationCallback.onError(e);
         }
-        return getWebView(context, url);
+        return getWebView(context, webView, url);
     }
 
-    protected WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getRegistrationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
         String url = null;
         try {
             url = getRegistrationURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
             authorizationCallback.onError(e);
         }
-        return getWebView(context, url);
+        return getWebView(context, webView, url);
     }
 
-    protected WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getLostPasswordWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
         String url = null;
         try {
             url = getLostPasswordURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
             authorizationCallback.onError(e);
         }
-        return getWebView(context, url);
+        return getWebView(context, webView, url);
     }
 
-    public WebView getWebView(final Context context, String url) {
-        WebView webview = new WebView(context);
+    public WebView getWebView(final Context context, WebView webView, String url) {
+        if (webView == null) {
+            webView = new WebView(context);
+        }
 
-        webview.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
 
         // This is because we do not want to logout through a webview
         CookieManager.getInstance().removeAllCookie();
 
-        webview.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient() {
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
                 Toast.makeText(context, "Oh no! " + description, Toast.LENGTH_SHORT).show();
             }
@@ -92,8 +94,8 @@ public class SPiDAuthorizationRequest {
                 return false;
             }
         });
-        webview.loadUrl(url);
-        return webview;
+        webView.loadUrl(url);
+        return webView;
     }
 
     public void getAccessToken(String code) {
