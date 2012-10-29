@@ -14,7 +14,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="sdktest"/>
+                <data android:scheme="no.finn.app.adinput.android"/>
             </intent-filter>
         </activity>
         <activity android:name=".SPiDExampleAppMain">

@@ -3,17 +3,13 @@ package com.schibsted.android.example;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 import com.schibsted.android.sdk.*;
-
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,7 +18,7 @@ import java.util.UUID;
  * Time: 1:39 PM
  */
 public class SPiDExampleAppLogin extends Activity {
-    private WebView webView;
+    protected WebView webView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +36,8 @@ public class SPiDExampleAppLogin extends Activity {
 
         SPiDClient.getInstance().configure(config);
 
+        Uri data = getIntent().getData();
+
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Found access token in SharedPreferences");
             Intent intent = new Intent(this, SPiDExampleAppMain.class);
@@ -49,6 +47,43 @@ public class SPiDExampleAppLogin extends Activity {
         setContentView(R.layout.login);
         Button loginButton = (Button) findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(new LoginButtonListener(this));
+
+        if (data != null) {
+            SPiDClient.getInstance().handleIntent(data);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (webView != null) {
+            setContentView(webView);
+        }
+    }
+
+    protected class LoginCallback implements SPiDAsyncAuthorizationCallback {
+        private Context context;
+
+        private LoginCallback(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onComplete() {
+            SPiDLogger.log("Successful login");
+            Intent intent = new Intent(context, SPiDExampleAppMain.class);
+            startActivity(intent);
+        }
+
+        @Override
+        public void onError(Exception exception) {
+            SPiDLogger.log("Error while preforming login");
+            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+
+            setContentView(R.layout.login);
+            Button loginButton = (Button) findViewById(R.id.LoginButton);
+            loginButton.setOnClickListener(new LoginButtonListener(context));
+        }
     }
 
     protected class LoginButtonListener implements View.OnClickListener {
@@ -59,31 +94,12 @@ public class SPiDExampleAppLogin extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDLogger.log("onClick");
-
-            WebView webView = null;
+            webView = null;
             try {
-                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new SPiDAsyncAuthorizationCallback() {
-                    @Override
-                    public void onComplete() {
-                        SPiDLogger.log("Successful login");
-                        Intent intent = new Intent(context, SPiDExampleAppMain.class);
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(Exception exception) {
-                        SPiDLogger.log("Error while preforming login");
-                        Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-
-                        setContentView(R.layout.login);
-                        Button loginButton = (Button) findViewById(R.id.LoginButton);
-                        loginButton.setOnClickListener(new LoginButtonListener(context));
-                    }
-                });
+                webView = SPiDClient.getInstance().getAuthorizationWebView(context);
                 setContentView(webView);
             } catch (Exception e) {
-                SPiDLogger.log("Error loading WebView");
+                SPiDLogger.log("Error loading WebView: " + e.getMessage());
                 Toast.makeText(context, "Error loading WebView", Toast.LENGTH_LONG).show();
             }
         }

@@ -55,46 +55,46 @@ public class SPiDClient {
     }
 
     // Webview
-    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
+    public WebView getAuthorizationWebView(Context context, WebView webView) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
         } else {
             throw new Exception("Authorization already running");
         }
 
-        return authorizationRequest.getAuthorizationWebView(context, webView, authorizationCallback);
+        return authorizationRequest.getAuthorizationWebView(context, webView);
     }
 
-    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
-        return getAuthorizationWebView(context, null, authorizationCallback);
+    public WebView getAuthorizationWebView(Context context) throws Exception {
+        return getAuthorizationWebView(context, null);
     }
 
-    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
+    public WebView getRegistrationWebView(Context context, WebView webView) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
         } else {
             throw new Exception("Authorization already running");
         }
 
-        return authorizationRequest.getRegistrationWebView(context, webView, authorizationCallback);
+        return authorizationRequest.getRegistrationWebView(context, webView);
     }
 
-    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
-        return getRegistrationWebView(context, null, authorizationCallback);
+    public WebView getRegistrationWebView(Context context) throws Exception {
+        return getRegistrationWebView(context, null);
     }
 
-    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
+    public WebView getLostPasswordWebView(Context context, WebView webView) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
         } else {
             throw new Exception("Authorization already running");
         }// TODO: else? clear authorizationRequest
 
-        return authorizationRequest.getLostPasswordWebView(context, webView, authorizationCallback);
+        return authorizationRequest.getLostPasswordWebView(context, webView);
     }
 
-    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
-        return getLostPasswordWebView(context, null, authorizationCallback);
+    public WebView getLostPasswordWebView(Context context) throws Exception {
+        return getLostPasswordWebView(context, null);
     }
 
     // Refresh token

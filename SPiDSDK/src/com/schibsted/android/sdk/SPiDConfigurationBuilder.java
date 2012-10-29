@@ -22,6 +22,7 @@ public class SPiDConfigurationBuilder {
     private String serverClientID;
     private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
+    private SPiDAsyncAuthorizationCallback authorizationCompleteCallback;
     private Context context;
 
     public SPiDConfigurationBuilder() {
@@ -82,11 +83,15 @@ public class SPiDConfigurationBuilder {
         return this;
     }
 
+    public SPiDConfigurationBuilder authorizationCompleteCallback(SPiDAsyncAuthorizationCallback callback) {
+        this.authorizationCompleteCallback = callback;
+        return this;
+    }
+
     public SPiDConfigurationBuilder context(Context context) {
         this.context = context;
         return this;
     }
-
 
     public void isEmptyString(String string, String errorMessage) {
         if (string == null || string.trim().equals("")) {
@@ -105,6 +110,7 @@ public class SPiDConfigurationBuilder {
         isEmptyString(clientSecret, "ClientSecret is missing");
         isEmptyString(appURLScheme, "AppURLScheme is missing");
         isEmptyString(serverURL, "ServerURL is missing");
+        isNull(authorizationCompleteCallback, "Authorization complete callback is missing");
         isNull(context, "Context is missing");
 
         if (redirectURL == null || redirectURL.trim().equals("")) {
@@ -131,6 +137,20 @@ public class SPiDConfigurationBuilder {
             serverClientID = clientID;
         }
 
-        return new SPiDConfiguration(clientID, clientSecret, appURLScheme, serverURL, redirectURL, authorizationURL, registrationURL, lostPasswordURL, tokenURL, serverClientID, useMobileWeb, apiVersion, context);
+        return new SPiDConfiguration(
+                clientID,
+                clientSecret,
+                appURLScheme,
+                serverURL,
+                redirectURL,
+                authorizationURL,
+                registrationURL,
+                lostPasswordURL,
+                tokenURL,
+                serverClientID,
+                useMobileWeb,
+                apiVersion,
+                authorizationCompleteCallback,
+                context);
     }
 }

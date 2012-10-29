@@ -26,32 +26,32 @@ public class SPiDAuthorizationRequest {
         this.callback = authorizationCallback;
     }
 
-    protected WebView getAuthorizationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getAuthorizationWebView(Context context, WebView webView) {
         String url = null;
         try {
             url = getAuthorizationURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
+            callback.onError(e);
         }
         return getWebView(context, webView, url);
     }
 
-    protected WebView getRegistrationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getRegistrationWebView(Context context, WebView webView) {
         String url = null;
         try {
             url = getRegistrationURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
+            callback.onError(e);
         }
         return getWebView(context, webView, url);
     }
 
-    protected WebView getLostPasswordWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback authorizationCallback) {
+    protected WebView getLostPasswordWebView(Context context, WebView webView) {
         String url = null;
         try {
             url = getLostPasswordURL().concat("&webview=1");
         } catch (UnsupportedEncodingException e) {
-            authorizationCallback.onError(e);
+            callback.onError(e);
         }
         return getWebView(context, webView, url);
     }
@@ -127,13 +127,15 @@ public class SPiDAuthorizationRequest {
     }
 
     public boolean handleIntent(Uri data) {
-        if (data.toString().startsWith("sdktest://spid/login")) {
-            String code = data.getQueryParameter("code");
-            if (code.length() > 0) {
-                getAccessToken(code);
-                return true;
-            } else {
-                callback.onError(new Exception());
+        if (data.toString().startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
+            if (data.getPath().endsWith("login")) {
+                String code = data.getQueryParameter("code");
+                if (code.length() > 0) {
+                    getAccessToken(code);
+                    return true;
+                } else {
+                    callback.onError(new Exception());
+                }
             }
         }
         return false;

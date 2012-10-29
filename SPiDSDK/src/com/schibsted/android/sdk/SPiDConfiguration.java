@@ -22,9 +22,10 @@ public class SPiDConfiguration {
     private String serverClientID;
     private Boolean useMobileWeb;
     private String apiVersion;
+    private SPiDAsyncAuthorizationCallback authorizationCompleteCallback;
     private Context context;
 
-    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Context context) {
+    public SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, SPiDAsyncAuthorizationCallback authorizationCompleteCallback, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.appURLScheme = appURLScheme;
@@ -37,6 +38,7 @@ public class SPiDConfiguration {
         this.serverClientID = serverClientID;
         this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
+        this.authorizationCompleteCallback = authorizationCompleteCallback;
         this.context = context;
     }
 
@@ -134,6 +136,14 @@ public class SPiDConfiguration {
 
     public void setUseMobileWeb(Boolean useMobileWeb) {
         this.useMobileWeb = useMobileWeb;
+    }
+
+    public SPiDAsyncAuthorizationCallback getAuthorizationCompleteCallback() {
+        return authorizationCompleteCallback;
+    }
+
+    public void setAuthorizationCompleteCallback(SPiDAsyncAuthorizationCallback authorizationCompleteCallback) {
+        this.authorizationCompleteCallback = authorizationCompleteCallback;
     }
 
     public Context getContext() {
