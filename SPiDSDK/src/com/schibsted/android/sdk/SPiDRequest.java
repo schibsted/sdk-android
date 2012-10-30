@@ -19,7 +19,7 @@ import java.util.Map;
  * Time: 9:20 PM
  */
 public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
-    private SPiDAsyncCallback callback;
+    protected SPiDAsyncCallback callback;
 
     private String url;
     private String method;
@@ -163,6 +163,10 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     @Override
     protected void onPostExecute(SPiDResponse result) {
         super.onPostExecute(result);
+        doOnPostExecute(result);
+    }
+
+    protected void doOnPostExecute(SPiDResponse result) {
         // TODO: this is really messy
         if (result != null) {
             try {

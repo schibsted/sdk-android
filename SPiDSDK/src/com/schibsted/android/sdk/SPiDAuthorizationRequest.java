@@ -103,7 +103,7 @@ public class SPiDAuthorizationRequest {
         // TODO: prevent multiple calls
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenCallback(callback));
+        SPiDTokenRequest request = new SPiDTokenRequest("POST", config.getTokenURL(), new AccessTokenCallback(callback));
         request.addBodyParameter("grant_type", "authorization_code");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());

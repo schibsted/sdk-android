@@ -51,7 +51,10 @@ public class SPiDClient {
     }
 
     public boolean handleIntent(Uri data) {
-        return authorizationRequest != null && authorizationRequest.handleIntent(data);
+        if (authorizationRequest == null)
+            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
+        // TODO: remove auth request if it is not used
+        return authorizationRequest.handleIntent(data);
     }
 
     // Webview
