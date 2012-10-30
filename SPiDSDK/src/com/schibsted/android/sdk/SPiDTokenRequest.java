@@ -24,7 +24,7 @@ public class SPiDTokenRequest extends SPiDRequest {
         if (result != null) {
             try {
                 if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
-                    // Code expired
+                    // Error requesting token
                     callback.onError(new EOFException());
                 } else {
                     callback.onComplete(result);

@@ -170,25 +170,13 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     }
 
     protected void doOnPostExecute(SPiDResponse result) {
-        // TODO: this is really messy
-
         try {
             if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
                 String error = result.getJsonObject().getString("error");
                 if (error.equals("invalid_token") || error.equals("expired_token")) {
                     SPiDLogger.log("Adding request to waiting list: " + url);
                     SPiDClient.getInstance().addWaitingRequest(this.copy());
-                    SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
-                        @Override
-                        public void onComplete() {
-                            // Do nothing...
-                        }
-
-                        @Override
-                        public void onError(Exception exception) {
-                            // Do nothing...
-                        }
-                    });
+                    SPiDClient.getInstance().refreshAccessToken(new TokenRefreshCallback());
                     return;
                 }
                 callback.onError(new EOFException());
@@ -202,5 +190,17 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public void execute() {
         execute((Void) null);
+    }
+
+    private class TokenRefreshCallback implements SPiDAsyncAuthorizationCallback {
+        @Override
+        public void onComplete() {
+            // Do nothing...
+        }
+
+        @Override
+        public void onError(Exception exception) {
+            // Do nothing...
+        }
     }
 }
