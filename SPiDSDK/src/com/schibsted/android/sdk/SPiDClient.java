@@ -51,16 +51,13 @@ public class SPiDClient {
     }
 
     public boolean handleIntent(Uri data) {
-        if (authorizationRequest == null)
-            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
-        // TODO: remove auth request if it is not used
-        return authorizationRequest.handleIntent(data);
+        return authorizationRequest != null && authorizationRequest.handleIntent(data);
     }
 
     // Webview
-    public WebView getAuthorizationWebView(Context context, WebView webView) throws Exception {
+    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
+            authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
             throw new Exception("Authorization already running");
         }
@@ -68,13 +65,13 @@ public class SPiDClient {
         return authorizationRequest.getAuthorizationWebView(context, webView);
     }
 
-    public WebView getAuthorizationWebView(Context context) throws Exception {
-        return getAuthorizationWebView(context, null);
+    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
+        return getAuthorizationWebView(context, null, callback);
     }
 
-    public WebView getRegistrationWebView(Context context, WebView webView) throws Exception {
+    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
+            authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
             throw new Exception("Authorization already running");
         }
@@ -82,22 +79,22 @@ public class SPiDClient {
         return authorizationRequest.getRegistrationWebView(context, webView);
     }
 
-    public WebView getRegistrationWebView(Context context) throws Exception {
-        return getRegistrationWebView(context, null);
+    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
+        return getRegistrationWebView(context, null, callback);
     }
 
-    public WebView getLostPasswordWebView(Context context, WebView webView) throws Exception {
+    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(config.getAuthorizationCompleteCallback());
+            authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
             throw new Exception("Authorization already running");
-        }// TODO: else? clear authorizationRequest
+        }
 
         return authorizationRequest.getLostPasswordWebView(context, webView);
     }
 
-    public WebView getLostPasswordWebView(Context context) throws Exception {
-        return getLostPasswordWebView(context, null);
+    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
+        return getLostPasswordWebView(context, null, callback);
     }
 
     // Refresh token
@@ -119,6 +116,8 @@ public class SPiDClient {
             } else {
                 callback.onError(new Exception("Authorization already running"));
             }
+        } else {
+            callback.onComplete();
         }
     }
 

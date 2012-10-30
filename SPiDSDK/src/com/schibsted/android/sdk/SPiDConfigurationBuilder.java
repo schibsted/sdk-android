@@ -22,7 +22,6 @@ public class SPiDConfigurationBuilder {
     private String serverClientID;
     private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
-    private SPiDAsyncAuthorizationCallback authorizationCompleteCallback;
     private Context context;
 
     public SPiDConfigurationBuilder() {
@@ -83,11 +82,6 @@ public class SPiDConfigurationBuilder {
         return this;
     }
 
-    public SPiDConfigurationBuilder authorizationCompleteCallback(SPiDAsyncAuthorizationCallback callback) {
-        this.authorizationCompleteCallback = callback;
-        return this;
-    }
-
     public SPiDConfigurationBuilder context(Context context) {
         this.context = context;
         return this;
@@ -110,7 +104,6 @@ public class SPiDConfigurationBuilder {
         isEmptyString(clientSecret, "ClientSecret is missing");
         isEmptyString(appURLScheme, "AppURLScheme is missing");
         isEmptyString(serverURL, "ServerURL is missing");
-        isNull(authorizationCompleteCallback, "Authorization complete callback is missing");
         isNull(context, "Context is missing");
 
         if (redirectURL == null || redirectURL.trim().equals("")) {
@@ -150,7 +143,6 @@ public class SPiDConfigurationBuilder {
                 serverClientID,
                 useMobileWeb,
                 apiVersion,
-                authorizationCompleteCallback,
                 context);
     }
 }

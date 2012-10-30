@@ -60,15 +60,15 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         body.put(key, value);
     }
 
-    public String getCompleteURL() {
+    public String getCompleteURL() throws UnsupportedEncodingException {
         return url + getQueryAsString();
     }
 
-    private String encodeURLParameter(String key, String value) {
-        return String.format("%s=%s", URLEncoder.encode(key), URLEncoder.encode(value)); // TODO: depricated?
+    private String encodeURLParameter(String key, String value) throws UnsupportedEncodingException {
+        return String.format("%s=%s", URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8")); // TODO: depricated?
     }
 
-    private String getQueryAsString() {
+    private String getQueryAsString() throws UnsupportedEncodingException {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : query.entrySet()) {
             if (builder.length() > 0)
@@ -80,7 +80,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         return builder.toString();
     }
 
-    private String getBodyAsString() {
+    private String getBodyAsString() throws UnsupportedEncodingException {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : body.entrySet()) {
             if (builder.length() > 0)
@@ -163,41 +163,41 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     @Override
     protected void onPostExecute(SPiDResponse result) {
         super.onPostExecute(result);
-        doOnPostExecute(result);
+        if (result != null) {
+            doOnPostExecute(result);
+        }
+        callback.onError(new EOFException());
     }
 
     protected void doOnPostExecute(SPiDResponse result) {
         // TODO: this is really messy
-        if (result != null) {
-            try {
-                if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
-                    String error = result.getJsonObject().getString("error");
-                    if (error.equals("invalid_token") || error.equals("expired_token")) {
-                        SPiDLogger.log("Adding request to waiting list: " + url);
-                        SPiDClient.getInstance().addWaitingRequest(this.copy());
-                        SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
-                            @Override
-                            public void onComplete() {
-                                // Do nothing...
-                            }
 
-                            @Override
-                            public void onError(Exception exception) {
-                                // Do nothing...
-                            }
-                        });
-                        return;
-                    }
-                    callback.onError(new EOFException());
-                } else {
-                    callback.onComplete(result);
+        try {
+            if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
+                String error = result.getJsonObject().getString("error");
+                if (error.equals("invalid_token") || error.equals("expired_token")) {
+                    SPiDLogger.log("Adding request to waiting list: " + url);
+                    SPiDClient.getInstance().addWaitingRequest(this.copy());
+                    SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
+                        @Override
+                        public void onComplete() {
+                            // Do nothing...
+                        }
+
+                        @Override
+                        public void onError(Exception exception) {
+                            // Do nothing...
+                        }
+                    });
+                    return;
                 }
-            } catch (JSONException e) {
                 callback.onError(new EOFException());
+            } else {
+                callback.onComplete(result);
             }
-            return;
+        } catch (JSONException e) {
+            callback.onError(new EOFException());
         }
-        callback.onError(new EOFException());
     }
 
     public void execute() {
