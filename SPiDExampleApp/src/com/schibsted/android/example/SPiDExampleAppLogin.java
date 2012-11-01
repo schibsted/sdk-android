@@ -49,7 +49,7 @@ public class SPiDExampleAppLogin extends Activity {
 
         Uri data = getIntent().getData();
         if (data != null) {
-            SPiDClient.getInstance().handleIntent(data);
+            SPiDClient.getInstance().handleIntent(data, new LoginListener(this));
         }
     }
 
@@ -111,7 +111,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                SPiDClient.getInstance().authorizationWithBrowser(new LoginListener(context));
+                SPiDClient.getInstance().authorizationWithBrowser();
             } catch (Exception e) {
                 SPiDLogger.log("Error loading webbrowser: " + e.getMessage());
                 Toast.makeText(context, "Error loading webbrowser", Toast.LENGTH_LONG).show();

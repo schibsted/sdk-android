@@ -28,6 +28,10 @@ public class SPiDAuthorizationRequest {
         this.listener = authorizationListener;
     }
 
+    public SPiDAuthorizationRequest() {
+        super();
+    }
+
     protected WebView getAuthorizationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
         String url = null;
         url = getAuthorizationURL().concat("&webview=1");
@@ -121,8 +125,12 @@ public class SPiDAuthorizationRequest {
         request.execute();
     }
 
+    public static boolean shouldHandleIntent(Uri data) {
+        return data.toString().startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme());
+    }
+
     public boolean handleIntent(Uri data) {
-        if (data.toString().startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
+        if (shouldHandleIntent(data)) {
             if (data.getPath().endsWith("login")) {
                 String code = data.getQueryParameter("code");
                 if (code.length() > 0) {

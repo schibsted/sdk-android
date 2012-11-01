@@ -41,18 +41,16 @@ public class SPiDClient {
     }
 
     // Browser redirect
-    public void authorizationWithBrowser(SPiDAuthorizationListener authorizationListener) throws Exception {
-        if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(authorizationListener);
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDAuthorizationRequest.getAuthorizationURL()));
-            getConfig().getContext().startActivity(i);
-        } else {
-            throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
-        }
+    public void authorizationWithBrowser() throws Exception {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDAuthorizationRequest.getAuthorizationURL()));
+        getConfig().getContext().startActivity(i);
     }
 
-    public boolean handleIntent(Uri data) {
-        return authorizationRequest != null && authorizationRequest.handleIntent(data);
+    public boolean handleIntent(Uri data, SPiDAuthorizationListener listener) {
+        if (SPiDAuthorizationRequest.shouldHandleIntent(data)) {
+            authorizationRequest = new SPiDAuthorizationRequest(listener);
+        }
+        return authorizationRequest.handleIntent(data);
     }
 
     // Webview
