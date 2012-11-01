@@ -48,7 +48,7 @@ public class SPiDExampleAppLogin extends Activity {
         setupLoginContentView();
 
         Uri data = getIntent().getData();
-        if (data != null) {
+        if (data != null && !SPiDClient.getInstance().isAuthorized()) {
             SPiDClient.getInstance().handleIntent(data, new LoginListener(this));
         }
     }
