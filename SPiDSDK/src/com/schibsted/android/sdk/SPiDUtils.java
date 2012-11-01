@@ -3,6 +3,7 @@ package com.schibsted.android.sdk;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import com.schibsted.android.sdk.exceptions.SPiDDeviceFingerprintException;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class SPiDUtils {
                 }
             }
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw new SPiDDeviceFingerprintException("Error generating device fingerprint", e);
         }
         return uuid.toString();
     }

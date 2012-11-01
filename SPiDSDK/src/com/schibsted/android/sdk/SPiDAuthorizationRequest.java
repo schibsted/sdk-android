@@ -6,6 +6,8 @@ import android.webkit.CookieManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import org.json.JSONException;
 
 import java.io.UnsupportedEncodingException;
@@ -26,33 +28,21 @@ public class SPiDAuthorizationRequest {
         this.callback = authorizationCallback;
     }
 
-    protected WebView getAuthorizationWebView(Context context, WebView webView) {
+    protected WebView getAuthorizationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
         String url = null;
-        try {
-            url = getAuthorizationURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            callback.onError(e);
-        }
+        url = getAuthorizationURL().concat("&webview=1");
         return getWebView(context, webView, url);
     }
 
-    protected WebView getRegistrationWebView(Context context, WebView webView) {
+    protected WebView getRegistrationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
         String url = null;
-        try {
-            url = getRegistrationURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            callback.onError(e);
-        }
+        url = getRegistrationURL().concat("&webview=1");
         return getWebView(context, webView, url);
     }
 
-    protected WebView getLostPasswordWebView(Context context, WebView webView) {
+    protected WebView getLostPasswordWebView(Context context, WebView webView) throws UnsupportedEncodingException {
         String url = null;
-        try {
-            url = getLostPasswordURL().concat("&webview=1");
-        } catch (UnsupportedEncodingException e) {
-            callback.onError(e);
-        }
+        url = getLostPasswordURL().concat("&webview=1");
         return getWebView(context, webView, url);
     }
 
@@ -80,12 +70,12 @@ public class SPiDAuthorizationRequest {
                         if (code.length() > 0) {
                             getAccessToken(code);
                         } else {
-                            callback.onError(new Exception());
+                            callback.onError(new SPiDInvalidResponseException("Received invalid code"));
                         }
                         return true;
                         //
                     } else if (uri.getPath().endsWith("failure")) {
-                        callback.onError(new Exception());
+                        callback.onError(new SPiDInvalidResponseException("Received invalid code"));
                     }
 
                 } else {
@@ -134,7 +124,7 @@ public class SPiDAuthorizationRequest {
                     getAccessToken(code);
                     return true;
                 } else {
-                    callback.onError(new Exception());
+                    callback.onError(new SPiDInvalidResponseException("Received invalid code"));
                 }
             }
         }
@@ -181,7 +171,7 @@ public class SPiDAuthorizationRequest {
             SPiDClient.getInstance().clearAuthorizationRequest();
             try {
                 if ((result.getJsonObject().has("error")) && ((String) result.getJsonObject().get("error")).length() > 0) {
-                    callback.onError(new Exception());
+                    callback.onError(SPiDException.create(result.getJsonObject()));
                 } else {
                     SPiDAccessToken token = new SPiDAccessToken(result.getJsonObject());
                     SPiDClient.getInstance().setAccessToken(token);
@@ -190,14 +180,14 @@ public class SPiDAuthorizationRequest {
                     callback.onComplete();
                 }
             } catch (JSONException e) {
-                callback.onError(new Exception());
+                callback.onError(new SPiDInvalidResponseException("Invalid response from token request"));
             }
         }
 
         @Override
-        public void onError(Exception exception) {
+        public void onError(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            callback.onError(new Exception());
+            callback.onError(exception);
         }
     }
 
@@ -217,9 +207,9 @@ public class SPiDAuthorizationRequest {
         }
 
         @Override
-        public void onError(Exception exception) {
+        public void onError(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            callback.onError(new Exception());
+            callback.onError(exception);
         }
     }
 }

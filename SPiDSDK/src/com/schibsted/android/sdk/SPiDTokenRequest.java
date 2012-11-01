@@ -1,8 +1,8 @@
 package com.schibsted.android.sdk;
 
-import org.json.JSONException;
+import com.schibsted.android.sdk.exceptions.SPiDException;
 
-import java.io.EOFException;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,20 +20,16 @@ public class SPiDTokenRequest extends SPiDRequest {
     }
 
     @Override
-    protected void doOnPostExecute(SPiDResponse result) {
-        if (result != null) {
-            try {
-                if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
-                    // Error requesting token
-                    callback.onError(new EOFException());
-                } else {
-                    callback.onComplete(result);
-                }
-            } catch (JSONException e) {
-                callback.onError(new EOFException());
+    protected void doOnPostExecute(SPiDResponse response) {
+        Exception exception = response.getException();
+        if (exception != null) {
+            if (exception instanceof IOException) {
+                callback.onIOException((IOException) exception);
+            } else if (exception instanceof SPiDException) {
+                callback.onSPiDException((SPiDException) exception);
             }
-            return;
+        } else {
+            callback.onComplete(response);
         }
-        callback.onError(new EOFException());
     }
 }

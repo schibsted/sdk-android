@@ -1,12 +1,10 @@
 package com.schibsted.android.sdk;
 
 import android.os.AsyncTask;
-import android.util.Log;
-import org.json.JSONException;
+import com.schibsted.android.sdk.exceptions.SPiDException;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -118,7 +116,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     @Override
     protected SPiDResponse doInBackground(Void... voids) {
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
+            HttpURLConnection connection = null;
+            connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
             connection.setRequestMethod(this.method);
 
             // Add headers
@@ -140,7 +139,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             connection.connect();
 
             // response
-            connection.setFollowRedirects(false);
+            HttpURLConnection.setFollowRedirects(false);
             Integer code = connection.getResponseCode();
             InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
             Map<String, String> headers = new HashMap<String, String>();
@@ -148,43 +147,35 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                 headers.put(key, connection.getHeaderFields().get(key).get(0));
             }
             return new SPiDResponse(code, headers, stream);
-        } catch (MalformedURLException e) {
-            Log.i("SPiD", "MalformedURL");
-            Log.i("SPiD", e.toString());
-            e.printStackTrace();
         } catch (IOException e) {
-            Log.i("SPiD", "Error");
-            Log.i("SPiD", e.toString());
-            Log.i("SPiD", e.getMessage());
+            return new SPiDResponse(e);
         }
-        return null;
     }
 
     @Override
-    protected void onPostExecute(SPiDResponse result) {
-        super.onPostExecute(result);
-        if (result != null) {
-            doOnPostExecute(result);
-        }
-        callback.onError(new EOFException());
+    protected void onPostExecute(SPiDResponse response) {
+        super.onPostExecute(response);
+        doOnPostExecute(response);
     }
 
-    protected void doOnPostExecute(SPiDResponse result) {
-        try {
-            if ((result.getJsonObject().has("error")) && !(result.getJsonObject().getString("error").equals("null"))) {
-                String error = result.getJsonObject().getString("error");
-                if (error.equals("invalid_token") || error.equals("expired_token")) {
-                    SPiDLogger.log("Adding request to waiting list: " + url);
+    protected void doOnPostExecute(SPiDResponse response) {
+        Exception exception = response.getException();
+        if (exception != null) {
+            if (exception instanceof IOException) {
+                callback.onIOException((IOException) exception);
+            } else if (exception instanceof SPiDException) {
+                String error = ((SPiDException) exception).getError();
+                if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
                     SPiDClient.getInstance().addWaitingRequest(this.copy());
                     SPiDClient.getInstance().refreshAccessToken(new TokenRefreshCallback());
-                    return;
+                } else {
+                    callback.onSPiDException((SPiDException) exception);
                 }
-                callback.onError(new EOFException());
             } else {
-                callback.onComplete(result);
+                SPiDLogger.log("Received unknown exception: " + exception.getMessage());
             }
-        } catch (JSONException e) {
-            callback.onError(new EOFException());
+        } else {
+            callback.onComplete(response);
         }
     }
 
@@ -199,7 +190,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         }
 
         @Override
-        public void onError(Exception exception) {
+        public void onError(SPiDException exception) {
             // Do nothing...
         }
     }

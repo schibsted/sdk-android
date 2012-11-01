@@ -3,9 +3,8 @@ package com.schibsted.android.sdk;
 import android.content.Context;
 import android.net.Uri;
 import android.webkit.WebView;
+import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -45,8 +44,7 @@ public class SPiDClient {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
         } else {
-            throw new Exception("Authorization already running");
-            // TODO: throw exception, only one authorization request can be running at a single time
+            throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
     }
 
@@ -59,7 +57,7 @@ public class SPiDClient {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
-            throw new Exception("Authorization already running");
+            throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
         return authorizationRequest.getAuthorizationWebView(context, webView);
@@ -73,7 +71,7 @@ public class SPiDClient {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
-            throw new Exception("Authorization already running");
+            throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
         return authorizationRequest.getRegistrationWebView(context, webView);
@@ -87,7 +85,7 @@ public class SPiDClient {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(callback);
         } else {
-            throw new Exception("Authorization already running");
+            throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
         return authorizationRequest.getLostPasswordWebView(context, webView);
@@ -103,7 +101,7 @@ public class SPiDClient {
             authorizationRequest = new SPiDAuthorizationRequest(callback);
             authorizationRequest.refreshAccessToken(token.getRefreshToken());
         } else {
-            callback.onError(new Exception("Authorization already running"));
+            callback.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
         }
     }
 
@@ -114,7 +112,7 @@ public class SPiDClient {
                 authorizationRequest = new SPiDAuthorizationRequest(callback);
                 authorizationRequest.softLogout(token);
             } else {
-                callback.onError(new Exception("Authorization already running"));
+                callback.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
             }
         } else {
             callback.onComplete();
@@ -197,7 +195,8 @@ public class SPiDClient {
         waitingRequests.add(request);
     }
 
-    protected void clearAuthorizationRequest() {
+    // TODO:!!!
+    public void clearAuthorizationRequest() {
         authorizationRequest = null;
     }
 }

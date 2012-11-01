@@ -1,12 +1,13 @@
 package com.schibsted.android.sdk;
 
+import com.schibsted.android.sdk.exceptions.SPiDException;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.UnknownHostException;
 import java.util.Map;
 
 /**
@@ -20,36 +21,37 @@ public class SPiDResponse {
     private String body;
     private Map<String, String> headers;
     private JSONObject jsonObject;
+    private Exception exception;
 
-    public SPiDResponse(Integer code, Map<String, String> headers, InputStream inputStream) throws IOException {
-        try {
-            this.headers = headers;
-            BufferedReader reader = null;
-            try {
-                body = "";
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-                for (String line; (line = reader.readLine()) != null; ) {
-                    body += line;
-                }
-                if (body.length() > 0) {
-                jsonObject = new JSONObject(body);
-                } else {
-                    jsonObject = new JSONObject("{}");
-                }
-            } catch (UnknownHostException error) {
-                throw error;
-            }
-        } catch (Exception e) {
-            SPiDLogger.log("Exception");
-            SPiDLogger.log(e.toString());
-            SPiDLogger.log(e.getMessage());
-        } finally {
-            //connection.disconnect();
-        }
+    public SPiDResponse(IOException e) {
+        this.exception = e;
     }
 
-    public SPiDResponse() {
-        //To change body of created methods use File | Settings | File Templates.
+    public SPiDResponse(Integer code, Map<String, String> headers, InputStream inputStream) {
+        this.code = code;
+        this.headers = headers;
+        this.exception = null;
+        BufferedReader reader = null;
+
+        this.body = "";
+        reader = new BufferedReader(new InputStreamReader(inputStream));
+        try {
+            for (String line; (line = reader.readLine()) != null; ) {
+                this.body += line;
+            }
+            if (this.body.length() > 0) {
+                this.jsonObject = new JSONObject(this.body);
+            } else {
+                this.jsonObject = new JSONObject();
+            }
+            if (this.jsonObject.has("error") && !(this.jsonObject.getString("error").equals("null"))) {
+                this.exception = SPiDException.create(this.jsonObject);
+            }
+        } catch (IOException exception) {
+            this.exception = exception;
+        } catch (JSONException exception) {
+            this.jsonObject = new JSONObject();
+        }
     }
 
     public boolean isSuccessful() {
@@ -57,7 +59,7 @@ public class SPiDResponse {
     }
 
     public int getCode() {
-        return code;
+        return code != null ? code : -1;
     }
 
     public String getBody() {
@@ -70,5 +72,13 @@ public class SPiDResponse {
 
     public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 }

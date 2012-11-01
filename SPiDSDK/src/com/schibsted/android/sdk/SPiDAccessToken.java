@@ -1,6 +1,6 @@
 package com.schibsted.android.sdk;
 
-import android.util.Log;
+import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +35,7 @@ public class SPiDAccessToken {
 
             this.userID = jsonObject.getString("user_id");
         } catch (JSONException e) {
-            Log.i("Error", "Token parse error");
+            throw new SPiDInvalidResponseException("Received invalid token response", e);
         }
     }
 

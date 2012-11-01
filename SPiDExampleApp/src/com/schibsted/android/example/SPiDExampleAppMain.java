@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.exceptions.SPiDException;
 import org.json.JSONException;
 
 /**
@@ -50,13 +51,14 @@ public class SPiDExampleAppMain extends Activity {
                 try {
                     user = result.getJsonObject().getJSONObject("data").getString("displayName");
                 } catch (JSONException e) {
-                    onError(e);
+                    SPiDLogger.log("Error getting username");
+                    Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
                 }
                 userTextView.setText("Welcome " + user + "!");
             }
 
             @Override
-            public void onError(Exception exception) {
+            public void onError(SPiDException exception) {
                 SPiDLogger.log("Error getting username");
                 Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
             }
@@ -80,7 +82,7 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onError(Exception exception) {
+                public void onError(SPiDException exception) {
                     SPiDLogger.log("Error while refreshing access token");
                     Toast.makeText(context, "Error while refreshing access token", Toast.LENGTH_LONG).show();
                 }
@@ -103,14 +105,15 @@ public class SPiDExampleAppMain extends Activity {
                     try {
                         oneTimeCode = result.getJsonObject().getJSONObject("data").getString("code");
                     } catch (JSONException e) {
-                        onError(e);
+                        SPiDLogger.log("Error getting one time code");
+                        Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                     }
                     TextView oneTimeCodeTextView = (TextView) findViewById(R.id.oneTimeCodeTextView);
                     oneTimeCodeTextView.setText("One time code: " + oneTimeCode);
                 }
 
                 @Override
-                public void onError(Exception exception) {
+                public void onError(SPiDException exception) {
                     SPiDLogger.log("Error getting one time code");
                     Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                 }
@@ -134,7 +137,7 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onError(Exception exception) {
+                public void onError(SPiDException exception) {
                     SPiDLogger.log("Error logging out...");
                     Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
                 }

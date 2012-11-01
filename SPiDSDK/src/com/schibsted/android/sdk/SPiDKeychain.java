@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Base64;
+import com.schibsted.android.sdk.exceptions.SPiDKeychainException;
 
-import javax.crypto.*;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import java.io.UnsupportedEncodingException;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
+import java.security.GeneralSecurityException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,9 +33,9 @@ public class SPiDKeychain {
             editor.putString("refresh_token", encryptString(context, encryptionKey, accessToken.getRefreshToken()));
             editor.putString("user_id", encryptString(context, encryptionKey, accessToken.getUserID()));
         } catch (GeneralSecurityException e) {
-            return;
+            throw new SPiDKeychainException("GeneralSecurityException", e);
         } catch (UnsupportedEncodingException e) {
-            return;
+            throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
         editor.commit();
     }
@@ -49,9 +51,9 @@ public class SPiDKeychain {
                 String userId = decryptString(context, encryptionKey, secure.getString("user_id", ""));
                 token = new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
             } catch (GeneralSecurityException e) {
-                return null;
+                throw new SPiDKeychainException("GeneralSecurityException", e);
             } catch (UnsupportedEncodingException e) {
-                return null;
+                throw new SPiDKeychainException("UnsupportedEncodingException", e);
             }
             return token;
         } else {

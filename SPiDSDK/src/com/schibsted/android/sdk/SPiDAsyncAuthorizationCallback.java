@@ -1,5 +1,7 @@
 package com.schibsted.android.sdk;
 
+import com.schibsted.android.sdk.exceptions.SPiDException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mikaellindstrom
@@ -9,5 +11,5 @@ package com.schibsted.android.sdk;
 public interface SPiDAsyncAuthorizationCallback {
     public void onComplete();
 
-    public void onError(Exception exception);
+    public void onError(SPiDException exception);
 }
