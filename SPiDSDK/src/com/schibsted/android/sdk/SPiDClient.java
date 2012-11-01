@@ -171,10 +171,8 @@ public class SPiDClient {
     }
 
     protected void runWaitingRequests() {
-        SPiDLogger.log("Running waiting requests");
         List<SPiDRequest> requests = new ArrayList<SPiDRequest>(waitingRequests);
         waitingRequests.clear();
-        ;
 
         for (SPiDRequest request : requests) {
             if (request.getMethod().equals("GET")) {
@@ -188,14 +186,11 @@ public class SPiDClient {
 
     protected void clearAccessToken() {
         token = null;
-
         SPiDKeychain.clearAccessTokenFromSharedPreferences(config.getContext());
-
         waitingRequests.clear();
     }
 
     protected void addWaitingRequest(SPiDRequest request) {
-        SPiDLogger.log("Adding request");
         waitingRequests.add(request);
     }
 

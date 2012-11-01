@@ -81,7 +81,6 @@ public class SPiDKeychain {
     }
 
     private static String decryptString(Context context, String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
-        SPiDLogger.log(Settings.Secure.getString(context.getContentResolver(), Settings.System.ANDROID_ID));
         final byte[] bytes = value != null ? Base64.decode(value, Base64.DEFAULT) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));

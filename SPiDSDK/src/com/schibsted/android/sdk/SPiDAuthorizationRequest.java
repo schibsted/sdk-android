@@ -62,7 +62,7 @@ public class SPiDAuthorizationRequest {
             }
 
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                SPiDLogger.log("Opening URL: " + url);
+                SPiDLogger.log("WebView opening URL: " + url);
                 Uri uri = Uri.parse(url);
                 if (url.startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
                     if (uri.getPath().endsWith("login")) {
