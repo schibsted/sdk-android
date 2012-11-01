@@ -199,7 +199,6 @@ public class SPiDClient {
         waitingRequests.add(request);
     }
 
-    // TODO:!!!
     public void clearAuthorizationRequest() {
         authorizationRequest = null;
     }

@@ -33,26 +33,35 @@ public class SPiDException extends RuntimeException {
     private static final Integer UNKNOWN_CODE = -1;
 
     private String error;
-    private String errorCode;
+    private Integer errorCode;
     private String errorType;
 
     public SPiDException(String msg) {
         super(msg);
+        this.error = SPID_EXCEPTION;
+        this.errorCode = UNKNOWN_CODE;
+        this.errorType = SPID_EXCEPTION;
     }
 
     public SPiDException(Throwable throwable) {
         super(throwable);
+        this.error = SPID_EXCEPTION;
+        this.errorCode = UNKNOWN_CODE;
+        this.errorType = SPID_EXCEPTION;
     }
 
     public SPiDException(String msg, Throwable t) {
         super(msg, t);
+        this.error = SPID_EXCEPTION;
+        this.errorCode = UNKNOWN_CODE;
+        this.errorType = SPID_EXCEPTION;
     }
 
     public SPiDException(String error, String description, Integer errorCode, String type) {
         super(description);
-
-
-        //To change body of created methods use File | Settings | File Templates.
+        this.error = error;
+        this.errorCode = errorCode;
+        this.errorType = type;
     }
 
     public static SPiDException create(String error) {
@@ -113,11 +122,11 @@ public class SPiDException extends RuntimeException {
         this.error = error;
     }
 
-    public String getErrorCode() {
+    public Integer getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(String errorCode) {
+    public void setErrorCode(Integer errorCode) {
         this.errorCode = errorCode;
     }
 
