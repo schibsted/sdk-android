@@ -39,21 +39,27 @@ public class SPiDExampleAppLogin extends Activity {
 
         SPiDClient.getInstance().configure(config);
 
-
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Found access token in SharedPreferences");
             Intent intent = new Intent(this, SPiDExampleAppMain.class);
             startActivity(intent);
         }
 
-        setContentView(R.layout.login);
-        Button loginButton = (Button) findViewById(R.id.LoginButton);
-        loginButton.setOnClickListener(new LoginButtonListener(this));
+        setupLoginContentView();
 
         Uri data = getIntent().getData();
         if (data != null) {
             SPiDClient.getInstance().handleIntent(data);
         }
+    }
+
+    private void setupLoginContentView() {
+        setContentView(R.layout.login);
+        Button loginBrowserButton = (Button) findViewById(R.id.LoginBrowserButton);
+        loginBrowserButton.setOnClickListener(new LoginBrowserButtonListener(this));
+
+        Button loginWebViewButton = (Button) findViewById(R.id.LoginWebViewButton);
+        loginWebViewButton.setOnClickListener(new LoginWebViewButtonListener(this));
     }
 
     @Override
@@ -74,10 +80,7 @@ public class SPiDExampleAppLogin extends Activity {
         private void onError(Exception exception) {
             SPiDLogger.log("Error while preforming login: " + exception.getMessage());
             Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-
-            setContentView(R.layout.login);
-            Button loginButton = (Button) findViewById(R.id.LoginButton);
-            loginButton.setOnClickListener(new LoginButtonListener(context));
+            setupLoginContentView();
         }
 
         @Override
@@ -98,10 +101,28 @@ public class SPiDExampleAppLogin extends Activity {
         }
     }
 
-    protected class LoginButtonListener implements View.OnClickListener {
+    protected class LoginBrowserButtonListener implements View.OnClickListener {
         Context context;
 
-        public LoginButtonListener(Context context) {
+        public LoginBrowserButtonListener(Context context) {
+            this.context = context;
+        }
+
+        public void onClick(View v) {
+            webView = null;
+            try {
+                SPiDClient.getInstance().authorizationWithBrowser(new LoginListener(context));
+            } catch (Exception e) {
+                SPiDLogger.log("Error loading webbrowser: " + e.getMessage());
+                Toast.makeText(context, "Error loading webbrowser", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    protected class LoginWebViewButtonListener implements View.OnClickListener {
+        Context context;
+
+        public LoginWebViewButtonListener(Context context) {
             this.context = context;
         }
 

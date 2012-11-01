@@ -1,6 +1,7 @@
 package com.schibsted.android.sdk;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
@@ -40,9 +41,11 @@ public class SPiDClient {
     }
 
     // Browser redirect
-    public void authorize(SPiDAuthorizationListener authorizationListener) throws Exception {
+    public void authorizationWithBrowser(SPiDAuthorizationListener authorizationListener) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(authorizationListener);
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDAuthorizationRequest.getAuthorizationURL()));
+            getConfig().getContext().startActivity(i);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }

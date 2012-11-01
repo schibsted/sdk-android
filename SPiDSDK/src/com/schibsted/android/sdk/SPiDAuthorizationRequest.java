@@ -148,7 +148,7 @@ public class SPiDAuthorizationRequest {
     }
 
     // Private methods
-    private String getAuthorizationURL() throws UnsupportedEncodingException {
+    protected static String getAuthorizationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
