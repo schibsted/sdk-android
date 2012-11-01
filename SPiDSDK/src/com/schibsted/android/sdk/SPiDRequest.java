@@ -167,7 +167,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                 String error = ((SPiDException) exception).getError();
                 if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
                     SPiDClient.getInstance().addWaitingRequest(this.copy());
-                    SPiDClient.getInstance().refreshAccessToken(new TokenRefreshCallback());
+                    SPiDClient.getInstance().refreshAccessToken(null);
                 } else {
                     callback.onSPiDException((SPiDException) exception);
                 }
@@ -182,7 +182,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     public void execute() {
         execute((Void) null);
     }
-
+/*
     private class TokenRefreshCallback implements SPiDAsyncAuthorizationCallback {
         @Override
         public void onComplete() {
@@ -194,4 +194,5 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             // Do nothing...
         }
     }
+    */
 }

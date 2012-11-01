@@ -10,4 +10,19 @@ import com.schibsted.android.sdk.exceptions.SPiDException;
  */
 public class SPiDOauthException extends SPiDException {
 
+    public SPiDOauthException(String msg) {
+        super(msg);
+    }
+
+    public SPiDOauthException(Throwable throwable) {
+        super(throwable);
+    }
+
+    public SPiDOauthException(String msg, Throwable t) {
+        super(msg, t);
+    }
+
+    public SPiDOauthException(String error, String description, Integer errorCode, String type) {
+        super(error, description, errorCode, type);
+    }
 }

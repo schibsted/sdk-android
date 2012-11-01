@@ -2,6 +2,8 @@ package com.schibsted.android.sdk;
 
 import com.schibsted.android.sdk.exceptions.SPiDException;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mikaellindstrom
@@ -11,5 +13,8 @@ import com.schibsted.android.sdk.exceptions.SPiDException;
 public interface SPiDAsyncAuthorizationCallback {
     public void onComplete();
 
-    public void onError(SPiDException exception);
+    void onSPiDException(SPiDException exception);
+
+    void onIOException(IOException exception);
+
 }

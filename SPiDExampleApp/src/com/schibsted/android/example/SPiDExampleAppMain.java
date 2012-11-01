@@ -12,6 +12,8 @@ import com.schibsted.android.sdk.*;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import org.json.JSONException;
 
+import java.io.IOException;
+
 /**
  * Created with IntelliJ IDEA.
  * User: mikaellindstrom
@@ -58,8 +60,14 @@ public class SPiDExampleAppMain extends Activity {
             }
 
             @Override
-            public void onError(SPiDException exception) {
-                SPiDLogger.log("Error getting username");
+            public void onSPiDException(SPiDException exception) {
+                SPiDLogger.log("Error getting username: " + exception.getMessage());
+                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onIOException(IOException exception) {
+                SPiDLogger.log("Error getting username: " + exception.getMessage());
                 Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
             }
         });
@@ -82,11 +90,20 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onError(SPiDException exception) {
-                    SPiDLogger.log("Error while refreshing access token");
-                    Toast.makeText(context, "Error while refreshing access token", Toast.LENGTH_LONG).show();
+                public void onSPiDException(SPiDException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onIOException(IOException exception) {
+                    onError(exception);
                 }
             });
+        }
+
+        private void onError(Exception exception) {
+            SPiDLogger.log("Error while refreshing access token: " + exception.getMessage());
+            Toast.makeText(context, "Error while refreshing access token", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -113,11 +130,20 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onError(SPiDException exception) {
-                    SPiDLogger.log("Error getting one time code");
-                    Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
+                public void onSPiDException(SPiDException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onIOException(IOException exception) {
+                    onError(exception);
                 }
             });
+        }
+
+        private void onError(Exception exception) {
+            SPiDLogger.log("Error getting one time code: " + exception.getMessage());
+            Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -137,11 +163,20 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onError(SPiDException exception) {
-                    SPiDLogger.log("Error logging out...");
-                    Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
+                public void onSPiDException(SPiDException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onIOException(IOException exception) {
+                    onError(exception);
                 }
             });
+        }
+
+        private void onError(Exception exception) {
+            SPiDLogger.log("Error logging out: " + exception.getMessage());
+            Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
         }
     }
 }

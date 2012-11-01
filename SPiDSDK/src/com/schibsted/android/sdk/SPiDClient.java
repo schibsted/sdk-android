@@ -101,7 +101,8 @@ public class SPiDClient {
             authorizationRequest = new SPiDAuthorizationRequest(callback);
             authorizationRequest.refreshAccessToken(token.getRefreshToken());
         } else {
-            callback.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+            if (callback != null)
+                callback.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
         }
     }
 
@@ -112,7 +113,7 @@ public class SPiDClient {
                 authorizationRequest = new SPiDAuthorizationRequest(callback);
                 authorizationRequest.softLogout(token);
             } else {
-                callback.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+                callback.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
             }
         } else {
             callback.onComplete();

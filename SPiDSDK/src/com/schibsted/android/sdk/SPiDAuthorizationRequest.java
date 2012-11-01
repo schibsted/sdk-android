@@ -8,8 +8,8 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
-import org.json.JSONException;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -70,12 +70,17 @@ public class SPiDAuthorizationRequest {
                         if (code.length() > 0) {
                             getAccessToken(code);
                         } else {
-                            callback.onError(new SPiDInvalidResponseException("Received invalid code"));
+                            if (callback != null)
+                                callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                            else
+                                SPiDLogger.log("Received invalid code");
                         }
                         return true;
-                        //
                     } else if (uri.getPath().endsWith("failure")) {
-                        callback.onError(new SPiDInvalidResponseException("Received invalid code"));
+                        if (callback != null)
+                            callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                        else
+                            SPiDLogger.log("Received invalid code");
                     }
 
                 } else {
@@ -124,7 +129,10 @@ public class SPiDAuthorizationRequest {
                     getAccessToken(code);
                     return true;
                 } else {
-                    callback.onError(new SPiDInvalidResponseException("Received invalid code"));
+                    if (callback != null)
+                        callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                    else
+                        SPiDLogger.log("Received invalid code");
                 }
             }
         }
@@ -167,27 +175,45 @@ public class SPiDAuthorizationRequest {
         }
 
         @Override
-        public void onComplete(SPiDResponse result) {
+        public void onComplete(SPiDResponse response) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            try {
-                if ((result.getJsonObject().has("error")) && ((String) result.getJsonObject().get("error")).length() > 0) {
-                    callback.onError(SPiDException.create(result.getJsonObject()));
+            Exception exception = response.getException();
+            if (exception != null) {
+                if (exception instanceof IOException) {
+                    if (callback != null)
+                        callback.onIOException((IOException) exception);
+                    else
+                        SPiDLogger.log("Received IOException: " + exception.getMessage());
+                } else if (exception instanceof SPiDException) {
+                    if (callback != null)
+                        callback.onSPiDException((SPiDException) exception);
+                    else
+                        SPiDLogger.log("Received IOException: " + exception.getMessage());
                 } else {
-                    SPiDAccessToken token = new SPiDAccessToken(result.getJsonObject());
-                    SPiDClient.getInstance().setAccessToken(token);
-                    SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
-                    SPiDClient.getInstance().runWaitingRequests();
-                    callback.onComplete();
+                    SPiDLogger.log("Received unknown exception: " + exception.getMessage());
                 }
-            } catch (JSONException e) {
-                callback.onError(new SPiDInvalidResponseException("Invalid response from token request"));
+            } else {
+                SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
+                SPiDClient.getInstance().setAccessToken(token);
+                SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
+                SPiDClient.getInstance().runWaitingRequests();
+                if (callback != null)
+                    callback.onComplete();
             }
         }
 
         @Override
-        public void onError(SPiDException exception) {
+        public void onSPiDException(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            callback.onError(exception);
+            if (callback != null)
+                callback.onSPiDException(exception);
+        }
+
+        @Override
+        public void onIOException(IOException exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
+            if (callback != null)
+                callback.onIOException(exception);
         }
     }
 
@@ -203,13 +229,22 @@ public class SPiDAuthorizationRequest {
         public void onComplete(SPiDResponse result) {
             SPiDClient.getInstance().clearAuthorizationRequest();
             SPiDClient.getInstance().clearAccessToken();
-            callback.onComplete();
+            if (callback != null)
+                callback.onComplete();
         }
 
         @Override
-        public void onError(SPiDException exception) {
+        public void onSPiDException(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            callback.onError(exception);
+            if (callback != null)
+                callback.onSPiDException(exception);
+        }
+
+        @Override
+        public void onIOException(IOException exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
+            if (callback != null)
+                callback.onIOException(exception);
         }
     }
 }

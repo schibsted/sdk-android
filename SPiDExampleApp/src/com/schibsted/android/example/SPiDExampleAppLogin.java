@@ -10,6 +10,9 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.exceptions.SPiDException;
+
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -31,13 +34,11 @@ public class SPiDExampleAppLogin extends Activity {
                 .clientSecret("your-client-secret")
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
-                .authorizationCompleteCallback(new LoginCallback(this))
                 .context(this)
                 .build();
 
         SPiDClient.getInstance().configure(config);
 
-        Uri data = getIntent().getData();
 
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Found access token in SharedPreferences");
@@ -49,6 +50,7 @@ public class SPiDExampleAppLogin extends Activity {
         Button loginButton = (Button) findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(new LoginButtonListener(this));
 
+        Uri data = getIntent().getData();
         if (data != null) {
             SPiDClient.getInstance().handleIntent(data);
         }
@@ -69,6 +71,15 @@ public class SPiDExampleAppLogin extends Activity {
             this.context = context;
         }
 
+        private void onError(Exception exception) {
+            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
+            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+
+            setContentView(R.layout.login);
+            Button loginButton = (Button) findViewById(R.id.LoginButton);
+            loginButton.setOnClickListener(new LoginButtonListener(context));
+        }
+
         @Override
         public void onComplete() {
             SPiDLogger.log("Successful login");
@@ -77,13 +88,13 @@ public class SPiDExampleAppLogin extends Activity {
         }
 
         @Override
-        public void onError(Exception exception) {
-            SPiDLogger.log("Error while preforming login");
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+        public void onSPiDException(SPiDException exception) {
+            onError(exception);
+        }
 
-            setContentView(R.layout.login);
-            Button loginButton = (Button) findViewById(R.id.LoginButton);
-            loginButton.setOnClickListener(new LoginButtonListener(context));
+        @Override
+        public void onIOException(IOException exception) {
+            onError(exception);
         }
     }
 
@@ -97,7 +108,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                webView = SPiDClient.getInstance().getAuthorizationWebView(context);
+                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new LoginCallback(context));
                 setContentView(webView);
             } catch (Exception e) {
                 SPiDLogger.log("Error loading WebView: " + e.getMessage());
