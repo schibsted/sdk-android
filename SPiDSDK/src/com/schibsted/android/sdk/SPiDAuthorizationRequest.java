@@ -22,10 +22,10 @@ import java.net.URLEncoder;
 public class SPiDAuthorizationRequest {
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
 
-    private SPiDAsyncAuthorizationCallback callback;
+    private SPiDAuthorizationListener listener;
 
-    public SPiDAuthorizationRequest(SPiDAsyncAuthorizationCallback authorizationCallback) {
-        this.callback = authorizationCallback;
+    public SPiDAuthorizationRequest(SPiDAuthorizationListener authorizationListener) {
+        this.listener = authorizationListener;
     }
 
     protected WebView getAuthorizationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
@@ -70,15 +70,15 @@ public class SPiDAuthorizationRequest {
                         if (code.length() > 0) {
                             getAccessToken(code);
                         } else {
-                            if (callback != null)
-                                callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                            if (listener != null)
+                                listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
                             else
                                 SPiDLogger.log("Received invalid code");
                         }
                         return true;
                     } else if (uri.getPath().endsWith("failure")) {
-                        if (callback != null)
-                            callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                        if (listener != null)
+                            listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
                         else
                             SPiDLogger.log("Received invalid code");
                     }
@@ -98,7 +98,7 @@ public class SPiDAuthorizationRequest {
         // TODO: prevent multiple calls
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDTokenRequest request = new SPiDTokenRequest("POST", config.getTokenURL(), new AccessTokenCallback(callback));
+        SPiDTokenRequest request = new SPiDTokenRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "authorization_code");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
@@ -112,7 +112,7 @@ public class SPiDAuthorizationRequest {
         // TODO: prevent multiple calls
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenCallback(callback));
+        SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "refresh_token");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
@@ -129,8 +129,8 @@ public class SPiDAuthorizationRequest {
                     getAccessToken(code);
                     return true;
                 } else {
-                    if (callback != null)
-                        callback.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                    if (listener != null)
+                        listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
                     else
                         SPiDLogger.log("Received invalid code");
                 }
@@ -141,7 +141,7 @@ public class SPiDAuthorizationRequest {
 
     public void softLogout(SPiDAccessToken token) {
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
-        SPiDRequest request = new SPiDRequest(requestURL, new LogoutCallback(callback));
+        SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(listener));
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
         request.execute();
@@ -166,12 +166,12 @@ public class SPiDAuthorizationRequest {
         return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    class AccessTokenCallback implements SPiDAsyncCallback {
-        private SPiDAsyncAuthorizationCallback callback;
+    class AccessTokenListener implements SPiDRequestListener {
+        private SPiDAuthorizationListener listener;
 
-        public AccessTokenCallback(SPiDAsyncAuthorizationCallback callback) {
+        public AccessTokenListener(SPiDAuthorizationListener listener) {
             super();
-            this.callback = callback;
+            this.listener = listener;
         }
 
         @Override
@@ -180,13 +180,13 @@ public class SPiDAuthorizationRequest {
             Exception exception = response.getException();
             if (exception != null) {
                 if (exception instanceof IOException) {
-                    if (callback != null)
-                        callback.onIOException((IOException) exception);
+                    if (listener != null)
+                        listener.onIOException((IOException) exception);
                     else
                         SPiDLogger.log("Received IOException: " + exception.getMessage());
                 } else if (exception instanceof SPiDException) {
-                    if (callback != null)
-                        callback.onSPiDException((SPiDException) exception);
+                    if (listener != null)
+                        listener.onSPiDException((SPiDException) exception);
                     else
                         SPiDLogger.log("Received IOException: " + exception.getMessage());
                 } else {
@@ -197,54 +197,54 @@ public class SPiDAuthorizationRequest {
                 SPiDClient.getInstance().setAccessToken(token);
                 SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
                 SPiDClient.getInstance().runWaitingRequests();
-                if (callback != null)
-                    callback.onComplete();
+                if (listener != null)
+                    listener.onComplete();
             }
         }
 
         @Override
         public void onSPiDException(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            if (callback != null)
-                callback.onSPiDException(exception);
+            if (listener != null)
+                listener.onSPiDException(exception);
         }
 
         @Override
         public void onIOException(IOException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            if (callback != null)
-                callback.onIOException(exception);
+            if (listener != null)
+                listener.onIOException(exception);
         }
     }
 
-    class LogoutCallback implements SPiDAsyncCallback {
-        private SPiDAsyncAuthorizationCallback callback;
+    class LogoutListener implements SPiDRequestListener {
+        private SPiDAuthorizationListener listener;
 
-        public LogoutCallback(SPiDAsyncAuthorizationCallback callback) {
+        public LogoutListener(SPiDAuthorizationListener listener) {
             super();
-            this.callback = callback;
+            this.listener = listener;
         }
 
         @Override
         public void onComplete(SPiDResponse result) {
             SPiDClient.getInstance().clearAuthorizationRequest();
             SPiDClient.getInstance().clearAccessToken();
-            if (callback != null)
-                callback.onComplete();
+            if (listener != null)
+                listener.onComplete();
         }
 
         @Override
         public void onSPiDException(SPiDException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            if (callback != null)
-                callback.onSPiDException(exception);
+            if (listener != null)
+                listener.onSPiDException(exception);
         }
 
         @Override
         public void onIOException(IOException exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            if (callback != null)
-                callback.onIOException(exception);
+            if (listener != null)
+                listener.onIOException(exception);
         }
     }
 }

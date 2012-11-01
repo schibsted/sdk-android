@@ -17,7 +17,7 @@ import java.util.Map;
  * Time: 9:20 PM
  */
 public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
-    protected SPiDAsyncCallback callback;
+    protected SPiDRequestListener listener;
 
     private String url;
     private String method;
@@ -25,7 +25,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     private Map<String, String> query;
     private Map<String, String> body;
 
-    public SPiDRequest(String method, String url, SPiDAsyncCallback callback) {
+    public SPiDRequest(String method, String url, SPiDRequestListener listener) {
         super();
         this.url = url;
         this.method = method;
@@ -33,13 +33,13 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.query = new HashMap<String, String>();
         this.body = new HashMap<String, String>();
 
-        this.callback = callback;
+        this.listener = listener;
 
         SPiDLogger.log("Created request: " + url);
     }
 
-    public SPiDRequest(String url, SPiDAsyncCallback callback) {
-        this("GET", url, callback);
+    public SPiDRequest(String url, SPiDRequestListener listener) {
+        this("GET", url, listener);
     }
 
     public String getMethod() {
@@ -94,7 +94,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     // Used since AsyncTask can only be used once
     public SPiDRequest copy() {
-        SPiDRequest request = new SPiDRequest(method, url, callback);
+        SPiDRequest request = new SPiDRequest(method, url, listener);
         request.setHeaders(headers);
         request.setQuery(query);
         request.setBody(body);
@@ -162,37 +162,24 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         Exception exception = response.getException();
         if (exception != null) {
             if (exception instanceof IOException) {
-                callback.onIOException((IOException) exception);
+                listener.onIOException((IOException) exception);
             } else if (exception instanceof SPiDException) {
                 String error = ((SPiDException) exception).getError();
                 if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
                     SPiDClient.getInstance().addWaitingRequest(this.copy());
                     SPiDClient.getInstance().refreshAccessToken(null);
                 } else {
-                    callback.onSPiDException((SPiDException) exception);
+                    listener.onSPiDException((SPiDException) exception);
                 }
             } else {
                 SPiDLogger.log("Received unknown exception: " + exception.getMessage());
             }
         } else {
-            callback.onComplete(response);
+            listener.onComplete(response);
         }
     }
 
     public void execute() {
         execute((Void) null);
     }
-/*
-    private class TokenRefreshCallback implements SPiDAsyncAuthorizationCallback {
-        @Override
-        public void onComplete() {
-            // Do nothing...
-        }
-
-        @Override
-        public void onError(SPiDException exception) {
-            // Do nothing...
-        }
-    }
-    */
 }

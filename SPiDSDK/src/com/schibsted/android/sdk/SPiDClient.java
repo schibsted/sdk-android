@@ -40,9 +40,9 @@ public class SPiDClient {
     }
 
     // Browser redirect
-    public void authorize(SPiDAsyncAuthorizationCallback authorizationCallback) throws Exception {
+    public void authorize(SPiDAuthorizationListener authorizationListener) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(authorizationCallback);
+            authorizationRequest = new SPiDAuthorizationRequest(authorizationListener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
@@ -53,9 +53,9 @@ public class SPiDClient {
     }
 
     // Webview
-    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
+    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
@@ -63,13 +63,13 @@ public class SPiDClient {
         return authorizationRequest.getAuthorizationWebView(context, webView);
     }
 
-    public WebView getAuthorizationWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
-        return getAuthorizationWebView(context, null, callback);
+    public WebView getAuthorizationWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
+        return getAuthorizationWebView(context, null, listener);
     }
 
-    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
+    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
@@ -77,13 +77,13 @@ public class SPiDClient {
         return authorizationRequest.getRegistrationWebView(context, webView);
     }
 
-    public WebView getRegistrationWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
-        return getRegistrationWebView(context, null, callback);
+    public WebView getRegistrationWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
+        return getRegistrationWebView(context, null, listener);
     }
 
-    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAsyncAuthorizationCallback callback) throws Exception {
+    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
@@ -91,32 +91,32 @@ public class SPiDClient {
         return authorizationRequest.getLostPasswordWebView(context, webView);
     }
 
-    public WebView getLostPasswordWebView(Context context, SPiDAsyncAuthorizationCallback callback) throws Exception {
-        return getLostPasswordWebView(context, null, callback);
+    public WebView getLostPasswordWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
+        return getLostPasswordWebView(context, null, listener);
     }
 
     // Refresh token
-    public void refreshAccessToken(SPiDAsyncAuthorizationCallback callback) {
+    public void refreshAccessToken(SPiDAuthorizationListener listener) {
         if (authorizationRequest == null) {
-            authorizationRequest = new SPiDAuthorizationRequest(callback);
+            authorizationRequest = new SPiDAuthorizationRequest(listener);
             authorizationRequest.refreshAccessToken(token.getRefreshToken());
         } else {
-            if (callback != null)
-                callback.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+            if (listener != null)
+                listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
         }
     }
 
     // Logout
-    public void logoutSPiDAPI(SPiDAsyncAuthorizationCallback callback) {
+    public void logoutSPiDAPI(SPiDAuthorizationListener listener) {
         if (token != null) {
             if (authorizationRequest == null) {
-                authorizationRequest = new SPiDAuthorizationRequest(callback);
+                authorizationRequest = new SPiDAuthorizationRequest(listener);
                 authorizationRequest.softLogout(token);
             } else {
-                callback.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+                listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
             }
         } else {
-            callback.onComplete();
+            listener.onComplete();
         }
     }
 
@@ -136,29 +136,29 @@ public class SPiDClient {
     }
 
     // Requests
-    public SPiDRequest apiGetRequest(String path, SPiDAsyncCallback callback) {
-        SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + config.getApiVersion() + path, callback);
+    public SPiDRequest apiGetRequest(String path, SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + config.getApiVersion() + path, listener);
         request.addQueryParameter("oauth_token", token.getAccessToken());
         return request;
     }
 
-    public SPiDRequest apiPostRequest(String path, SPiDAsyncCallback callback) {
-        SPiDRequest request = new SPiDRequest("POST", config.getServerURL() + "/api/" + config.getApiVersion() + path, callback);
+    public SPiDRequest apiPostRequest(String path, SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDRequest("POST", config.getServerURL() + "/api/" + config.getApiVersion() + path, listener);
         request.addBodyParameter("oauth_token", token.getAccessToken());
         return request;
     }
 
     // Request wrappers
-    public void getOneTimeCode(SPiDAsyncCallback callback) {
-        SPiDRequest request = apiPostRequest("/oauth/exchange", callback);
+    public void getOneTimeCode(SPiDRequestListener listener) {
+        SPiDRequest request = apiPostRequest("/oauth/exchange", listener);
         request.addBodyParameter("clientId", config.getServerClientID());
         request.addBodyParameter("client_id", config.getServerClientID());
         request.addBodyParameter("type", "code");
         request.execute();
     }
 
-    public void getCurrentUser(SPiDAsyncCallback callback) {
-        SPiDRequest request = apiGetRequest("/user/" + token.getUserID(), callback);
+    public void getCurrentUser(SPiDRequestListener listener) {
+        SPiDRequest request = apiGetRequest("/user/" + token.getUserID(), listener);
         request.execute();
     }
 

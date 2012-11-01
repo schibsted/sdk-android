@@ -11,12 +11,12 @@ import java.io.IOException;
  * Time: 12:22 PM
  */
 public class SPiDTokenRequest extends SPiDRequest {
-    public SPiDTokenRequest(String method, String url, SPiDAsyncCallback callback) {
-        super(method, url, callback);
+    public SPiDTokenRequest(String method, String url, SPiDRequestListener listener) {
+        super(method, url, listener);
     }
 
-    public SPiDTokenRequest(String url, SPiDAsyncCallback callback) {
-        super(url, callback);
+    public SPiDTokenRequest(String url, SPiDRequestListener listener) {
+        super(url, listener);
     }
 
     @Override
@@ -24,12 +24,12 @@ public class SPiDTokenRequest extends SPiDRequest {
         Exception exception = response.getException();
         if (exception != null) {
             if (exception instanceof IOException) {
-                callback.onIOException((IOException) exception);
+                listener.onIOException((IOException) exception);
             } else if (exception instanceof SPiDException) {
-                callback.onSPiDException((SPiDException) exception);
+                listener.onSPiDException((SPiDException) exception);
             }
         } else {
-            callback.onComplete(response);
+            listener.onComplete(response);
         }
     }
 }

@@ -45,7 +45,7 @@ public class SPiDExampleAppMain extends Activity {
     }
 
     private void getUserName(final Context context) {
-        SPiDClient.getInstance().getCurrentUser(new SPiDAsyncCallback() {
+        SPiDClient.getInstance().getCurrentUser(new SPiDRequestListener() {
             @Override
             public void onComplete(SPiDResponse result) {
                 TextView userTextView = (TextView) findViewById(R.id.userTextView);
@@ -81,7 +81,7 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().refreshAccessToken(new SPiDAsyncAuthorizationCallback() {
+            SPiDClient.getInstance().refreshAccessToken(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
                     TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
@@ -115,7 +115,7 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().getOneTimeCode(new SPiDAsyncCallback() {
+            SPiDClient.getInstance().getOneTimeCode(new SPiDRequestListener() {
                 @Override
                 public void onComplete(SPiDResponse result) {
                     String oneTimeCode = "none";
@@ -155,7 +155,7 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().logoutSPiDAPI(new SPiDAsyncAuthorizationCallback() {
+            SPiDClient.getInstance().logoutSPiDAPI(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
                     Intent intent = new Intent(context, SPiDExampleAppLogin.class);

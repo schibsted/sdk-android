@@ -10,7 +10,7 @@ import java.io.IOException;
  * Date: 10/12/12
  * Time: 10:19 AM
  */
-public interface SPiDAsyncCallback {
+public interface SPiDRequestListener {
     public void onComplete(SPiDResponse result);
 
     public void onSPiDException(SPiDException exception);

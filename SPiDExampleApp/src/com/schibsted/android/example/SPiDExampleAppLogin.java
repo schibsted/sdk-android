@@ -64,10 +64,10 @@ public class SPiDExampleAppLogin extends Activity {
         }
     }
 
-    protected class LoginCallback implements SPiDAsyncAuthorizationCallback {
+    protected class LoginListener implements SPiDAuthorizationListener {
         private Context context;
 
-        private LoginCallback(Context context) {
+        private LoginListener(Context context) {
             this.context = context;
         }
 
@@ -108,7 +108,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new LoginCallback(context));
+                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new LoginListener(context));
                 setContentView(webView);
             } catch (Exception e) {
                 SPiDLogger.log("Error loading WebView: " + e.getMessage());
