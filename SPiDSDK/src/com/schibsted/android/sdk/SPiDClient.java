@@ -136,6 +136,10 @@ public class SPiDClient {
         return config;
     }
 
+    protected SPiDAccessToken getAccessToken() {
+        return token;
+    }
+
     // Requests
     public SPiDRequest apiGetRequest(String path, SPiDRequestListener listener) {
         SPiDRequest request = new SPiDRequest("GET", config.getServerURL() + "/api/" + config.getApiVersion() + path, listener);
@@ -182,10 +186,14 @@ public class SPiDClient {
         }
     }
 
+    protected void clearAccessTokenAndWaitingRequests() {
+        clearAccessToken();
+        waitingRequests.clear();
+    }
+
     protected void clearAccessToken() {
         token = null;
         SPiDKeychain.clearAccessTokenFromSharedPreferences(config.getContext());
-        waitingRequests.clear();
     }
 
     protected void addWaitingRequest(SPiDRequest request) {

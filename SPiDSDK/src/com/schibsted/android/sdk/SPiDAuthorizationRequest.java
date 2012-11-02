@@ -51,6 +51,13 @@ public class SPiDAuthorizationRequest {
     }
 
     public WebView getWebView(final Context context, WebView webView, String url) {
+        if (SPiDClient.getInstance().isAuthorized()) {
+            SPiDLogger.log("Access token found, preforming a soft logout to cleanup before login");
+            // Fire and forget
+            SPiDAuthorizationRequest authRequest = new SPiDAuthorizationRequest(null);
+            authRequest.softLogout(SPiDClient.getInstance().getAccessToken());
+            SPiDClient.getInstance().clearAccessToken();
+        }
         if (webView == null) {
             webView = new WebView(context);
         }
@@ -236,7 +243,7 @@ public class SPiDAuthorizationRequest {
         @Override
         public void onComplete(SPiDResponse result) {
             SPiDClient.getInstance().clearAuthorizationRequest();
-            SPiDClient.getInstance().clearAccessToken();
+            SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
             if (listener != null)
                 listener.onComplete();
         }

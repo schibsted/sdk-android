@@ -33,8 +33,10 @@ public class SPiDKeychain {
             editor.putString("refresh_token", encryptString(context, encryptionKey, accessToken.getRefreshToken()));
             editor.putString("user_id", encryptString(context, encryptionKey, accessToken.getUserID()));
         } catch (GeneralSecurityException e) {
+            clearAccessTokenFromSharedPreferences(context);
             throw new SPiDKeychainException("GeneralSecurityException", e);
         } catch (UnsupportedEncodingException e) {
+            clearAccessTokenFromSharedPreferences(context);
             throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
         editor.commit();
@@ -51,8 +53,10 @@ public class SPiDKeychain {
                 String userId = decryptString(context, encryptionKey, secure.getString("user_id", ""));
                 token = new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
             } catch (GeneralSecurityException e) {
+                clearAccessTokenFromSharedPreferences(context);
                 throw new SPiDKeychainException("GeneralSecurityException", e);
             } catch (UnsupportedEncodingException e) {
+                clearAccessTokenFromSharedPreferences(context);
                 throw new SPiDKeychainException("UnsupportedEncodingException", e);
             }
             return token;
@@ -81,6 +85,7 @@ public class SPiDKeychain {
     }
 
     private static String decryptString(Context context, String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
+        SPiDLogger.log(encryptionKey);
         final byte[] bytes = value != null ? Base64.decode(value, Base64.DEFAULT) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
