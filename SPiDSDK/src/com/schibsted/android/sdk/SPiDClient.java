@@ -54,46 +54,64 @@ public class SPiDClient {
     }
 
     // Webview
-    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
-        return authorizationRequest.getAuthorizationWebView(context, webView);
+        return authorizationRequest.getAuthorizationWebView(context, webView, webViewClient);
+    }
+
+    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+        return getAuthorizationWebView(context, webView, null, listener);
     }
 
     public WebView getAuthorizationWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
         return getAuthorizationWebView(context, null, listener);
     }
 
-    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+    public WebView getRegistrationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
-        return authorizationRequest.getRegistrationWebView(context, webView);
+        return authorizationRequest.getRegistrationWebView(context, webView, webViewClient);
+    }
+
+    public WebView getRegistrationWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+        return getRegistrationWebView(context, webView, null, listener);
     }
 
     public WebView getRegistrationWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
         return getRegistrationWebView(context, null, listener);
     }
 
-    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws Exception {
         if (authorizationRequest == null) {
             authorizationRequest = new SPiDAuthorizationRequest(listener);
         } else {
             throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
         }
 
-        return authorizationRequest.getLostPasswordWebView(context, webView);
+        return authorizationRequest.getLostPasswordWebView(context, webView, webViewClient);
+    }
+
+    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDAuthorizationListener listener) throws Exception {
+        return getLostPasswordWebView(context, webView, null, listener);
     }
 
     public WebView getLostPasswordWebView(Context context, SPiDAuthorizationListener listener) throws Exception {
         return getLostPasswordWebView(context, null, listener);
+    }
+
+    protected void requestAccessToken(String code) {
+        if (authorizationRequest != null) {
+            authorizationRequest.requestAccessToken(code);
+        }
     }
 
     // Refresh token

@@ -3,6 +3,7 @@ package com.schibsted.android.example;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -101,6 +102,19 @@ public class SPiDExampleAppLogin extends Activity {
         }
     }
 
+    protected class SPiDExampleWebViewClient extends SPiDWebViewClient {
+
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            SPiDLogger.log("Started loading page");
+        }
+
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            SPiDLogger.log("Finished loading page");
+        }
+    }
+
     protected class LoginBrowserButtonListener implements View.OnClickListener {
         Context context;
 
@@ -129,7 +143,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                webView = SPiDClient.getInstance().getAuthorizationWebView(context, new LoginListener(context));
+                webView = SPiDClient.getInstance().getAuthorizationWebView(context, null, new SPiDExampleWebViewClient(), new LoginListener(context));
                 setContentView(webView);
             } catch (Exception e) {
                 SPiDLogger.log("Error loading WebView: " + e.getMessage());

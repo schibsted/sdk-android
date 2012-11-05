@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.webkit.CookieManager;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 
@@ -24,33 +22,39 @@ public class SPiDAuthorizationRequest {
 
     private SPiDAuthorizationListener listener;
 
-    public SPiDAuthorizationRequest(SPiDAuthorizationListener authorizationListener) {
-        this.listener = authorizationListener;
-    }
-
+    /**
+     *
+     */
     public SPiDAuthorizationRequest() {
         super();
     }
 
-    protected WebView getAuthorizationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
+    /**
+     * @param authorizationListener
+     */
+    public SPiDAuthorizationRequest(SPiDAuthorizationListener authorizationListener) {
+        this.listener = authorizationListener;
+    }
+
+    protected WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url = null;
         url = getAuthorizationURL().concat("&webview=1");
-        return getWebView(context, webView, url);
+        return getWebView(context, webView, url, webViewClient);
     }
 
-    protected WebView getRegistrationWebView(Context context, WebView webView) throws UnsupportedEncodingException {
+    protected WebView getRegistrationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url = null;
         url = getRegistrationURL().concat("&webview=1");
-        return getWebView(context, webView, url);
+        return getWebView(context, webView, url, webViewClient);
     }
 
-    protected WebView getLostPasswordWebView(Context context, WebView webView) throws UnsupportedEncodingException {
+    protected WebView getLostPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url = null;
         url = getLostPasswordURL().concat("&webview=1");
-        return getWebView(context, webView, url);
+        return getWebView(context, webView, url, webViewClient);
     }
 
-    public WebView getWebView(final Context context, WebView webView, String url) {
+    public WebView getWebView(final Context context, WebView webView, String url, SPiDWebViewClient webViewClient) {
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Access token found, preforming a soft logout to cleanup before login");
             // Fire and forget
@@ -67,44 +71,16 @@ public class SPiDAuthorizationRequest {
         // This is because we do not want to logout through a webview
         CookieManager.getInstance().removeAllCookie();
 
-        webView.setWebViewClient(new WebViewClient() {
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(context, "Oh no! " + description, Toast.LENGTH_SHORT).show();
-            }
+        if (webViewClient == null)
+            webViewClient = new SPiDWebViewClient();
+        webViewClient.setListener(listener);
 
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                SPiDLogger.log("WebView opening URL: " + url);
-                Uri uri = Uri.parse(url);
-                if (url.startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
-                    if (uri.getPath().endsWith("login")) {
-                        String code = uri.getQueryParameter("code");
-                        if (code.length() > 0) {
-                            getAccessToken(code);
-                        } else {
-                            if (listener != null)
-                                listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
-                            else
-                                SPiDLogger.log("Received invalid code");
-                        }
-                        return true;
-                    } else if (uri.getPath().endsWith("failure")) {
-                        if (listener != null)
-                            listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
-                        else
-                            SPiDLogger.log("Received invalid code");
-                    }
-
-                } else {
-                    view.loadUrl(url);
-                }
-                return false;
-            }
-        });
+        webView.setWebViewClient(webViewClient);
         webView.loadUrl(url);
         return webView;
     }
 
-    public void getAccessToken(String code) {
+    public void requestAccessToken(String code) {
         //isEmptyString(config.getCode(), "No code available");
         // TODO: prevent multiple calls
 
@@ -141,7 +117,7 @@ public class SPiDAuthorizationRequest {
             if (data.getPath().endsWith("login")) {
                 String code = data.getQueryParameter("code");
                 if (code.length() > 0) {
-                    getAccessToken(code);
+                    requestAccessToken(code);
                     return true;
                 } else {
                     if (listener != null)
