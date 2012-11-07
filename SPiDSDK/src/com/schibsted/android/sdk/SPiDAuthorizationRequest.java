@@ -3,6 +3,7 @@ package com.schibsted.android.sdk;
 import android.content.Context;
 import android.net.Uri;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
@@ -69,6 +70,7 @@ public class SPiDAuthorizationRequest {
         webView.getSettings().setJavaScriptEnabled(true);
 
         // This is because we do not want to logout through a webview
+        CookieSyncManager.createInstance(context);
         CookieManager.getInstance().removeAllCookie();
 
         if (webViewClient == null)
