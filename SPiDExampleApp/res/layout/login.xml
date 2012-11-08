@@ -12,11 +12,13 @@
             android:layout_alignParentTop="true"
             android:src="@drawable/spidlogo"
             android:adjustViewBounds="true"
-            android:cropToPadding="false"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
             android:contentDescription="SPiDLogo"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="Login to SPiD with browser"
             android:id="@+id/LoginBrowserButton"
             android:layout_centerHorizontal="true"

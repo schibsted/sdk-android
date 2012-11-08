@@ -2,6 +2,8 @@ package com.schibsted.android.sdk;
 
 import android.content.Context;
 import android.net.Uri;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
@@ -13,10 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/8/12
- * Time: 9:20 PM
+ *
  */
 public class SPiDAuthorizationRequest {
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
@@ -24,37 +23,68 @@ public class SPiDAuthorizationRequest {
     private SPiDAuthorizationListener listener;
 
     /**
+     * Constructor for SPiDAuthorizationRequest object.
      *
-     */
-    public SPiDAuthorizationRequest() {
-        super();
-    }
-
-    /**
-     * @param authorizationListener
+     * @param authorizationListener Listener called on completion of failure, can be <code>null</code>
      */
     public SPiDAuthorizationRequest(SPiDAuthorizationListener authorizationListener) {
         this.listener = authorizationListener;
     }
 
+    /**
+     * Sets up a WebView with SPiD login
+     *
+     * @param context       Android application context
+     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
+     * @return The WebView
+     * @throws UnsupportedEncodingException
+     */
     protected WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
-        String url = null;
+        String url;
         url = getAuthorizationURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
     }
 
+    /**
+     * Sets up a WebView with SPiD registration
+     *
+     * @param context       Android application context
+     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
+     * @return The WebView
+     * @throws UnsupportedEncodingException
+     */
     protected WebView getRegistrationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
-        String url = null;
+        String url;
         url = getRegistrationURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
     }
 
+    /**
+     * Sets up a WebView with SPiD lost password
+     *
+     * @param context       Android application context
+     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
+     * @return The WebView
+     * @throws UnsupportedEncodingException
+     */
     protected WebView getLostPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
-        String url = null;
+        String url;
         url = getLostPasswordURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
     }
 
+    /**
+     * Sets up a WebView with the provided URL
+     *
+     * @param context       Android application context
+     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param url           URL to open
+     * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
+     * @return The WebView
+     */
     public WebView getWebView(final Context context, WebView webView, String url, SPiDWebViewClient webViewClient) {
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Access token found, preforming a soft logout to cleanup before login");
@@ -69,8 +99,26 @@ public class SPiDAuthorizationRequest {
 
         webView.getSettings().setJavaScriptEnabled(true);
 
-        // This is because we do not want to logout through a webview
+        // Fix bug where input never get virtual keyboard focus see: http://code.google.com/p/android/issues/detail?id=7189
+        webView.requestFocus(View.FOCUS_DOWN);
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_UP:
+                        if (!v.hasFocus()) {
+                            v.requestFocus();
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        // This is needed since not all devices do it automatically
         CookieSyncManager.createInstance(context);
+        // This is because we do not want to logout through a WebView
         CookieManager.getInstance().removeAllCookie();
 
         if (webViewClient == null)
@@ -82,10 +130,10 @@ public class SPiDAuthorizationRequest {
         return webView;
     }
 
-    public void requestAccessToken(String code) {
-        //isEmptyString(config.getCode(), "No code available");
-        // TODO: prevent multiple calls
-
+    /**
+     * @param code
+     */
+    protected void requestAccessToken(String code) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         SPiDTokenRequest request = new SPiDTokenRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "authorization_code");
@@ -96,10 +144,10 @@ public class SPiDAuthorizationRequest {
         request.execute();
     }
 
+    /**
+     * @param refreshToken
+     */
     public void refreshAccessToken(String refreshToken) {
-        //isEmptyString(config.getCode(), "No code available");
-        // TODO: prevent multiple calls
-
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "refresh_token");
@@ -110,10 +158,18 @@ public class SPiDAuthorizationRequest {
         request.execute();
     }
 
+    /**
+     * @param data
+     * @return
+     */
     public static boolean shouldHandleIntent(Uri data) {
         return data.toString().startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme());
     }
 
+    /**
+     * @param data
+     * @return
+     */
     public boolean handleIntent(Uri data) {
         if (shouldHandleIntent(data)) {
             if (data.getPath().endsWith("login")) {
@@ -132,6 +188,9 @@ public class SPiDAuthorizationRequest {
         return false;
     }
 
+    /**
+     * @param token
+     */
     public void softLogout(SPiDAccessToken token) {
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
         SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(listener));
