@@ -8,10 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/9/12
- * Time: 4:13 PM
+ * SPiD Access token object.
+ * <p/>
+ * Contains a access token response from SPiD
  */
 public class SPiDAccessToken {
 
@@ -20,6 +19,11 @@ public class SPiDAccessToken {
     private String refreshToken;
     private String userID;
 
+    /**
+     * Creates a $class.name$ from a SPiD JSON response
+     *
+     * @param jsonObject Parsed response from SPiD
+     */
     public SPiDAccessToken(JSONObject jsonObject) {
         SPiDLogger.log(String.format("Got JSON: %s", jsonObject.toString()));
         try {
@@ -39,43 +43,46 @@ public class SPiDAccessToken {
         }
     }
 
+    /**
+     * Creates a $class.name$ using the specified parameters, used when loading from SharedPreferences
+     *
+     * @param accessToken  Access token
+     * @param expiresAt    Date when access token expires
+     * @param refreshToken Refresh token
+     * @param userID       User id for the access token
+     */
     public SPiDAccessToken(String accessToken, Long expiresAt, String refreshToken, String userID) {
         this.accessToken = accessToken;
         this.expiresAt = new Date(expiresAt);
         this.refreshToken = refreshToken;
         this.userID = userID;
-        SPiDLogger.log(String.format("Loaded from SharedPref: %s, %s, %s, %s", accessToken, this.expiresAt.toString(), refreshToken, userID));
     }
 
+    /**
+     * @return Access token used to make requests to SPiD
+     */
     public String getAccessToken() {
         return accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
+    /**
+     * @return Expiry date for the access token
+     */
     public Date getExpiresAt() {
         return expiresAt;
     }
 
-    public void setExpiresAt(Date expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
+    /**
+     * @return The refresh token that should be used to refresh the access token
+     */
     public String getRefreshToken() {
         return refreshToken;
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
+    /**
+     * @return The user id that associated with this access token
+     */
     public String getUserID() {
         return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
     }
 }
