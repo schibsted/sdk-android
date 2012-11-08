@@ -15,8 +15,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 
 /**
- * SPiD Keychain.
- * <p/>
  * Helper class used to securely encrypt/decrypt access token to SharedPreferences
  */
 public class SPiDKeychain {

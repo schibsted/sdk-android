@@ -8,8 +8,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * SPiD Access token object.
- * <p/>
  * Contains a access token response from SPiD
  */
 public class SPiDAccessToken {
