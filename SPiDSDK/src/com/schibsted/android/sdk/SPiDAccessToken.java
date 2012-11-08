@@ -18,9 +18,9 @@ public class SPiDAccessToken {
     private String userID;
 
     /**
-     * Creates a $class.name$ from a SPiD JSON response
+     * Constructor for SPiDAccessToken object, used with response from SPiD
      *
-     * @param jsonObject Parsed response from SPiD
+     * @param jsonObject Parsed JSON response from SPiD
      */
     public SPiDAccessToken(JSONObject jsonObject) {
         SPiDLogger.log(String.format("Got JSON: %s", jsonObject.toString()));
@@ -42,7 +42,7 @@ public class SPiDAccessToken {
     }
 
     /**
-     * Creates a $class.name$ using the specified parameters, used when loading from SharedPreferences
+     * Constructor for SPiDAccessToken object, used when loading from SharedPreferences
      *
      * @param accessToken  Access token
      * @param expiresAt    Date when access token expires
