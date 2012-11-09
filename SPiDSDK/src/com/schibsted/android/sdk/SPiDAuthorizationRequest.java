@@ -15,7 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- *
+ * Contains methods for authorization to SPiD, it handles both WebView and browser redirect.
  */
 public class SPiDAuthorizationRequest {
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
@@ -90,7 +90,7 @@ public class SPiDAuthorizationRequest {
             SPiDLogger.log("Access token found, preforming a soft logout to cleanup before login");
             // Fire and forget
             SPiDAuthorizationRequest authRequest = new SPiDAuthorizationRequest(null);
-            authRequest.softLogout(SPiDClient.getInstance().getAccessToken());
+            authRequest.apiLogout(SPiDClient.getInstance().getAccessToken());
             SPiDClient.getInstance().clearAccessToken();
         }
         if (webView == null) {
@@ -131,7 +131,9 @@ public class SPiDAuthorizationRequest {
     }
 
     /**
-     * @param code
+     * Requests access token from SPiD using previously obtained code
+     *
+     * @param code Refresh token previously from SPiD
      */
     protected void requestAccessToken(String code) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
@@ -145,7 +147,9 @@ public class SPiDAuthorizationRequest {
     }
 
     /**
-     * @param refreshToken
+     * Requests a new access token using the refresh token
+     *
+     * @param refreshToken Refresh token previously received from SPiD
      */
     public void refreshAccessToken(String refreshToken) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
@@ -159,16 +163,20 @@ public class SPiDAuthorizationRequest {
     }
 
     /**
-     * @param data
-     * @return
+     * Checks if the Intent should be handled by the SPiDAuthorizationRequest
+     *
+     * @param data Intent data
+     * @return <code>true</code> if <code>Intent</code> should be handled otherwise <code>false</code>
      */
     public static boolean shouldHandleIntent(Uri data) {
         return data.toString().startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme());
     }
 
     /**
-     * @param data
-     * @return
+     * Handles incoming Intent if it is sent from SPiD
+     *
+     * @param data Intent data
+     * @return <code>true</code> if <code>Intent</code> should be handled otherwise <code>false</code>
      */
     public boolean handleIntent(Uri data) {
         if (shouldHandleIntent(data)) {
@@ -189,9 +197,11 @@ public class SPiDAuthorizationRequest {
     }
 
     /**
-     * @param token
+     * Logout from SPiD without redirect to Safari, therefor any existing cookie will not be removed
+     *
+     * @param token Token to logout
      */
-    public void softLogout(SPiDAccessToken token) {
+    public void apiLogout(SPiDAccessToken token) {
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
         SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(listener));
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
@@ -199,28 +209,68 @@ public class SPiDAuthorizationRequest {
         request.execute();
     }
 
-    // Private methods
+    /**
+     * Generates URL for authorization in SPiD
+     *
+     * @return URL for authorization
+     * @throws UnsupportedEncodingException
+     */
     protected static String getAuthorizationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    private String getRegistrationURL() throws UnsupportedEncodingException {
+    /**
+     * Generates URL for registration in SPiD
+     *
+     * @return URL for registration
+     * @throws UnsupportedEncodingException
+     */
+    protected static String getRegistrationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getRegistrationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    private String getLostPasswordURL() throws UnsupportedEncodingException {
+    /**
+     * Generates URL for lost password in SPiD
+     *
+     * @return URL for lost password
+     * @throws UnsupportedEncodingException
+     */
+    protected static String getLostPasswordURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getLostPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
-    class AccessTokenListener implements SPiDRequestListener {
+
+    /**
+     * Generates URL for logout in SPiD
+     *
+     * @param accessToken Access token to logout
+     * @return URL for logout
+     * @throws UnsupportedEncodingException
+     */
+    protected static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
+        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
+        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
+        return requestURL + "?redirect_uri=" + encodedRedirectURL + "&oauth_token=" + accessToken.getAccessToken();
+    }
+
+    /**
+     * Listener for the access token request
+     */
+    private class AccessTokenListener implements SPiDRequestListener {
         private SPiDAuthorizationListener listener;
 
+        /**
+         * Creates a AccessTokenListener
+         *
+         * @param listener Called on completion or error, can be <code>null</code>
+         */
         public AccessTokenListener(SPiDAuthorizationListener listener) {
             super();
             this.listener = listener;
@@ -269,9 +319,17 @@ public class SPiDAuthorizationRequest {
         }
     }
 
-    class LogoutListener implements SPiDRequestListener {
+    /**
+     * Listener for the logout request
+     */
+    private class LogoutListener implements SPiDRequestListener {
         private SPiDAuthorizationListener listener;
 
+        /**
+         * Creates a LogoutListener
+         *
+         * @param listener Called on completion or error, can be <code>null</code>
+         */
         public LogoutListener(SPiDAuthorizationListener listener) {
             super();
             this.listener = listener;
