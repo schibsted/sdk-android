@@ -9,12 +9,16 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/24/12
- * Time: 10:55 AM
+ * Util class used for generating device fingerprint
  */
 public class SPiDUtils {
+
+    /**
+     * Generates a unique device fingerprint
+     *
+     * @param context Android application context
+     * @return Device fingerprint
+     */
     public static String getDeviceFingerprint(Context context) {
         UUID uuid;
 
@@ -22,7 +26,6 @@ public class SPiDUtils {
 
         // Use the Android ID unless it's broken, in which case fallback on deviceId,
         // unless it's not available, then fallback on a random number
-        // TODO: Should store this number somewhere....
         try {
             // 9774d56d682e549c is used in multiple devices due to a bug android 2.2, should not affect later versions
             if (!"9774d56d682e549c".equals(androidId)) {
@@ -38,6 +41,8 @@ public class SPiDUtils {
         } catch (UnsupportedEncodingException e) {
             throw new SPiDDeviceFingerprintException("Error generating device fingerprint", e);
         }
+
+        // TODO: Should store in SharedPreferences?
         return uuid.toString();
     }
 }

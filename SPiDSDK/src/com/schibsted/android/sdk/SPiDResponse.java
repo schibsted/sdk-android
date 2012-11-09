@@ -26,13 +26,23 @@ public class SPiDResponse {
     private JSONObject jsonObject;
     private Exception exception;
 
-    public SPiDResponse(IOException e) {
+    /**
+     * Constructor for SPiDResponse
+     *
+     * @param exception IOexception
+     */
+    public SPiDResponse(IOException exception) {
         this.code = -1;
         this.body = "";
         this.headers = new HashMap<String, String>();
-        this.exception = e;
+        this.exception = exception;
     }
 
+    /**
+     * Constructor for SPiDResponse
+     *
+     * @param httpResponse Response from SPiD
+     */
     public SPiDResponse(HttpResponse httpResponse) {
         this.code = httpResponse.getStatusLine().getStatusCode();
         this.body = "";
@@ -74,22 +84,37 @@ public class SPiDResponse {
         }
     }
 
+    /**
+     * @return If request was successful, i.e. 200 >= httpcode < 400
+     */
     public boolean isSuccessful() {
         return getCode() >= 200 && getCode() < 400;
     }
 
+    /**
+     * @return Http status code
+     */
     public int getCode() {
         return code != null ? code : -1;
     }
 
+    /**
+     * @return Http body
+     */
     public String getBody() {
         return body;
     }
 
+    /**
+     * @return Body as a <code>JSONObject</code>
+     */
     public JSONObject getJsonObject() {
         return jsonObject;
     }
 
+    /**
+     * @return Exception if there was any otherwise <code>null</code>
+     */
     public Exception getException() {
         return exception;
     }
