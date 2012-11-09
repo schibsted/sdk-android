@@ -98,6 +98,7 @@ public class SPiDAuthorizationRequest {
         }
 
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
 
         // Fix bug where input never get virtual keyboard focus see: http://code.google.com/p/android/issues/detail?id=7189
         webView.requestFocus(View.FOCUS_DOWN);
