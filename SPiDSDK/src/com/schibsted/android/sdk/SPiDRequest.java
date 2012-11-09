@@ -2,12 +2,25 @@ package com.schibsted.android.sdk;
 
 import android.os.AsyncTask;
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.params.HttpClientParams;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
 
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,6 +30,8 @@ import java.util.Map;
  * Time: 9:20 PM
  */
 public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
+    private static final Integer MaxRetryCount = 3;
+
     protected SPiDRequestListener listener;
 
     private String url;
@@ -24,6 +39,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     private Map<String, String> headers;
     private Map<String, String> query;
     private Map<String, String> body;
+
+    private Integer retryCount;
+    private Integer maxRetryCount;
 
     public SPiDRequest(String method, String url, SPiDRequestListener listener) {
         super();
@@ -34,6 +52,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.body = new HashMap<String, String>();
 
         this.listener = listener;
+
+        this.retryCount = 0;
+        this.maxRetryCount = MaxRetryCount;
 
         SPiDLogger.log("Created request: " + url);
     }
@@ -88,13 +109,10 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         return builder.toString();
     }
 
-    public boolean isSuccessful(Integer code) {
-        return code >= 200 && code < 400;
-    }
-
     // Used since AsyncTask can only be used once
     public SPiDRequest copy() {
         SPiDRequest request = new SPiDRequest(method, url, listener);
+        request.retryCount = retryCount;
         request.setHeaders(headers);
         request.setQuery(query);
         request.setBody(body);
@@ -116,37 +134,34 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     @Override
     protected SPiDResponse doInBackground(Void... voids) {
         try {
-            HttpURLConnection connection = null;
-            connection = (HttpURLConnection) new URL(getCompleteURL()).openConnection();
-            connection.setRequestMethod(this.method);
+            HttpRequestBase httpRequest;
+            if (this.method.toUpperCase().equals("POST")) {
+                httpRequest = new HttpPost(url);
 
-            // Add headers
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
-            }
+                List<NameValuePair> postList = new ArrayList<NameValuePair>();
+                for (Map.Entry<String, String> entry : body.entrySet()) {
+                    postList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+                }
 
-            if (method.equals("POST")) { // || method.equals("PUT")) {
-                connection.setDoOutput(true);
-                OutputStream stream = connection.getOutputStream();
-                BufferedWriter writer = null;
-
-                writer = new BufferedWriter(new OutputStreamWriter(stream));
-                writer.write(getBodyAsString());
-                writer.close();
+                ((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(postList));
             } else {
-                connection.setDoOutput(false);
+                httpRequest = new HttpGet(url + getQueryAsString());
             }
-            connection.connect();
 
-            // response
-            HttpURLConnection.setFollowRedirects(false);
-            Integer code = connection.getResponseCode();
-            InputStream stream = isSuccessful(code) ? connection.getInputStream() : connection.getErrorStream();
-            Map<String, String> headers = new HashMap<String, String>();
-            for (String key : connection.getHeaderFields().keySet()) {
-                headers.put(key, connection.getHeaderFields().get(key).get(0));
+            List<Header> headerList = new ArrayList<Header>();
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                headerList.add(new BasicHeader(entry.getKey(), entry.getValue()));
             }
-            return new SPiDResponse(code, headers, stream);
+
+            Header[] headerArray = new Header[headerList.size()];
+            httpRequest.setHeaders(headerList.toArray(headerArray));
+
+            HttpClientParams.setRedirecting(httpRequest.getParams(), false);
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpResponse httpResponse = httpClient.execute(httpRequest);
+
+            return new SPiDResponse(httpResponse);
         } catch (IOException e) {
             return new SPiDResponse(e);
         }
@@ -166,8 +181,13 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             } else if (exception instanceof SPiDException) {
                 String error = ((SPiDException) exception).getError();
                 if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
-                    SPiDClient.getInstance().addWaitingRequest(this.copy());
-                    SPiDClient.getInstance().refreshAccessToken(null);
+                    if (retryCount < maxRetryCount) {
+                        SPiDRequest request = this.copy();
+                        request.retryCount++;
+                        SPiDClient.getInstance().addWaitingRequest(request);
+                        SPiDClient.getInstance().refreshAccessToken(null);
+                        SPiDLogger.log("Retrying attempt: " + request.retryCount + " for request: " + request.url);
+                    }
                 } else {
                     listener.onSPiDException((SPiDException) exception);
                 }
@@ -181,5 +201,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public void execute() {
         execute((Void) null);
+    }
+
+    public void setMaxRetryCount(int maxRetryCount) {
+        this.maxRetryCount = maxRetryCount;
     }
 }

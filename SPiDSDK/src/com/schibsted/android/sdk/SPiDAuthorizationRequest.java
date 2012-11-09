@@ -25,7 +25,7 @@ public class SPiDAuthorizationRequest {
     /**
      * Constructor for SPiDAuthorizationRequest object.
      *
-     * @param authorizationListener Listener called on completion of failure, can be <code>null</code>
+     * @param authorizationListener Listener called on completion or failure, can be <code>null</code>
      */
     public SPiDAuthorizationRequest(SPiDAuthorizationListener authorizationListener) {
         this.listener = authorizationListener;
@@ -50,7 +50,7 @@ public class SPiDAuthorizationRequest {
      * Sets up a WebView with SPiD registration
      *
      * @param context       Android application context
-     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webView       WebView that should be instantiated to SPiD registration, creates a new WebView if <code>null</code>
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
      * @throws UnsupportedEncodingException
@@ -65,7 +65,7 @@ public class SPiDAuthorizationRequest {
      * Sets up a WebView with SPiD lost password
      *
      * @param context       Android application context
-     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webView       WebView that should be instantiated to SPiD lost password, creates a new WebView if <code>null</code>
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
      * @throws UnsupportedEncodingException
@@ -80,7 +80,7 @@ public class SPiDAuthorizationRequest {
      * Sets up a WebView with the provided URL
      *
      * @param context       Android application context
-     * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
+     * @param webView       WebView that should be instantiated, creates a new WebView if <code>null</code>
      * @param url           URL to open
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
@@ -176,7 +176,7 @@ public class SPiDAuthorizationRequest {
      * Handles incoming Intent if it is sent from SPiD
      *
      * @param data Intent data
-     * @return <code>true</code> if <code>Intent</code> should be handled otherwise <code>false</code>
+     * @return <code>true</code> if <code>Intent</code> was handled otherwise <code>false</code>
      */
     public boolean handleIntent(Uri data) {
         if (shouldHandleIntent(data)) {
@@ -206,6 +206,7 @@ public class SPiDAuthorizationRequest {
         SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(listener));
         request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
         request.addQueryParameter("oauth_token", token.getAccessToken());
+        request.setMaxRetryCount(-1);
         request.execute();
     }
 

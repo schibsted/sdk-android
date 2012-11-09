@@ -23,7 +23,6 @@ public class SPiDAccessToken {
      * @param jsonObject Parsed JSON response from SPiD
      */
     public SPiDAccessToken(JSONObject jsonObject) {
-        SPiDLogger.log(String.format("Got JSON: %s", jsonObject.toString()));
         try {
             this.accessToken = jsonObject.getString("access_token");
             this.refreshToken = jsonObject.getString("refresh_token");
@@ -33,8 +32,7 @@ public class SPiDAccessToken {
             cal.setTime(new Date());
             cal.add(Calendar.SECOND, expiresIn);
 
-            expiresAt = cal.getTime();
-
+            this.expiresAt = cal.getTime();
             this.userID = jsonObject.getString("user_id");
         } catch (JSONException e) {
             throw new SPiDInvalidResponseException("Received invalid token response", e);
