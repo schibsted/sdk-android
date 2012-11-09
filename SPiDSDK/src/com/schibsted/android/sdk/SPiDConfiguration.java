@@ -19,6 +19,7 @@ public class SPiDConfiguration {
     private String serverClientID;
     private Boolean useMobileWeb;
     private String apiVersion;
+    private Boolean debugMode;
     private Context context;
 
     /**
@@ -38,7 +39,7 @@ public class SPiDConfiguration {
      * @param apiVersion       SPiD API version
      * @param context          Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.appURLScheme = appURLScheme;
@@ -51,6 +52,7 @@ public class SPiDConfiguration {
         this.serverClientID = serverClientID;
         this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
+        this.debugMode = debugMode;
         this.context = context;
     }
 
@@ -220,6 +222,20 @@ public class SPiDConfiguration {
      */
     public void setUseMobileWeb(Boolean useMobileWeb) {
         this.useMobileWeb = useMobileWeb;
+    }
+
+    /**
+     * @return Use debug mode, default value: <code>false</code>
+     */
+    public boolean getDebugMode() {
+        return debugMode;
+    }
+
+    /**
+     * @param debugMode Use debug mode
+     */
+    public void setDebugMode(Boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     /**

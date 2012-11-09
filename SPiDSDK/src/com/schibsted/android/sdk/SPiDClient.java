@@ -419,5 +419,9 @@ public class SPiDClient {
     public void clearAuthorizationRequest() {
         authorizationRequest = null;
     }
+
+    public boolean getDebug() {
+        return config.getDebugMode();
+    }
 }
 

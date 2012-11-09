@@ -3,18 +3,18 @@ package com.schibsted.android.sdk;
 import android.util.Log;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/15/12
- * Time: 2:29 PM
+ * Helper class used for debug logging
  */
 public class SPiDLogger {
 
-    public final static boolean DEBUG = true;
-
+    /**
+     * Prints to log if debugMode is set
+     *
+     * @param message Message to log
+     */
     public static void log(String message) {
-        if (DEBUG) {
-            // SPiDDebugLog(fmt, ...) NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__);
+        Boolean debug = SPiDClient.getInstance().getDebug();
+        if (debug) {
             String fullClassName = Thread.currentThread().getStackTrace()[3].getClassName();
             String className = fullClassName.substring(fullClassName.lastIndexOf(".") + 1);
             String methodName = Thread.currentThread().getStackTrace()[3].getMethodName();

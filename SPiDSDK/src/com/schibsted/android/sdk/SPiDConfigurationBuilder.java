@@ -18,6 +18,7 @@ public class SPiDConfigurationBuilder {
     private String serverClientID;
     private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
+    private Boolean debugMode = Boolean.FALSE;
     private Context context;
 
     /**
@@ -120,6 +121,15 @@ public class SPiDConfigurationBuilder {
     }
 
     /**
+     * @param debugMode Use debug mode
+     * @return The SPiDConfigurationBuilder
+     */
+    public SPiDConfigurationBuilder debugMode(Boolean debugMode) {
+        this.debugMode = debugMode;
+        return this;
+    }
+
+    /**
      * @param context Android application context
      * @return The SPiDConfigurationBuilder
      */
@@ -131,11 +141,11 @@ public class SPiDConfigurationBuilder {
     /**
      * Checks that supplied string is not empty, otherwise throws exception
      *
-     * @param string
-     * @param errorMessage
+     * @param string       The string to check
+     * @param errorMessage Error message for the exception
      * @throws IllegalArgumentException
      */
-    public void isEmptyString(String string, String errorMessage) {
+    protected void isEmptyString(String string, String errorMessage) {
         if (string == null || string.trim().equals("")) {
             throw new IllegalArgumentException(errorMessage);
         }
@@ -144,11 +154,11 @@ public class SPiDConfigurationBuilder {
     /**
      * Checks if supplied object is not null, otherwise throws exception
      *
-     * @param object
-     * @param errorMessage
+     * @param object       The object to check
+     * @param errorMessage Error message for the exception
      * @throws IllegalArgumentException
      */
-    public void isNull(Object object, String errorMessage) {
+    protected void isNull(Object object, String errorMessage) {
         if (object == null) {
             throw new IllegalArgumentException(errorMessage);
         }
@@ -203,6 +213,7 @@ public class SPiDConfigurationBuilder {
                 serverClientID,
                 useMobileWeb,
                 apiVersion,
+                debugMode,
                 context);
     }
 }
