@@ -159,7 +159,10 @@ public class SPiDExampleAppMain extends Activity {
                 @Override
                 public void onComplete() {
                     Intent intent = new Intent(context, SPiDExampleAppLogin.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    finish();
                 }
 
                 @Override

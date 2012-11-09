@@ -28,8 +28,6 @@ public class SPiDExampleAppLogin extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SPiDLogger.log(String.format("Device fingerprint: %s", SPiDUtils.getDeviceFingerprint(this)));
-
         SPiDConfiguration config = new SPiDConfigurationBuilder()
                 .clientID("your-client-id")
                 .clientSecret("your-client-secret")
@@ -43,7 +41,10 @@ public class SPiDExampleAppLogin extends Activity {
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Found access token in SharedPreferences");
             Intent intent = new Intent(this, SPiDExampleAppMain.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            finish();
         }
 
         setupLoginContentView();
@@ -88,7 +89,10 @@ public class SPiDExampleAppLogin extends Activity {
         public void onComplete() {
             SPiDLogger.log("Successful login");
             Intent intent = new Intent(context, SPiDExampleAppMain.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            finish();
         }
 
         @Override
