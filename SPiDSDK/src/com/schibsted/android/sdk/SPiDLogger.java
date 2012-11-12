@@ -10,7 +10,7 @@ public class SPiDLogger {
     /**
      * Prints to log if debugMode is set
      *
-     * @param message Message to log
+     * @param message Message to log in the Android log
      */
     public static void log(String message) {
         Boolean debug = SPiDClient.getInstance().getDebug();
