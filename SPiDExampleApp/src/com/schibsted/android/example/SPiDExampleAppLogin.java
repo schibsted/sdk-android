@@ -16,10 +16,7 @@ import com.schibsted.android.sdk.exceptions.SPiDException;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/5/12
- * Time: 1:39 PM
+ * Contains the login activity
  */
 public class SPiDExampleAppLogin extends Activity {
     protected WebView webView;
@@ -36,6 +33,7 @@ public class SPiDExampleAppLogin extends Activity {
                 .context(this)
                 .build();
 
+        config.setDebugMode(true);
         SPiDClient.getInstance().configure(config);
 
         if (SPiDClient.getInstance().isAuthorized()) {

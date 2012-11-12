@@ -15,10 +15,7 @@ import org.json.JSONException;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/5/12
- * Time: 1:39 PM
+ * Contains the main window activity
  */
 
 public class SPiDExampleAppMain extends Activity {
