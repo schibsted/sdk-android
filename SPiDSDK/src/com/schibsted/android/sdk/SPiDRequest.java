@@ -43,7 +43,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     /**
      * Constructor for the SPiDRequest
      *
-     * @param method   The http method
+     * @param method   The http method to be used
      * @param url      The request url
      * @param listener Called on completion or error, can be <code>null</code>
      */

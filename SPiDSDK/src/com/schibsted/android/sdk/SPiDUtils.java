@@ -17,7 +17,7 @@ public class SPiDUtils {
      * Generates a unique device fingerprint
      *
      * @param context Android application context
-     * @return Device fingerprint
+     * @return The device fingerprint
      */
     public static String getDeviceFingerprint(Context context) {
         UUID uuid;

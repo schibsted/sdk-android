@@ -5,13 +5,13 @@ import com.schibsted.android.sdk.exceptions.SPiDException;
 import java.io.IOException;
 
 /**
- *
+ * Contains a access token request to SPiD
  */
 public class SPiDTokenRequest extends SPiDRequest {
     /**
      * Constructor for the SPiDTokenRequest
      *
-     * @param method   The http method
+     * @param method   The http method to be used
      * @param url      The request url
      * @param listener Called on completion or error, can be <code>null</code>
      */

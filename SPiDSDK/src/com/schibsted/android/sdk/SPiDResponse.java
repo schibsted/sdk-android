@@ -14,10 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/9/12
- * Time: 8:40 AM
+ * Contains a response from SPiD
  */
 public class SPiDResponse {
     private Integer code;
@@ -41,7 +38,7 @@ public class SPiDResponse {
     /**
      * Constructor for SPiDResponse
      *
-     * @param httpResponse Response from SPiD
+     * @param httpResponse The response from SPiD
      */
     public SPiDResponse(HttpResponse httpResponse) {
         this.code = httpResponse.getStatusLine().getStatusCode();
@@ -85,28 +82,28 @@ public class SPiDResponse {
     }
 
     /**
-     * @return If request was successful, i.e. 200 >= httpcode < 400
+     * @return If request was successful, i.e. 200 >= http code < 400
      */
     public boolean isSuccessful() {
         return getCode() >= 200 && getCode() < 400;
     }
 
     /**
-     * @return Http status code
+     * @return The http status code
      */
     public int getCode() {
         return code != null ? code : -1;
     }
 
     /**
-     * @return Http body
+     * @return The http body
      */
     public String getBody() {
         return body;
     }
 
     /**
-     * @return Body as a <code>JSONObject</code>
+     * @return The http body as a <code>JSONObject</code>
      */
     public JSONObject getJsonObject() {
         return jsonObject;
