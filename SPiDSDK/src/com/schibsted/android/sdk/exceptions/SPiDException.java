@@ -6,10 +6,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 11:52 AM
+ * Base class for all exceptions in SPiD.
  */
 public class SPiDException extends RuntimeException {
     public static final String REDIRECT_URI_MISMATCH = "redirect_uri_mismatch";
@@ -36,27 +33,51 @@ public class SPiDException extends RuntimeException {
     private Integer errorCode;
     private String errorType;
 
-    public SPiDException(String msg) {
-        super(msg);
+    /**
+     * Constructs a new SPiDException with the specified detail message.
+     *
+     * @param message The detail message.
+     */
+    public SPiDException(String message) {
+        super(message);
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
     }
 
-    public SPiDException(Throwable throwable) {
-        super(throwable);
+    /**
+     * Constructs a new SPiDException with the specified cause and a detail message of (cause==null ? null : cause.toString()) (which typically contains the class and detail message of cause).
+     *
+     * @param cause The cause
+     */
+    public SPiDException(Throwable cause) {
+        super(cause);
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
     }
 
-    public SPiDException(String msg, Throwable t) {
-        super(msg, t);
+    /**
+     * Constructs a new SPiDException with the specified detail message and cause.
+     *
+     * @param message   The detail message
+     * @param throwable The cause
+     */
+    public SPiDException(String message, Throwable throwable) {
+        super(message, throwable);
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
     }
 
+    /**
+     * Constructs a new SPiDException with the specified error, description, errorCode and type.
+     *
+     * @param error       The error as a string, see predefined constants in this class
+     * @param description The detail message
+     * @param errorCode   The error code
+     * @param type        The error type
+     */
     public SPiDException(String error, String description, Integer errorCode, String type) {
         super(description);
         this.error = error;
@@ -64,11 +85,18 @@ public class SPiDException extends RuntimeException {
         this.errorType = type;
     }
 
+    /*
     public static SPiDException create(String error) {
-        // TODO: Add better response
         return new SPiDException(error, error, UNKNOWN_CODE, SPID_EXCEPTION);
     }
+    */
 
+    /**
+     * Creates a SPiDException from a JSONObject
+     *
+     * @param data The JSONObject that contains the error
+     * @return The generated exception
+     */
     public static SPiDException create(JSONObject data) {
         String error;
         String description;
@@ -114,27 +142,24 @@ public class SPiDException extends RuntimeException {
         }
     }
 
+    /**
+     * @return The error as a string, see predefined constants in this class
+     */
     public String getError() {
         return error;
     }
 
-    public void setError(String error) {
-        this.error = error;
-    }
-
+    /**
+     * @return The error code
+     */
     public Integer getErrorCode() {
         return errorCode;
     }
 
-    public void setErrorCode(Integer errorCode) {
-        this.errorCode = errorCode;
-    }
-
+    /**
+     * @return The error type
+     */
     public String getErrorType() {
         return errorType;
-    }
-
-    public void setErrorType(String errorType) {
-        this.errorType = errorType;
     }
 }

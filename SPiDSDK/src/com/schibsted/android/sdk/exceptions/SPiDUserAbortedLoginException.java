@@ -1,14 +1,16 @@
 package com.schibsted.android.sdk.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 1:44 PM
- * To change this template use File | Settings | File Templates.
+ * Signals that the user aborted login
  */
 public class SPiDUserAbortedLoginException extends SPiDException {
-    public SPiDUserAbortedLoginException(String errorMessage) {
-        super(errorMessage);
+
+    /**
+     * Constructs a new SPiDUserAbortedLoginException with the specified detail message.
+     *
+     * @param message The detail message.
+     */
+    public SPiDUserAbortedLoginException(String message) {
+        super(message);
     }
 }

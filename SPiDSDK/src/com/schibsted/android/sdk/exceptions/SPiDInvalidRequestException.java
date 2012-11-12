@@ -1,13 +1,17 @@
 package com.schibsted.android.sdk.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 1:41 PM
+ * Signals that there was a problem with the request to SPiD
  */
 public class SPiDInvalidRequestException extends SPiDException {
-    public SPiDInvalidRequestException(String errorMessage, Throwable throwable) {
-        super(errorMessage, throwable);
+
+    /**
+     * Constructs a new SPiDInvalidRequestException with the specified detail message and cause.
+     *
+     * @param message   The detail message
+     * @param throwable The cause
+     */
+    public SPiDInvalidRequestException(String message, Throwable throwable) {
+        super(message, throwable);
     }
 }

@@ -1,12 +1,14 @@
 package com.schibsted.android.sdk.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 3:11 PM
+ * Signals that a authorization request is already running
  */
 public class SPiDAuthorizationAlreadyRunningException extends SPiDException {
+    /**
+     * Constructs a new SPiDAuthorizationAlreadyRunningException with the specified detail message.
+     *
+     * @param message The detail message.
+     */
     public SPiDAuthorizationAlreadyRunningException(String message) {
         super(message);
     }

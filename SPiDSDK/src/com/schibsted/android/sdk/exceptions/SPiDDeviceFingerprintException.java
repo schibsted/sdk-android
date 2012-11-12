@@ -1,17 +1,16 @@
 package com.schibsted.android.sdk.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 1:49 PM
+ * Signals that there was a error trying to generate a device fingerprint
  */
 public class SPiDDeviceFingerprintException extends SPiDException {
 
-    public SPiDDeviceFingerprintException(String msg) {
-        super(msg);
-    }
-
+    /**
+     * Constructs a new SPiDDeviceFingerprintException with the specified detail message and cause.
+     *
+     * @param message   The detail message
+     * @param throwable The cause
+     */
     public SPiDDeviceFingerprintException(String message, Throwable throwable) {
         super(message, throwable);
     }

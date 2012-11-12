@@ -1,25 +1,18 @@
 package com.schibsted.android.sdk.exceptions;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 10/31/12
- * Time: 2:30 PM
+ * Signals that there was a problem with OAuth 2.0, see http://tools.ietf.org/html/draft-ietf-oauth-v2
  */
 public class SPiDOAuthException extends SPiDException {
 
-    public SPiDOAuthException(String msg) {
-        super(msg);
-    }
-
-    public SPiDOAuthException(Throwable throwable) {
-        super(throwable);
-    }
-
-    public SPiDOAuthException(String msg, Throwable t) {
-        super(msg, t);
-    }
-
+    /**
+     * Constructs a new SPiDOAuthException with the specified error, description, errorCode and type.
+     *
+     * @param error       The error as a string, see predefined constants in this class
+     * @param description The detail message
+     * @param errorCode   The error code
+     * @param type        The error type
+     */
     public SPiDOAuthException(String error, String description, Integer errorCode, String type) {
         super(error, description, errorCode, type);
     }
