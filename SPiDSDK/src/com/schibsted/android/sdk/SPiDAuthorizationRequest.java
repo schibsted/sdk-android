@@ -97,6 +97,7 @@ public class SPiDAuthorizationRequest {
             webView = new WebView(context);
         }
 
+        webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
 
