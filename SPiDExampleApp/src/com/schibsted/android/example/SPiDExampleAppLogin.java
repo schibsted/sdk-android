@@ -54,6 +54,8 @@ public class SPiDExampleAppLogin extends Activity {
     }
 
     private void setupLoginContentView() {
+        webView = null;
+
         setContentView(R.layout.login);
         Button loginBrowserButton = (Button) findViewById(R.id.LoginBrowserButton);
         loginBrowserButton.setOnClickListener(new LoginBrowserButtonListener(this));

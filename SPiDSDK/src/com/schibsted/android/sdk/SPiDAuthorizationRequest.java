@@ -9,6 +9,7 @@ import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
+import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -184,14 +185,23 @@ public class SPiDAuthorizationRequest {
         if (shouldHandleIntent(data)) {
             if (data.getPath().endsWith("login")) {
                 String code = data.getQueryParameter("code");
-                if (code.length() > 0) {
+                if (code == null) {
+                    if (listener != null) {
+                        listener.onSPiDException(new SPiDUserAbortedLoginException("User aborted login"));
+                    } else {
+                        SPiDLogger.log("User aborted login");
+                    }
+                    SPiDClient.getInstance().clearAuthorizationRequest();
+                } else if (code.length() > 0) {
                     requestAccessToken(code);
                     return true;
                 } else {
-                    if (listener != null)
+                    if (listener != null) {
                         listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
-                    else
+                    } else {
                         SPiDLogger.log("Received invalid code");
+                    }
+                    SPiDClient.getInstance().clearAuthorizationRequest();
                 }
             }
         }

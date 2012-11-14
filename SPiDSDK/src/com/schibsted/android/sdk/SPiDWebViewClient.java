@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
+import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
 
 /**
  * SPiD implementation of WebViewClient, it should be subclassed if a custom WebViewClient is needed
@@ -45,20 +46,31 @@ public class SPiDWebViewClient extends WebViewClient {
         if (url.startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
             if (uri.getPath().endsWith("login")) {
                 String code = uri.getQueryParameter("code");
-                if (code.length() > 0) {
+                if (code == null) {
+                    if (listener != null) {
+                        listener.onSPiDException(new SPiDUserAbortedLoginException("User aborted login"));
+                    } else {
+                        SPiDLogger.log("User aborted login");
+                    }
+                    SPiDClient.getInstance().clearAuthorizationRequest();
+                } else if (code.length() > 0) {
                     SPiDClient.getInstance().requestAccessToken(code);
                 } else {
-                    if (listener != null)
+                    if (listener != null) {
                         listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
-                    else
+                    } else {
                         SPiDLogger.log("Received invalid code");
+                    }
+                    SPiDClient.getInstance().clearAuthorizationRequest();
                 }
                 return true;
             } else if (uri.getPath().endsWith("failure")) {
-                if (listener != null)
+                if (listener != null) {
                     listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
-                else
+                } else {
                     SPiDLogger.log("Received invalid code");
+                }
+                SPiDClient.getInstance().clearAuthorizationRequest();
             }
 
         } else {
