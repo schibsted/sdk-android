@@ -10,7 +10,7 @@
     <version>${spid.sdk.version}</version>
 
     <properties>
-        <spid.sdk.version>1.0.3</spid.sdk.version>
+        <spid.sdk.version>1.0.4-SNAPSHOT</spid.sdk.version>
     </properties>
 
     <modules>

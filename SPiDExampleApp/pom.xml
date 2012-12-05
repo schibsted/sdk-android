@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.schibsted.android</groupId>
             <artifactId>spid</artifactId>
-            <version>1.0.2</version>
+            <version>${spid.sdk.version}</version>
         </dependency>
         <!-- org.json.* -->
         <dependency>
