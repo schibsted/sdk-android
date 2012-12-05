@@ -7,7 +7,11 @@
     <groupId>com.schibsted</groupId>
     <artifactId>android</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.2</version>
+    <version>${spid.sdk.version}</version>
+
+    <properties>
+        <spid.sdk.version>1.0.3</spid.sdk.version>
+    </properties>
 
     <modules>
         <module>SPiDSDK</module>

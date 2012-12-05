@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.schibsted</groupId>
         <artifactId>android</artifactId>
-        <version>1.0.2</version>
+        <version>${spid.sdk.version}</version>
     </parent>
 
     <groupId>com.schibsted.android</groupId>
     <artifactId>spid</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.2</version>
+    <version>${spid.sdk.version}</version>
     <name>SPiDSDK</name>
 
     <dependencies>
