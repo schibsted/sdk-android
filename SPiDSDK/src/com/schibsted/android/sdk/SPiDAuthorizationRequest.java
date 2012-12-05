@@ -303,9 +303,12 @@ public class SPiDAuthorizationRequest {
                     if (listener != null)
                         listener.onSPiDException((SPiDException) exception);
                     else
-                        SPiDLogger.log("Received IOException: " + exception.getMessage());
+                        SPiDLogger.log("Received SPiDException: " + exception.getMessage());
                 } else {
-                    SPiDLogger.log("Received unknown exception: " + exception.getMessage());
+                    if (listener != null)
+                        listener.onException(exception);
+                    else
+                        SPiDLogger.log("Received unknown exception: " + exception.getMessage());
                 }
             } else {
                 SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
@@ -329,6 +332,13 @@ public class SPiDAuthorizationRequest {
             SPiDClient.getInstance().clearAuthorizationRequest();
             if (listener != null)
                 listener.onIOException(exception);
+        }
+
+        @Override
+        public void onException(Exception exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
+            if (listener != null)
+                listener.onException(exception);
         }
     }
 
@@ -368,6 +378,12 @@ public class SPiDAuthorizationRequest {
             SPiDClient.getInstance().clearAuthorizationRequest();
             if (listener != null)
                 listener.onIOException(exception);
+        }
+
+        public void onException(Exception exception) {
+            SPiDClient.getInstance().clearAuthorizationRequest();
+            if (listener != null)
+                listener.onException(exception);
         }
     }
 }

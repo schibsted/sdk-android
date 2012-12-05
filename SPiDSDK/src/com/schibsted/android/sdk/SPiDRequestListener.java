@@ -28,4 +28,11 @@ public interface SPiDRequestListener {
      * @param exception The IOException
      */
     public void onIOException(IOException exception);
+
+    /**
+     * Called when there is a Exception which is not handled
+     *
+     * @param exception The Exception
+     */
+    public void onException(Exception exception);
 }

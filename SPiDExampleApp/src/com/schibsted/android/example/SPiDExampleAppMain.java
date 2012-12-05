@@ -67,6 +67,12 @@ public class SPiDExampleAppMain extends Activity {
                 SPiDLogger.log("Error getting username: " + exception.getMessage());
                 Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
             }
+
+            @Override
+            public void onException(Exception exception) {
+                SPiDLogger.log("Error getting username: " + exception.getMessage());
+                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
+            }
         });
     }
 
@@ -93,6 +99,11 @@ public class SPiDExampleAppMain extends Activity {
 
                 @Override
                 public void onIOException(IOException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onException(Exception exception) {
                     onError(exception);
                 }
             });
@@ -135,6 +146,11 @@ public class SPiDExampleAppMain extends Activity {
                 public void onIOException(IOException exception) {
                     onError(exception);
                 }
+
+                @Override
+                public void onException(Exception exception) {
+                    onError(exception);
+                }
             });
         }
 
@@ -169,6 +185,11 @@ public class SPiDExampleAppMain extends Activity {
 
                 @Override
                 public void onIOException(IOException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onException(Exception exception) {
                     onError(exception);
                 }
             });

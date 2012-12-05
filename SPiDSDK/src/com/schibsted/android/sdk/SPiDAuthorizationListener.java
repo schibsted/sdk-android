@@ -18,13 +18,19 @@ public interface SPiDAuthorizationListener {
      *
      * @param exception The SPiDException
      */
-    void onSPiDException(SPiDException exception);
+    public void onSPiDException(SPiDException exception);
 
     /**
      * Called when there is a IOException, i.e. connection problems
      *
      * @param exception The IOException
      */
-    void onIOException(IOException exception);
+    public void onIOException(IOException exception);
 
+    /**
+     * Called when there is a Exception which is not handled
+     *
+     * @param exception The Exception
+     */
+    public void onException(Exception exception);
 }

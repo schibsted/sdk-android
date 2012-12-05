@@ -104,6 +104,11 @@ public class SPiDExampleAppLogin extends Activity {
         public void onIOException(IOException exception) {
             onError(exception);
         }
+
+        @Override
+        public void onException(Exception exception) {
+            onError(exception);
+        }
     }
 
     protected class SPiDExampleWebViewClient extends SPiDWebViewClient {

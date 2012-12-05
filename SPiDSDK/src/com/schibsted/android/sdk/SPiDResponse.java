@@ -26,6 +26,18 @@ public class SPiDResponse {
     /**
      * Constructor for SPiDResponse
      *
+     * @param exception exception
+     */
+    public SPiDResponse(Exception exception) {
+        this.code = -1;
+        this.body = "";
+        this.headers = new HashMap<String, String>();
+        this.exception = exception;
+    }
+
+    /**
+     * Constructor for SPiDResponse
+     *
      * @param exception IOexception
      */
     public SPiDResponse(IOException exception) {
@@ -59,7 +71,6 @@ public class SPiDResponse {
         } catch (IOException exception) {
             this.exception = exception;
         }
-
 
         if (this.body.length() > 0) {
             SPiDLogger.log("Received response: " + this.body);

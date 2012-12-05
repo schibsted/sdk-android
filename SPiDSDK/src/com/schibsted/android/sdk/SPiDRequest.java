@@ -212,6 +212,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             return new SPiDResponse(httpResponse);
         } catch (IOException e) {
             return new SPiDResponse(e);
+        } catch (Exception e) {
+            return new SPiDResponse(e);
         }
     }
 
@@ -250,7 +252,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                     listener.onSPiDException((SPiDException) exception);
                 }
             } else {
-                SPiDLogger.log("Received unknown exception: " + exception.getMessage());
+                listener.onException(exception);
             }
         } else {
             listener.onComplete(response);
@@ -267,7 +269,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     /**
      * Maximum retry count for the request, used when token expires and the request needs to be retried after a new token has been obtained.
      *
-     * @param maxRetryCount
+     * @param maxRetryCount Max retry attempts
      */
     public void setMaxRetryCount(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;

@@ -34,6 +34,9 @@ public class SPiDTokenRequest extends SPiDRequest {
             } else if (exception instanceof SPiDException) {
                 if (listener != null)
                     listener.onSPiDException((SPiDException) exception);
+            } else {
+                if (listener != null)
+                    listener.onException(exception);
             }
         } else {
             if (listener != null)
