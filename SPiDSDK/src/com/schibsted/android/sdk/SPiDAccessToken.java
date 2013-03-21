@@ -1,6 +1,6 @@
 package com.schibsted.android.sdk;
 
-import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
+import com.schibsted.android.sdk.exceptions.SPiDAccessTokenException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,6 +11,11 @@ import java.util.Date;
  * Contains a access token response from SPiD
  */
 public class SPiDAccessToken {
+
+    public static String SPiDAccessTokenKey = "access_token";
+    public static String SPiDAccessTokenExpiresInKey = "expires_in";
+    public static String SPiDAccessTokenRefreshTokenKey = "refresh_token";
+    public static String SPiDAccessTokenUserIdKey = "user_id";
 
     private String accessToken;
     private Date expiresAt;
@@ -24,18 +29,20 @@ public class SPiDAccessToken {
      */
     public SPiDAccessToken(JSONObject jsonObject) {
         try {
-            this.accessToken = jsonObject.getString("access_token");
-            this.refreshToken = jsonObject.getString("refresh_token");
+            this.accessToken = jsonObject.getString(SPiDAccessTokenKey);
 
-            Integer expiresIn = jsonObject.getInt("expires_in");
+            Integer expiresIn = jsonObject.getInt(SPiDAccessTokenExpiresInKey);
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.add(Calendar.SECOND, expiresIn);
 
             this.expiresAt = cal.getTime();
-            this.userID = jsonObject.getString("user_id");
+
+            // Optional values
+            this.refreshToken = jsonObject.optString(SPiDAccessTokenRefreshTokenKey, null);
+            this.userID = jsonObject.optString(SPiDAccessTokenUserIdKey, null);
         } catch (JSONException e) {
-            throw new SPiDInvalidResponseException("Received invalid token response", e);
+            throw new SPiDAccessTokenException("Received invalid access token data");
         }
     }
 
@@ -48,6 +55,10 @@ public class SPiDAccessToken {
      * @param userID       User id for the access token
      */
     public SPiDAccessToken(String accessToken, Long expiresAt, String refreshToken, String userID) {
+        if (accessToken == null || expiresAt == null) {
+            throw new SPiDAccessTokenException("Received invalid access token data");
+        }
+
         this.accessToken = accessToken;
         this.expiresAt = new Date(expiresAt);
         this.refreshToken = refreshToken;

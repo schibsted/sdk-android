@@ -1,4 +1,4 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.request;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
+import com.schibsted.android.sdk.*;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
@@ -41,7 +42,7 @@ public class SPiDAuthorizationRequest {
      * @return The WebView
      * @throws UnsupportedEncodingException
      */
-    protected WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    public WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url;
         url = getAuthorizationURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
@@ -56,7 +57,7 @@ public class SPiDAuthorizationRequest {
      * @return The WebView
      * @throws UnsupportedEncodingException
      */
-    protected WebView getRegistrationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    public WebView getRegistrationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url;
         url = getRegistrationURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
@@ -71,7 +72,7 @@ public class SPiDAuthorizationRequest {
      * @return The WebView
      * @throws UnsupportedEncodingException
      */
-    protected WebView getLostPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    public WebView getLostPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url;
         url = getLostPasswordURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
@@ -138,9 +139,9 @@ public class SPiDAuthorizationRequest {
      *
      * @param code Refresh token previously from SPiD
      */
-    protected void requestAccessToken(String code) {
+    public void requestAccessToken(String code) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDTokenRequest request = new SPiDTokenRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
+        SPiDTokenRequest request = new SPiDTokenRequest(new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "authorization_code");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
@@ -228,7 +229,7 @@ public class SPiDAuthorizationRequest {
      * @return URL for authorization
      * @throws UnsupportedEncodingException
      */
-    protected static String getAuthorizationURL() throws UnsupportedEncodingException {
+    public static String getAuthorizationURL() throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
@@ -266,7 +267,7 @@ public class SPiDAuthorizationRequest {
      * @return URL for logout
      * @throws UnsupportedEncodingException
      */
-    protected static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
+    public static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");

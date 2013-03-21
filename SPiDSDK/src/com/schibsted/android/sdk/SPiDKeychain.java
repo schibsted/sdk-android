@@ -27,7 +27,7 @@ public class SPiDKeychain {
      * @param encryptionKey Key used to encrypt the access token
      * @param accessToken   Access token to be saved
      */
-    protected static void encryptAccessTokenToSharedPreferences(Context context, String encryptionKey, SPiDAccessToken accessToken) {
+    public static void encryptAccessTokenToSharedPreferences(Context context, String encryptionKey, SPiDAccessToken accessToken) {
         SPiDLogger.log("Saving: " + accessToken.getAccessToken() + ", " + Long.toString(accessToken.getExpiresAt().getTime()) + ", " + accessToken.getRefreshToken() + ", " + accessToken.getUserID());
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = secure.edit();

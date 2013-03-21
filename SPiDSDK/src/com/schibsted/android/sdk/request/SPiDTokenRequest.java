@@ -1,5 +1,6 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.request;
 
+import com.schibsted.android.sdk.*;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 
 import java.io.IOException;
@@ -11,12 +12,10 @@ public class SPiDTokenRequest extends SPiDRequest {
     /**
      * Constructor for the SPiDTokenRequest
      *
-     * @param method   The http method to be used
-     * @param url      The request url
      * @param listener Called on completion or error, can be <code>null</code>
      */
-    public SPiDTokenRequest(String method, String url, SPiDRequestListener listener) {
-        super(method, url, listener);
+    public SPiDTokenRequest(SPiDRequestListener listener) {
+        super(SPiDRequest.POST, SPiDClient.getInstance().getConfig().getTokenURL(), listener);
     }
 
     /**
@@ -39,6 +38,10 @@ public class SPiDTokenRequest extends SPiDRequest {
                     listener.onException(exception);
             }
         } else {
+            SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
+            SPiDClient.getInstance().setAccessToken(token);
+            SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
+            SPiDClient.getInstance().runWaitingRequests();
             if (listener != null)
                 listener.onComplete(response);
         }

@@ -1,6 +1,10 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.request;
 
 import android.os.AsyncTask;
+import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.SPiDLogger;
+import com.schibsted.android.sdk.SPiDRequestListener;
+import com.schibsted.android.sdk.SPiDResponse;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -27,6 +31,10 @@ import java.util.Map;
  * Contains a request to SPiD, note that each request can only be used once since it extends <code>AsyncTask</code>
  */
 public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
+
+    public static final String GET = "GET";
+    public static final String POST = "POST";
+
     private static final Integer MaxRetryCount = 3;
 
     protected SPiDRequestListener listener;

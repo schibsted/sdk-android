@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
+import com.schibsted.android.sdk.request.SPiDAuthorizationRequest;
+import com.schibsted.android.sdk.request.SPiDRequest;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -304,14 +306,14 @@ public class SPiDClient {
     /**
      * @return Current configuration
      */
-    protected SPiDConfiguration getConfig() {
+    public SPiDConfiguration getConfig() {
         return config;
     }
 
     /**
      * @return Access token
      */
-    protected SPiDAccessToken getAccessToken() {
+    public SPiDAccessToken getAccessToken() {
         return token;
     }
 
@@ -367,14 +369,14 @@ public class SPiDClient {
     /**
      * @param accessToken Current access token
      */
-    protected void setAccessToken(SPiDAccessToken accessToken) {
+    public void setAccessToken(SPiDAccessToken accessToken) {
         this.token = accessToken;
     }
 
     /**
      * Runs requests that have been on hold during authentication
      */
-    protected void runWaitingRequests() {
+    public void runWaitingRequests() {
         List<SPiDRequest> requests = new ArrayList<SPiDRequest>(waitingRequests);
         waitingRequests.clear();
 
@@ -391,7 +393,7 @@ public class SPiDClient {
     /**
      * Clears current access token and remove all waiting requests
      */
-    protected void clearAccessTokenAndWaitingRequests() {
+    public void clearAccessTokenAndWaitingRequests() {
         clearAccessToken();
         waitingRequests.clear();
     }
@@ -399,7 +401,7 @@ public class SPiDClient {
     /**
      * Clears current access token for SPiDClient and SharedPreferences
      */
-    protected void clearAccessToken() {
+    public void clearAccessToken() {
         token = null;
         SPiDKeychain.clearAccessTokenFromSharedPreferences(config.getContext());
     }
@@ -409,7 +411,7 @@ public class SPiDClient {
      *
      * @param request The request to be added
      */
-    protected void addWaitingRequest(SPiDRequest request) {
+    public void addWaitingRequest(SPiDRequest request) {
         waitingRequests.add(request);
     }
 
