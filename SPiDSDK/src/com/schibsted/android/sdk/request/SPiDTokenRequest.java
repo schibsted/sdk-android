@@ -11,13 +11,17 @@ import java.io.IOException;
  * Contains a access token request to SPiD
  */
 public class SPiDTokenRequest extends SPiDRequest {
+
+    private SPiDAuthorizationListener authorizationListener;
+
     /**
      * Constructor for the SPiDTokenRequest
      *
-     * @param listener Called on completion or error, can be <code>null</code>
+     * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
-    public SPiDTokenRequest(SPiDRequestListener listener) {
-        super(SPiDRequest.POST, SPiDClient.getInstance().getConfig().getTokenURL(), listener);
+    public SPiDTokenRequest(SPiDAuthorizationListener authorizationListener) {
+        super(SPiDRequest.POST, SPiDClient.getInstance().getConfig().getTokenURL(), null);
+        this.authorizationListener = authorizationListener;
     }
 
     /**
@@ -27,25 +31,26 @@ public class SPiDTokenRequest extends SPiDRequest {
      */
     @Override
     protected void doOnPostExecute(SPiDResponse response) {
+        SPiDClient.getInstance().clearAuthorizationRequest();
         Exception exception = response.getException();
         if (exception != null) {
             if (exception instanceof IOException) {
-                if (listener != null)
-                    listener.onIOException((IOException) exception);
+                if (authorizationListener != null)
+                    authorizationListener.onIOException((IOException) exception);
             } else if (exception instanceof SPiDException) {
-                if (listener != null)
-                    listener.onSPiDException((SPiDException) exception);
+                if (authorizationListener != null)
+                    authorizationListener.onSPiDException((SPiDException) exception);
             } else {
-                if (listener != null)
-                    listener.onException(exception);
+                if (authorizationListener != null)
+                    authorizationListener.onException(exception);
             }
         } else {
             SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
             SPiDClient.getInstance().setAccessToken(token);
             SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
             SPiDClient.getInstance().runWaitingRequests();
-            if (listener != null)
-                listener.onComplete(response);
+            if (authorizationListener != null)
+                authorizationListener.onComplete();
         }
     }
 }

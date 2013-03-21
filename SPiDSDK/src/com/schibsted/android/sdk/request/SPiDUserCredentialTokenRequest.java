@@ -1,5 +1,6 @@
 package com.schibsted.android.sdk.request;
 
+import com.schibsted.android.sdk.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.SPiDConfiguration;
 import com.schibsted.android.sdk.SPiDRequestListener;
@@ -13,10 +14,10 @@ public class SPiDUserCredentialTokenRequest extends SPiDTokenRequest {
      *
      * @param username
      * @param password
-     * @param listener Called on completion or error, can be <code>null</code>
+     * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
-    public SPiDUserCredentialTokenRequest(String username, String password, SPiDRequestListener listener) {
-        super(listener);
+    public SPiDUserCredentialTokenRequest(String username, String password, SPiDAuthorizationListener authorizationListener) {
+        super(authorizationListener);
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         this.addBodyParameter("grant_type", "password");

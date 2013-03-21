@@ -160,7 +160,7 @@ public class SPiDAuthorizationRequest {
      */
     public void refreshAccessToken(String refreshToken) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDRequest request = new SPiDRequest("POST", config.getTokenURL(), new AccessTokenListener(listener));
+        SPiDRequest request = new SPiDRefreshTokenRequest(new AccessTokenListener(listener));
         request.addBodyParameter("grant_type", "refresh_token");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
@@ -280,7 +280,7 @@ public class SPiDAuthorizationRequest {
     /**
      * Listener for the access token request
      */
-    private class AccessTokenListener implements SPiDRequestListener {
+    private class AccessTokenListener implements SPiDAuthorizationListener {
         private SPiDAuthorizationListener listener;
 
         /**
@@ -294,46 +294,19 @@ public class SPiDAuthorizationRequest {
         }
 
         @Override
-        public void onComplete(SPiDResponse response) {
-            SPiDClient.getInstance().clearAuthorizationRequest();
-            Exception exception = response.getException();
-            if (exception != null) {
-                if (exception instanceof IOException) {
-                    if (listener != null)
-                        listener.onIOException((IOException) exception);
-                    else
-                        SPiDLogger.log("Received IOException: " + exception.getMessage());
-                } else if (exception instanceof SPiDException) {
-                    if (listener != null)
-                        listener.onSPiDException((SPiDException) exception);
-                    else
-                        SPiDLogger.log("Received SPiDException: " + exception.getMessage());
-                } else {
-                    if (listener != null)
-                        listener.onException(exception);
-                    else
-                        SPiDLogger.log("Received unknown exception: " + exception.getMessage());
-                }
-            } else {
-                SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
-                SPiDClient.getInstance().setAccessToken(token);
-                SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
-                SPiDClient.getInstance().runWaitingRequests();
-                if (listener != null)
-                    listener.onComplete();
-            }
+        public void onComplete() {
+            if (listener != null)
+                listener.onComplete();
         }
 
         @Override
         public void onSPiDException(SPiDException exception) {
-            SPiDClient.getInstance().clearAuthorizationRequest();
             if (listener != null)
                 listener.onSPiDException(exception);
         }
 
         @Override
         public void onIOException(IOException exception) {
-            SPiDClient.getInstance().clearAuthorizationRequest();
             if (listener != null)
                 listener.onIOException(exception);
         }

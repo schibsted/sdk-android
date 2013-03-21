@@ -1,5 +1,6 @@
 package com.schibsted.android.sdk.request;
 
+import com.schibsted.android.sdk.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.SPiDConfiguration;
 import com.schibsted.android.sdk.SPiDRequestListener;
@@ -14,10 +15,10 @@ public class SPiDRefreshTokenRequest extends SPiDTokenRequest {
     /**
      * Constructor for the SPiDTokenRequest
      *
-     * @param listener Called on completion or error, can be <code>null</code>
+     * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
-    public SPiDRefreshTokenRequest(SPiDRequestListener listener) {
-        super(listener);
+    public SPiDRefreshTokenRequest(SPiDAuthorizationListener authorizationListener) {
+        super(authorizationListener);
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
         String refreshToken = SPiDClient.getInstance().getAccessToken().getRefreshToken();
