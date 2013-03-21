@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
+import com.schibsted.android.sdk.keychain.SPiDKeychain;
 import com.schibsted.android.sdk.request.SPiDAuthorizationRequest;
 import com.schibsted.android.sdk.request.SPiDRequest;
+import com.schibsted.android.sdk.webview.SPiDWebViewClient;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -222,7 +224,7 @@ public class SPiDClient {
      *
      * @param code Refresh token previously from SPiD
      */
-    protected void requestAccessToken(String code) {
+    public void requestAccessToken(String code) {
         if (authorizationRequest != null) {
             authorizationRequest.requestAccessToken(code);
         }

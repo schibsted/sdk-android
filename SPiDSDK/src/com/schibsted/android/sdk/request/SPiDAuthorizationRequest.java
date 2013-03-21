@@ -11,6 +11,9 @@ import com.schibsted.android.sdk.*;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
+import com.schibsted.android.sdk.keychain.SPiDKeychain;
+import com.schibsted.android.sdk.reponse.SPiDResponse;
+import com.schibsted.android.sdk.webview.SPiDWebViewClient;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

@@ -1,8 +1,11 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.webview;
 
 import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import com.schibsted.android.sdk.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
 

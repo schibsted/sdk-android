@@ -1,6 +1,7 @@
 package com.schibsted.android.sdk;
 
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.reponse.SPiDResponse;
 
 import java.io.IOException;
 

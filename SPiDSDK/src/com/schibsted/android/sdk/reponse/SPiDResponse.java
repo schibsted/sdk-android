@@ -1,5 +1,6 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.reponse;
 
+import com.schibsted.android.sdk.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import org.apache.http.Header;

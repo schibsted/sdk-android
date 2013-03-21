@@ -1,9 +1,11 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.keychain;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Base64;
+import com.schibsted.android.sdk.SPiDAccessToken;
+import com.schibsted.android.sdk.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDKeychainException;
 
 import javax.crypto.Cipher;
@@ -53,7 +55,7 @@ public class SPiDKeychain {
      * @param encryptionKey Key used to decrypt the access token
      * @return Access token if found, otherwise null
      */
-    protected static SPiDAccessToken decryptAccessTokenFromSharedPreferences(Context context, String encryptionKey) {
+    public static SPiDAccessToken decryptAccessTokenFromSharedPreferences(Context context, String encryptionKey) {
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         if (secure.contains("access_token")) {
             SPiDAccessToken token;
@@ -81,7 +83,7 @@ public class SPiDKeychain {
      *
      * @param context Android context used to generate name for SharedPreferences
      */
-    protected static void clearAccessTokenFromSharedPreferences(Context context) {
+    public static void clearAccessTokenFromSharedPreferences(Context context) {
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = secure.edit();
         editor.remove("access_token");
