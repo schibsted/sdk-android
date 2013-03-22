@@ -144,12 +144,12 @@ public class SPiDAuthorizationRequest {
      */
     public void requestAccessToken(String code) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDTokenRequest request = new SPiDTokenRequest(new AccessTokenListener(listener));
-        request.addBodyParameter("grant_type", "authorization_code");
+        SPiDTokenRequest request = new SPiDCodeTokenRequest(code, listener);
+        /*request.addBodyParameter("grant_type", "authorization_code");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
         request.addBodyParameter("code", code);
-        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");*/
         request.execute();
     }
 
@@ -160,12 +160,12 @@ public class SPiDAuthorizationRequest {
      */
     public void refreshAccessToken(String refreshToken) {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDRequest request = new SPiDRefreshTokenRequest(new AccessTokenListener(listener));
-        request.addBodyParameter("grant_type", "refresh_token");
+        SPiDRequest request = new SPiDRefreshTokenRequest(listener);
+        /*request.addBodyParameter("grant_type", "refresh_token");
         request.addBodyParameter("client_id", config.getClientID());
         request.addBodyParameter("client_secret", config.getClientSecret());
         request.addBodyParameter("refresh_token", refreshToken);
-        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        request.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");*/
         request.execute();
     }
 
@@ -280,14 +280,14 @@ public class SPiDAuthorizationRequest {
     /**
      * Listener for the access token request
      */
-    private class AccessTokenListener implements SPiDAuthorizationListener {
+/*    private class AccessTokenListener implements SPiDAuthorizationListener {
         private SPiDAuthorizationListener listener;
 
-        /**
+        *//**
          * Creates a AccessTokenListener
          *
          * @param listener Called on completion or error, can be <code>null</code>
-         */
+         *//*
         public AccessTokenListener(SPiDAuthorizationListener listener) {
             super();
             this.listener = listener;
@@ -317,7 +317,7 @@ public class SPiDAuthorizationRequest {
             if (listener != null)
                 listener.onException(exception);
         }
-    }
+    }*/
 
     /**
      * Listener for the logout request

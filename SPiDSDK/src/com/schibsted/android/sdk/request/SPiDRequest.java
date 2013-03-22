@@ -1,9 +1,7 @@
 package com.schibsted.android.sdk.request;
 
 import android.os.AsyncTask;
-import com.schibsted.android.sdk.SPiDClient;
-import com.schibsted.android.sdk.SPiDLogger;
-import com.schibsted.android.sdk.SPiDRequestListener;
+import com.schibsted.android.sdk.*;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
 import org.apache.http.Header;
@@ -272,6 +270,15 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      */
     public void execute() {
         execute((Void) null);
+    }
+
+    public void executeAuthorizedRequest() {
+        SPiDAccessToken accessToken = SPiDClient.getInstance().getAccessToken();
+        if (!body.containsKey("oauth_token") && accessToken != null) {
+            addBodyParameter("oauth_token", accessToken.getAccessToken());
+        }
+        SPiDLogger.log(body.toString());
+        execute();
     }
 
     /**

@@ -92,4 +92,8 @@ public class SPiDAccessToken {
     public String getUserID() {
         return userID;
     }
+
+    public boolean isClientToken() {
+        return (userID != null  && !userID.equals("0"));
+    }
 }
