@@ -13,8 +13,8 @@ public class SPiDConfigurationBuilder {
     private String serverURL;
     private String redirectURL;
     private String authorizationURL;
-    private String registrationURL;
-    private String lostPasswordURL;
+    private String signupURL;
+    private String forgotPasswordURL;
     private String tokenURL;
     private String serverClientID;
     private Boolean useMobileWeb = Boolean.TRUE;
@@ -90,16 +90,16 @@ public class SPiDConfigurationBuilder {
      * @return The SPiDConfigurationBuilder
      */
     public SPiDConfigurationBuilder registrationURL(String registrationURL) {
-        this.registrationURL = registrationURL;
+        this.signupURL = registrationURL;
         return this;
     }
 
     /**
-     * @param lostPasswordURL SPiD lost password url
+     * @param forgotPasswordURL SPiD lost password url
      * @return The SPiDConfigurationBuilder
      */
-    public SPiDConfigurationBuilder lostPasswordURL(String lostPasswordURL) {
-        this.lostPasswordURL = lostPasswordURL;
+    public SPiDConfigurationBuilder forgotPasswordURL(String forgotPasswordURL) {
+        this.forgotPasswordURL = forgotPasswordURL;
         return this;
     }
 
@@ -198,12 +198,12 @@ public class SPiDConfigurationBuilder {
             tokenURL = serverURL + "/oauth/token";
         }
 
-        if (registrationURL == null || registrationURL.trim().equals("")) {
-            registrationURL = serverURL + "/auth/signup";
+        if (signupURL == null || signupURL.trim().equals("")) {
+            signupURL = serverURL + "/auth/signup";
         }
 
-        if (lostPasswordURL == null || lostPasswordURL.trim().equals("")) {
-            lostPasswordURL = serverURL + "/auth/forgotpassword";
+        if (forgotPasswordURL == null || forgotPasswordURL.trim().equals("")) {
+            forgotPasswordURL = serverURL + "/auth/forgotpassword";
         }
 
         if (serverClientID == null || serverClientID.trim().equals("")) {
@@ -218,8 +218,8 @@ public class SPiDConfigurationBuilder {
                 serverURL,
                 redirectURL,
                 authorizationURL,
-                registrationURL,
-                lostPasswordURL,
+                signupURL,
+                forgotPasswordURL,
                 tokenURL,
                 serverClientID,
                 useMobileWeb,

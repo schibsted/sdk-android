@@ -1,6 +1,6 @@
 package com.schibsted.android.sdk.request;
 
-import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.keychain.SPiDKeychain;
@@ -49,7 +49,7 @@ public class SPiDTokenRequest extends SPiDRequest {
         } else {
             SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
             SPiDClient.getInstance().setAccessToken(token);
-            SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getContext(), SPiDClient.getInstance().getConfig().getClientSecret(), token);
+            SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getClientSecret(), token);
             SPiDClient.getInstance().runWaitingRequests();
             if (authorizationListener != null)
                 authorizationListener.onComplete();

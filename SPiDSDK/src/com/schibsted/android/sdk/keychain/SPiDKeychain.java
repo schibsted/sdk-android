@@ -4,9 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Base64;
+import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
-import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDKeychainException;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -25,24 +26,24 @@ public class SPiDKeychain {
     /**
      * Encrypts access token and saves it to SharedPreferences
      *
-     * @param context       Android context used to generate key for SharedPreferences
      * @param encryptionKey Key used to encrypt the access token
      * @param accessToken   Access token to be saved
      */
-    public static void encryptAccessTokenToSharedPreferences(Context context, String encryptionKey, SPiDAccessToken accessToken) {
+    public static void encryptAccessTokenToSharedPreferences(String encryptionKey, SPiDAccessToken accessToken) {
         SPiDLogger.log("Saving: " + accessToken.getAccessToken() + ", " + Long.toString(accessToken.getExpiresAt().getTime()) + ", " + accessToken.getRefreshToken() + ", " + accessToken.getUserID());
+        Context context = SPiDClient.getInstance().getConfig().getContext();
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = secure.edit();
         try {
-            editor.putString("access_token", encryptString(context, encryptionKey, accessToken.getAccessToken()));
-            editor.putString("expires_at", encryptString(context, encryptionKey, Long.toString(accessToken.getExpiresAt().getTime())));
-            editor.putString("refresh_token", encryptString(context, encryptionKey, accessToken.getRefreshToken()));
-            editor.putString("user_id", encryptString(context, encryptionKey, accessToken.getUserID()));
+            editor.putString("access_token", encryptString(encryptionKey, accessToken.getAccessToken()));
+            editor.putString("expires_at", encryptString(encryptionKey, Long.toString(accessToken.getExpiresAt().getTime())));
+            editor.putString("refresh_token", encryptString(encryptionKey, accessToken.getRefreshToken()));
+            editor.putString("user_id", encryptString(encryptionKey, accessToken.getUserID()));
         } catch (GeneralSecurityException e) {
-            clearAccessTokenFromSharedPreferences(context);
+            clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("GeneralSecurityException", e);
         } catch (UnsupportedEncodingException e) {
-            clearAccessTokenFromSharedPreferences(context);
+            clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
         editor.commit();
@@ -51,25 +52,25 @@ public class SPiDKeychain {
     /**
      * Decrypts access token from SharedPreferences
      *
-     * @param context       Android context used to generate name for SharedPreferences
      * @param encryptionKey Key used to decrypt the access token
      * @return Access token if found, otherwise null
      */
-    public static SPiDAccessToken decryptAccessTokenFromSharedPreferences(Context context, String encryptionKey) {
+    public static SPiDAccessToken decryptAccessTokenFromSharedPreferences(String encryptionKey) {
+        Context context = SPiDClient.getInstance().getConfig().getContext();
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         if (secure.contains("access_token")) {
             SPiDAccessToken token;
             try {
-                String accessToken = decryptString(context, encryptionKey, secure.getString("access_token", ""));
-                Long expiresAt = new Long(decryptString(context, encryptionKey, secure.getString("expires_at", "")));
-                String refreshToken = decryptString(context, encryptionKey, secure.getString("refresh_token", ""));
-                String userId = decryptString(context, encryptionKey, secure.getString("user_id", ""));
+                String accessToken = decryptString(encryptionKey, secure.getString("access_token", ""));
+                Long expiresAt = new Long(decryptString(encryptionKey, secure.getString("expires_at", "")));
+                String refreshToken = decryptString(encryptionKey, secure.getString("refresh_token", ""));
+                String userId = decryptString(encryptionKey, secure.getString("user_id", ""));
                 token = new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
             } catch (GeneralSecurityException e) {
-                clearAccessTokenFromSharedPreferences(context);
+                clearAccessTokenFromSharedPreferences();
                 throw new SPiDKeychainException("GeneralSecurityException", e);
             } catch (UnsupportedEncodingException e) {
-                clearAccessTokenFromSharedPreferences(context);
+                clearAccessTokenFromSharedPreferences();
                 throw new SPiDKeychainException("UnsupportedEncodingException", e);
             }
             return token;
@@ -80,10 +81,9 @@ public class SPiDKeychain {
 
     /**
      * Clears access token from SharedPreferences
-     *
-     * @param context Android context used to generate name for SharedPreferences
      */
-    public static void clearAccessTokenFromSharedPreferences(Context context) {
+    public static void clearAccessTokenFromSharedPreferences() {
+        Context context = SPiDClient.getInstance().getConfig().getContext();
         SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = secure.edit();
         editor.remove("access_token");
@@ -96,38 +96,38 @@ public class SPiDKeychain {
     /**
      * Encrypts a string using the "PBEWithMD5AndDES" algorithm
      *
-     * @param context       Android context used to generate encryption salt
      * @param encryptionKey Key used to encrypt the access token
      * @param value         String to be encrypted
      * @return Encrypted string
      * @throws GeneralSecurityException
      * @throws UnsupportedEncodingException
      */
-    private static String encryptString(Context context, String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
+    private static String encryptString(String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
         final byte[] bytes = value != null ? value.getBytes(UTF8) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
         Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
-        pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.getString(context.getContentResolver(), Settings.System.ANDROID_ID).getBytes(UTF8), 20));
+        //TODO:
+        //pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
+        pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
         return new String(Base64.encode(pbeCipher.doFinal(bytes), Base64.NO_WRAP), UTF8);
     }
 
     /**
      * Decrypts a string using the "PBEWithMD5AndDES" algorithm
      *
-     * @param context       Android context used to generate decrypt salt
      * @param encryptionKey Key used to decrypt the access token
      * @param value         String to be decrypted
      * @return Decrypted string
      * @throws GeneralSecurityException
      * @throws UnsupportedEncodingException
      */
-    private static String decryptString(Context context, String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
+    private static String decryptString(String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
         final byte[] bytes = value != null ? Base64.decode(value, Base64.DEFAULT) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
         Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
-        pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.getString(context.getContentResolver(), Settings.System.ANDROID_ID).getBytes(UTF8), 20));
+        pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
         return new String(pbeCipher.doFinal(bytes), UTF8);
     }
 }

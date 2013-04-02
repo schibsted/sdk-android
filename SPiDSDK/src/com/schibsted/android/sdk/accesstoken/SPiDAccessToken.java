@@ -94,6 +94,6 @@ public class SPiDAccessToken {
     }
 
     public boolean isClientToken() {
-        return (userID != null  && !userID.equals("0"));
+        return (userID == null || userID.equals("false") || userID.equals("0"));
     }
 }

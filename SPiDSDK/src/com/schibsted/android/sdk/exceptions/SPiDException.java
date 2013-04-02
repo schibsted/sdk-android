@@ -100,10 +100,10 @@ public class SPiDException extends RuntimeException {
     /**
      * Constructs a new SPiDException with the specified error, description, errorCode and type.
      *
-     * @param error         The error as a string, see predefined constants in this class
-     * @param descriptions  The detail messages
-     * @param errorCode     The error code
-     * @param type          The error type
+     * @param error        The error as a string, see predefined constants in this class
+     * @param descriptions The detail messages
+     * @param errorCode    The error code
+     * @param type         The error type
      */
     public SPiDException(String error, Map<String, String> descriptions, Integer errorCode, String type) {
         super(descriptions.containsKey("error") ? descriptions.get("error") : descriptions.toString());
@@ -142,14 +142,14 @@ public class SPiDException extends RuntimeException {
             error = data.optString("error");
             errorCodeString = data.optString("error_code");
             type = data.optString("type");
-            descriptions.put("error", errorObject.optString("error_description", "Missing error description"));
+            descriptions.put("error", data.optString("error_description", "Missing error description"));
         }
 
         if (error == null && type != null) {
             error = type;
         }
 
-        if (descriptions.isEmpty()){
+        if (descriptions.isEmpty()) {
             descriptions.put("error", type);
         }
 
@@ -164,6 +164,8 @@ public class SPiDException extends RuntimeException {
 
         if (type.equals(API_EXCEPTION)) {
             return new SPiDApiException(error, descriptions, errorCode, type);
+        } else if (error != null && (error.equals(INVALID_TOKEN) || error.equals(EXPIRED_TOKEN))) {
+            return new SPiDInvalidAccessTokenException(error, descriptions, errorCode, type);
         } else if (type.equals(OAUTH_EXCEPTION)) {
             return new SPiDOAuthException(error, descriptions, errorCode, type);
         } else {
@@ -172,7 +174,7 @@ public class SPiDException extends RuntimeException {
     }
 
     private static Map<String, String> descriptionsFromJSONObject(JSONObject jsonObject) {
-        Map<String, String> map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         Iterator keys = jsonObject.keys();
         while (keys.hasNext()) {
             String key = (String) keys.next();

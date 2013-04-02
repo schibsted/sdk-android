@@ -3,11 +3,13 @@ package com.schibsted.android.sdk.webview;
 import android.net.Uri;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.SPiDClient;
-import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
+import com.schibsted.android.sdk.request.SPiDCodeTokenRequest;
+import com.schibsted.android.sdk.request.SPiDTokenRequest;
 
 /**
  * SPiD implementation of WebViewClient, it should be subclassed if a custom WebViewClient is needed
@@ -57,7 +59,8 @@ public class SPiDWebViewClient extends WebViewClient {
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();
                 } else if (code.length() > 0) {
-                    SPiDClient.getInstance().requestAccessToken(code);
+                    SPiDTokenRequest request = new SPiDCodeTokenRequest(code, SPiDClient.getInstance().getAuthorizationListener());
+                    request.execute();
                 } else {
                     if (listener != null) {
                         listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));

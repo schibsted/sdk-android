@@ -13,8 +13,8 @@ public class SPiDConfiguration {
     private String appURLScheme;
     private String serverURL;
     private String authorizationURL;
-    private String registrationURL;
-    private String lostPasswordURL;
+    private String signupURL;
+    private String forgotPasswordURL;
     private String tokenURL;
     private String redirectURL;
     private String serverClientID;
@@ -26,21 +26,21 @@ public class SPiDConfiguration {
     /**
      * Constructor for SPiDConfiguration object.
      *
-     * @param clientID         SPiD client id
-     * @param clientSecret     SPiD client secret
-     * @param appURLScheme     Android app url scheme
-     * @param serverURL        SPiD server url
-     * @param redirectURL      SPiD redirect url
-     * @param authorizationURL SPiD authorization url
-     * @param registrationURL  SPiD registration url
-     * @param lostPasswordURL  SPiD lost password url
-     * @param tokenURL         SPiD token url
-     * @param serverClientID   SPiD client id for server
-     * @param useMobileWeb     Use mobile flag
-     * @param apiVersion       SPiD API version
-     * @param context          Android application context
+     * @param clientID          SPiD client id
+     * @param clientSecret      SPiD client secret
+     * @param appURLScheme      Android app url scheme
+     * @param serverURL         SPiD server url
+     * @param redirectURL       SPiD redirect url
+     * @param authorizationURL  SPiD authorization url
+     * @param registrationURL   SPiD registration url
+     * @param forgotPasswordURL SPiD lost password url
+     * @param tokenURL          SPiD token url
+     * @param serverClientID    SPiD client id for server
+     * @param useMobileWeb      Use mobile flag
+     * @param apiVersion        SPiD API version
+     * @param context           Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.signSecret = signSecret;
@@ -48,8 +48,8 @@ public class SPiDConfiguration {
         this.serverURL = serverURL;
         this.redirectURL = redirectURL;
         this.authorizationURL = authorizationURL;
-        this.registrationURL = registrationURL;
-        this.lostPasswordURL = lostPasswordURL;
+        this.signupURL = registrationURL;
+        this.forgotPasswordURL = forgotPasswordURL;
         this.tokenURL = tokenURL;
         this.serverClientID = serverClientID;
         this.useMobileWeb = useMobileWeb;
@@ -158,31 +158,31 @@ public class SPiDConfiguration {
     }
 
     /**
-     * @return SPiD registration url, default value: <code>getServerURL() + "/auth/signup";</code>
+     * @return SPiD signup url, default value: <code>getServerURL() + "/auth/signup";</code>
      */
-    public String getRegistrationURL() {
-        return registrationURL;
+    public String getSignupURL() {
+        return signupURL;
     }
 
     /**
-     * @param registrationURL SPiD registration url
+     * @param signupURL SPiD signup url
      */
-    public void setRegistrationURL(String registrationURL) {
-        this.registrationURL = registrationURL;
+    public void setSignupURL(String signupURL) {
+        this.signupURL = signupURL;
     }
 
     /**
      * @return SPiD lost password url, default value: <code>getServerURL() + "/auth/forgotpassword";</code>
      */
-    public String getLostPasswordURL() {
-        return lostPasswordURL;
+    public String getForgotPasswordURL() {
+        return forgotPasswordURL;
     }
 
     /**
-     * @param lostPasswordURL SPiD lost password url
+     * @param forgotPasswordURL SPiD lost password url
      */
-    public void setLostPasswordURL(String lostPasswordURL) {
-        this.lostPasswordURL = lostPasswordURL;
+    public void setForgotPasswordURL(String forgotPasswordURL) {
+        this.forgotPasswordURL = forgotPasswordURL;
     }
 
     /**

@@ -2,22 +2,22 @@ package com.schibsted.android.sdk.request;
 
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.configuration.SPiDConfiguration;
-import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 
-/**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 3/22/13
- * Time: 9:19 AM
- */
 public class SPiDApiPostRequest extends SPiDRequest {
-    public SPiDApiPostRequest(String url, SPiDRequestListener listener) {
-        this(SPiDClient.getInstance().getConfig(), url, listener);
+    /**
+     * Creates a POST API request to SPiD
+     *
+     * @param path     Path for request without api and version, e.g. /user/123
+     * @param listener Listener called on completion or failure, can be <code>null</code>
+     */
+    public SPiDApiPostRequest(String path, SPiDRequestListener listener) {
+        this(SPiDClient.getInstance().getConfig(), path, listener);
     }
 
-    private SPiDApiPostRequest(SPiDConfiguration config, String url, SPiDRequestListener listener) {
-        super(SPiDRequest.POST, config.getServerURL() + "/api/" + config.getApiVersion() + url, listener);
-        SPiDLogger.log(config.getServerURL() + "/api/" + config.getApiVersion() + url);
+    private SPiDApiPostRequest(SPiDConfiguration config, String path, SPiDRequestListener listener) {
+        super(SPiDRequest.POST, config.getServerURL() + "/api/" + config.getApiVersion() + path, listener);
+        SPiDLogger.log(config.getServerURL() + "/api/" + config.getApiVersion() + path);
     }
 }

@@ -1,7 +1,7 @@
 package com.schibsted.android.sdk.request;
 
 import android.os.AsyncTask;
-import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
@@ -35,17 +35,13 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
-
-    private static final Integer MaxRetryCount = 3;
-
+    private static final Integer MaxRetryCount = 0;
     protected SPiDRequestListener listener;
-
     private String url;
     private String method;
     private Map<String, String> headers;
     private Map<String, String> query;
     private Map<String, String> body;
-
     private Integer retryCount;
     private Integer maxRetryCount;
 
@@ -256,6 +252,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                         SPiDClient.getInstance().addWaitingRequest(request);
                         SPiDClient.getInstance().refreshAccessToken(null);
                         SPiDLogger.log("Retrying attempt: " + request.retryCount + " for request: " + request.url);
+                    } else {
+                        SPiDClient.getInstance().clearAccessToken();
+                        listener.onSPiDException((SPiDException) exception);
                     }
                 } else {
                     listener.onSPiDException((SPiDException) exception);
@@ -277,10 +276,19 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public void executeAuthorizedRequest() {
         SPiDAccessToken accessToken = SPiDClient.getInstance().getAccessToken();
-        if (!body.containsKey("oauth_token") && accessToken != null) {
-            addBodyParameter("oauth_token", accessToken.getAccessToken());
+        if (method.equals(GET)) {
+            if (!url.contains("oauth_token") && accessToken != null) {
+                if (url.contains("?")) {
+                    url = url + "&oauth_token=" + accessToken.getAccessToken();
+                } else {
+                    url = url + "?oauth_token=" + accessToken.getAccessToken();
+                }
+            }
+        } else {
+            if (!body.containsKey("oauth_token") && accessToken != null) {
+                addBodyParameter("oauth_token", accessToken.getAccessToken());
+            }
         }
-        SPiDLogger.log(body.toString());
         execute();
     }
 

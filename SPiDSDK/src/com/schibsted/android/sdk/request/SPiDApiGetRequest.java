@@ -4,18 +4,18 @@ import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.configuration.SPiDConfiguration;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
 
-/**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 3/22/13
- * Time: 9:20 AM
- */
 public class SPiDApiGetRequest extends SPiDRequest {
-    public SPiDApiGetRequest(String url, SPiDRequestListener listener) {
-        this(SPiDClient.getInstance().getConfig(), url, listener);
+    /**
+     * Creates a GET API request to SPiD
+     *
+     * @param path     Path for request without api and version, e.g. /user/123
+     * @param listener Listener called on completion or failure, can be <code>null</code>
+     */
+    public SPiDApiGetRequest(String path, SPiDRequestListener listener) {
+        this(SPiDClient.getInstance().getConfig(), path, listener);
     }
 
-    private SPiDApiGetRequest(SPiDConfiguration config, String url, SPiDRequestListener listener) {
-        super(SPiDRequest.GET, config.getServerURL() + "/api/" + config.getApiVersion() + url, listener);
+    private SPiDApiGetRequest(SPiDConfiguration config, String path, SPiDRequestListener listener) {
+        super(SPiDRequest.GET, config.getServerURL() + "/api/" + config.getApiVersion() + path, listener);
     }
 }

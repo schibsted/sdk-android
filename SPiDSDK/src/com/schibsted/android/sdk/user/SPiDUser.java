@@ -1,7 +1,7 @@
 package com.schibsted.android.sdk.user;
 
-import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
@@ -88,7 +88,7 @@ public class SPiDUser {
 
         @Override
         public void onComplete(SPiDResponse result) {
-            SPiDLogger.log(result.getBody());
+            authorizationListener.onComplete();
         }
 
         @Override
