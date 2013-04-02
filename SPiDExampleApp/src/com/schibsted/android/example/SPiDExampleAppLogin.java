@@ -10,8 +10,14 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
-import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.configuration.SPiDConfiguration;
+import com.schibsted.android.sdk.configuration.SPiDConfigurationBuilder;
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
+import com.schibsted.android.sdk.webview.SPiDWebView;
+import com.schibsted.android.sdk.webview.SPiDWebViewClient;
 
 import java.io.IOException;
 
@@ -36,7 +42,7 @@ public class SPiDExampleAppLogin extends Activity {
         config.setDebugMode(true);
         SPiDClient.getInstance().configure(config);
 
-        if (SPiDClient.getInstance().isAuthorized()) {
+        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().isClientToken()) {
             SPiDLogger.log("Found access token in SharedPreferences");
             Intent intent = new Intent(this, SPiDExampleAppMain.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -134,7 +140,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                SPiDClient.getInstance().authorizationWithBrowser();
+                SPiDClient.getInstance().browserAuthorization();
             } catch (Exception e) {
                 SPiDLogger.log("Error loading webbrowser: " + e.getMessage());
                 Toast.makeText(context, "Error loading webbrowser", Toast.LENGTH_LONG).show();
@@ -152,7 +158,7 @@ public class SPiDExampleAppLogin extends Activity {
         public void onClick(View v) {
             webView = null;
             try {
-                webView = SPiDClient.getInstance().getAuthorizationWebView(context, null, new SPiDExampleWebViewClient(), new LoginListener(context));
+                webView = SPiDWebView.webViewAuthorization(context, null, new SPiDExampleWebViewClient(), new LoginListener(context));
                 setContentView(webView);
             } catch (Exception e) {
                 SPiDLogger.log("Error loading WebView: " + e.getMessage());

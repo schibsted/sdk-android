@@ -6,19 +6,19 @@
     <parent>
         <groupId>com.schibsted</groupId>
         <artifactId>android</artifactId>
-        <version>1.0.4</version>
+        <version>1.0.5-SNAPSHOT</version>
     </parent>
 
     <artifactId>exampleapp</artifactId>
     <packaging>apk</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
     <name>SPiDExampleApp</name>
 
     <dependencies>
         <dependency>
             <groupId>com.schibsted.android</groupId>
             <artifactId>spid</artifactId>
-            <version>1.0.4</version>
+            <version>1.0.5-SNAPSHOT</version>
         </dependency>
         <!-- org.json.* -->
         <dependency>

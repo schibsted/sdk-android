@@ -8,8 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.listener.SPiDRequestListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
+import com.schibsted.android.sdk.reponse.SPiDResponse;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -168,7 +172,7 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            SPiDClient.getInstance().logoutSPiDAPI(new SPiDAuthorizationListener() {
+            SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
                     Intent intent = new Intent(context, SPiDExampleAppLogin.class);
