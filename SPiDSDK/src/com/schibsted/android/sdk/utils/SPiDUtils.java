@@ -68,7 +68,7 @@ public class SPiDUtils {
 
     public static String getHmacSHA256(String key, String string) throws Exception {
         Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA1"));
+        mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA256"));
         byte[] bs = mac.doFinal(string.getBytes());
         return byteArrayToHexString(bs);
     }

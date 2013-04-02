@@ -1,6 +1,5 @@
 package com.schibsted.android.sdk.jwt;
 
-import android.util.Base64;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.utils.SPiDUtils;
@@ -13,10 +12,7 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 4/1/13
- * Time: 12:50 PM
+ *
  */
 public class SPiDJwt {
 
@@ -93,6 +89,7 @@ public class SPiDJwt {
         String date = format.format(exp);
 
         JSONObject claimJson = new JSONObject();
+        claimJson.put("iss", iss);
         claimJson.put("sub", sub);
         claimJson.put("aud", aud);
         claimJson.put("exp", date);
