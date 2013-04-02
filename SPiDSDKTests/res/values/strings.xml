@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPiDExampleApp</string>
+    <string name="LastLogin">Get last login</string>
+    <string name="RefreshToken">Refresh token</string>
+    <string name="logout">Logout from SPiD</string>
+    <string name="SPiDLogo">SPiD Logo</string>
+    <string name="oneTimeCode">Get one time token</string>
+</resources>
