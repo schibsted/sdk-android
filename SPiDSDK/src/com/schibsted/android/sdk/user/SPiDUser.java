@@ -1,6 +1,11 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.user;
 
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
+import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.listener.SPiDRequestListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
 import com.schibsted.android.sdk.request.SPiDApiPostRequest;
 import com.schibsted.android.sdk.request.SPiDClientTokenRequest;

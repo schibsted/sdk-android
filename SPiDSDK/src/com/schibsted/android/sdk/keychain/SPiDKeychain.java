@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Base64;
-import com.schibsted.android.sdk.SPiDAccessToken;
-import com.schibsted.android.sdk.SPiDLogger;
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.exceptions.SPiDKeychainException;
 
 import javax.crypto.Cipher;

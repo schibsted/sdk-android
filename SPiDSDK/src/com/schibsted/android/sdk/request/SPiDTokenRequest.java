@@ -1,8 +1,10 @@
 package com.schibsted.android.sdk.request;
 
 import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.keychain.SPiDKeychain;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
 
 import java.io.IOException;

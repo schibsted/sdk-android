@@ -1,20 +1,17 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.listener;
 
 import com.schibsted.android.sdk.exceptions.SPiDException;
-import com.schibsted.android.sdk.reponse.SPiDResponse;
 
 import java.io.IOException;
 
 /**
- * Listener interface for a SPiD request.
+ * Listener interface for a SPiD authorization request.
  */
-public interface SPiDRequestListener {
+public interface SPiDAuthorizationListener {
     /**
      * Called when the authorization has been successfully completed
-     *
-     * @param result The SPiDResponse
      */
-    public void onComplete(SPiDResponse result);
+    public void onComplete();
 
     /**
      * Called when there is a SPiDException

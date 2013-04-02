@@ -8,10 +8,14 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
+import com.schibsted.android.sdk.configuration.SPiDConfiguration;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.schibsted.android.sdk.exceptions.SPiDUserAbortedLoginException;
-import com.schibsted.android.sdk.keychain.SPiDKeychain;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.listener.SPiDRequestListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
 import com.schibsted.android.sdk.webview.SPiDWebViewClient;
 

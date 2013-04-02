@@ -4,6 +4,9 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Base class for all exceptions in SPiD.
@@ -32,6 +35,7 @@ public class SPiDException extends RuntimeException {
     private String error;
     private Integer errorCode;
     private String errorType;
+    private Map<String, String> descriptions;
 
     /**
      * Constructs a new SPiDException with the specified detail message.
@@ -43,6 +47,8 @@ public class SPiDException extends RuntimeException {
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
+        this.descriptions = new HashMap<String, String>();
+        this.descriptions.put("error", message);
     }
 
     /**
@@ -55,6 +61,8 @@ public class SPiDException extends RuntimeException {
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
+        this.descriptions = new HashMap<String, String>();
+        this.descriptions.put("error", cause.getMessage());
     }
 
     /**
@@ -68,6 +76,8 @@ public class SPiDException extends RuntimeException {
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
+        this.descriptions = new HashMap<String, String>();
+        this.descriptions.put("error", message);
     }
 
     /**
@@ -83,13 +93,26 @@ public class SPiDException extends RuntimeException {
         this.error = error;
         this.errorCode = errorCode;
         this.errorType = type;
+        this.descriptions = new HashMap<String, String>();
+        this.descriptions.put("error", description);
     }
 
-    /*
-    public static SPiDException create(String error) {
-        return new SPiDException(error, error, UNKNOWN_CODE, SPID_EXCEPTION);
+    /**
+     * Constructs a new SPiDException with the specified error, description, errorCode and type.
+     *
+     * @param error         The error as a string, see predefined constants in this class
+     * @param descriptions  The detail messages
+     * @param errorCode     The error code
+     * @param type          The error type
+     */
+    public SPiDException(String error, Map<String, String> descriptions, Integer errorCode, String type) {
+        super(descriptions.containsKey("error") ? descriptions.get("error") : descriptions.toString());
+        this.error = error;
+        this.errorCode = errorCode;
+        this.errorType = type;
+        this.descriptions = descriptions;
     }
-    */
+
 
     /**
      * Creates a SPiDException from a JSONObject
@@ -99,29 +122,35 @@ public class SPiDException extends RuntimeException {
      */
     public static SPiDException create(JSONObject data) {
         String error;
-        String description;
         String errorCodeString;
         String type;
+        Map<String, String> descriptions = new HashMap<String, String>();
 
         JSONObject errorObject = data.optJSONObject("error");
         if (errorObject != null) {
             error = errorObject.optString("error");
-            description = errorObject.optString("description");
             errorCodeString = errorObject.optString("code");
             type = errorObject.optString("type");
+
+            JSONObject descriptionsJson = errorObject.optJSONObject("description");
+            if (descriptionsJson != null) {
+                descriptions = descriptionsFromJSONObject(descriptionsJson);
+            } else {
+                descriptions.put("error", errorObject.optString("description", "Missing error description"));
+            }
         } else {
             error = data.optString("error");
-            description = data.optString("error_description");
             errorCodeString = data.optString("error_code");
             type = data.optString("type");
+            descriptions.put("error", errorObject.optString("error_description", "Missing error description"));
         }
 
         if (error == null && type != null) {
             error = type;
         }
 
-        if (description == null && type != null) {
-            description = type;
+        if (descriptions.isEmpty()){
+            descriptions.put("error", type);
         }
 
         Integer errorCode;
@@ -134,12 +163,22 @@ public class SPiDException extends RuntimeException {
         type = type != null ? type : SPID_EXCEPTION;
 
         if (type.equals(API_EXCEPTION)) {
-            return new SPiDApiException(error, description, errorCode, type);
+            return new SPiDApiException(error, descriptions, errorCode, type);
         } else if (type.equals(OAUTH_EXCEPTION)) {
-            return new SPiDOAuthException(error, description, errorCode, type);
+            return new SPiDOAuthException(error, descriptions, errorCode, type);
         } else {
-            return new SPiDException(error, description, errorCode, SPID_EXCEPTION);
+            return new SPiDException(error, descriptions, errorCode, SPID_EXCEPTION);
         }
+    }
+
+    private static Map<String, String> descriptionsFromJSONObject(JSONObject jsonObject) {
+        Map<String, String> map = new HashMap();
+        Iterator keys = jsonObject.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            map.put(key, jsonObject.optString(key, "Missing description details"));
+        }
+        return map;
     }
 
     /**
@@ -161,5 +200,12 @@ public class SPiDException extends RuntimeException {
      */
     public String getErrorType() {
         return errorType;
+    }
+
+    /**
+     *
+     */
+    public Map<String, String> getDescriptions() {
+        return descriptions;
     }
 }

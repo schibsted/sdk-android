@@ -2,7 +2,10 @@ package com.schibsted.android.sdk.request;
 
 import android.os.AsyncTask;
 import com.schibsted.android.sdk.*;
+import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
+import com.schibsted.android.sdk.listener.SPiDRequestListener;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;

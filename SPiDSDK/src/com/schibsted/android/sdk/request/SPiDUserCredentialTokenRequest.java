@@ -1,9 +1,8 @@
 package com.schibsted.android.sdk.request;
 
-import com.schibsted.android.sdk.SPiDAuthorizationListener;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.SPiDClient;
-import com.schibsted.android.sdk.SPiDConfiguration;
-import com.schibsted.android.sdk.SPiDRequestListener;
+import com.schibsted.android.sdk.configuration.SPiDConfiguration;
 
 /**
  * Contains a user credential access token request to SPiD

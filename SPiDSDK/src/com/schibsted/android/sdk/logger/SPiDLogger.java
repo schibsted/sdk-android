@@ -1,6 +1,7 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.logger;
 
 import android.util.Log;
+import com.schibsted.android.sdk.SPiDClient;
 
 /**
  * Helper class used for debug logging

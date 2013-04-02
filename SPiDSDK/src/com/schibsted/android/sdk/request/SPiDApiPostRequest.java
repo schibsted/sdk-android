@@ -1,9 +1,9 @@
 package com.schibsted.android.sdk.request;
 
 import com.schibsted.android.sdk.SPiDClient;
-import com.schibsted.android.sdk.SPiDConfiguration;
-import com.schibsted.android.sdk.SPiDLogger;
-import com.schibsted.android.sdk.SPiDRequestListener;
+import com.schibsted.android.sdk.configuration.SPiDConfiguration;
+import com.schibsted.android.sdk.logger.SPiDLogger;
+import com.schibsted.android.sdk.listener.SPiDRequestListener;
 
 /**
  * Created with IntelliJ IDEA.

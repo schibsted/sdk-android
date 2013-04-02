@@ -1,4 +1,4 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.configuration;
 
 import android.content.Context;
 
@@ -8,6 +8,7 @@ import android.content.Context;
 public class SPiDConfigurationBuilder {
     private String clientID;
     private String clientSecret;
+    private String signSecret;
     private String appURLScheme;
     private String serverURL;
     private String redirectURL;
@@ -36,6 +37,15 @@ public class SPiDConfigurationBuilder {
      */
     public SPiDConfigurationBuilder clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
+        return this;
+    }
+
+    /**
+     * @param signSecret SPiD sign secret
+     * @return The SPiDConfigurationBuilder
+     */
+    public SPiDConfigurationBuilder signSecret(String signSecret) {
+        this.signSecret = signSecret;
         return this;
     }
 
@@ -203,6 +213,7 @@ public class SPiDConfigurationBuilder {
         return new SPiDConfiguration(
                 clientID,
                 clientSecret,
+                signSecret,
                 appURLScheme,
                 serverURL,
                 redirectURL,

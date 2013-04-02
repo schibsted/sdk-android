@@ -1,4 +1,4 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.configuration;
 
 import android.content.Context;
 
@@ -9,6 +9,7 @@ public class SPiDConfiguration {
 
     private String clientID;
     private String clientSecret;
+    private String signSecret;
     private String appURLScheme;
     private String serverURL;
     private String authorizationURL;
@@ -39,9 +40,10 @@ public class SPiDConfiguration {
      * @param apiVersion       SPiD API version
      * @param context          Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String lostPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
+        this.signSecret = signSecret;
         this.appURLScheme = appURLScheme;
         this.serverURL = serverURL;
         this.redirectURL = redirectURL;
@@ -89,6 +91,21 @@ public class SPiDConfiguration {
      */
     public String getAppURLScheme() {
         return appURLScheme;
+    }
+
+    /**
+     * @param signSecret SPiD sign secret
+     */
+
+    public void setSignSecret(String signSecret) {
+        this.signSecret = signSecret;
+    }
+
+    /**
+     * @return SPiD sign secret
+     */
+    public String getSignSecret() {
+        return signSecret;
     }
 
     /**

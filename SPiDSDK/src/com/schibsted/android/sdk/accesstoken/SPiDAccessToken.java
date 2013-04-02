@@ -1,4 +1,4 @@
-package com.schibsted.android.sdk;
+package com.schibsted.android.sdk.accesstoken;
 
 import com.schibsted.android.sdk.exceptions.SPiDAccessTokenException;
 import org.json.JSONException;
