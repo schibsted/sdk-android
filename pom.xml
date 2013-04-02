@@ -7,12 +7,22 @@
     <groupId>com.schibsted</groupId>
     <artifactId>android</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5-SNAPSHOT</version>
 
     <modules>
         <module>SPiDSDK</module>
+        <module>SPiDSDKTests</module>
+        <module>SPiDNativeApp</module>
+        <module>SPiDFacebookApp</module>
         <module>SPiDExampleApp</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>The mavenized Facebook Android API</id>
+            <url>http://avianey.github.com/facebook-api-android-maven/</url>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
