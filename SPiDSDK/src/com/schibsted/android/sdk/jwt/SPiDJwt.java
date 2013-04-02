@@ -1,8 +1,10 @@
 package com.schibsted.android.sdk.jwt;
 
 import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.utils.SPiDUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -64,49 +66,54 @@ public class SPiDJwt {
         return true;
     }
 
-    public String encodedJwtString() throws Exception {
+    public String encodedJwtString() throws SPiDException {
         if (!validate()) {
-            throw new Exception("Invalid JWT");
+            throw new SPiDException("Invalid JWT");
         }
         if (SPiDClient.getInstance().getConfig().getSignSecret() == null) {
             SPiDLogger.log("No signing secret found, cannot use JWT");
-            throw new Exception("Missing sign secret");
+            throw new SPiDException("Missing sign secret");
         }
 
-        JSONObject headerJson = new JSONObject();
-        headerJson.put("alg", "HS256");
-        headerJson.put("typ", "JWT");
-
-        String header = headerJson.toString();
         String headerBase64;
         try {
-            headerBase64 = SPiDUtils.encodeBase64(header);
+            JSONObject headerJson = new JSONObject();
+            headerJson.put("alg", "HS256");
+            headerJson.put("typ", "JWT");
+            headerBase64 = SPiDUtils.encodeBase64(headerJson.toString());
         } catch (UnsupportedEncodingException e1) {
-            throw new Exception("Error encoding JWT header");
+            throw new SPiDException("Error encoding JWT header");
+        } catch (JSONException e2) {
+            throw new SPiDException("Error encoding JWT header");
         }
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
         String date = format.format(exp);
 
-        JSONObject claimJson = new JSONObject();
-        claimJson.put("iss", iss);
-        claimJson.put("sub", sub);
-        claimJson.put("aud", aud);
-        claimJson.put("exp", date);
-        claimJson.put("token_type", tokenType);
-        claimJson.put("token_value", tokenValue);
-        String claim = claimJson.toString();
-
         String claimBase64;
         try {
-            claimBase64 = SPiDUtils.encodeBase64(claim);
+            JSONObject claimJson = new JSONObject();
+            claimJson.put("iss", iss);
+            claimJson.put("sub", sub);
+            claimJson.put("aud", aud);
+            claimJson.put("exp", date);
+            claimJson.put("token_type", tokenType);
+            claimJson.put("token_value", tokenValue);
+            claimBase64 = SPiDUtils.encodeBase64(claimJson.toString());
         } catch (UnsupportedEncodingException e1) {
-            throw new Exception("Error encoding JWT claim");
+            throw new SPiDException("Error encoding JWT claim");
+        } catch (JSONException e2) {
+            throw new SPiDException("Error encoding JWT header");
         }
 
         String signSecret = SPiDClient.getInstance().getConfig().getSignSecret();
         String payload = headerBase64 + "." + claimBase64;
-        String signature = SPiDUtils.getHmacSHA256(signSecret, payload);
+        String signature = null;
+        try {
+            signature = SPiDUtils.getHmacSHA256(signSecret, payload);
+        } catch (Exception e) {
+            throw new SPiDException("Error generating signature for JWT token");
+        }
         return payload + "." + signature;
 
     }

@@ -10,6 +10,7 @@ import sun.misc.HexDumpEncoder;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.util.UUID;
 
 /**

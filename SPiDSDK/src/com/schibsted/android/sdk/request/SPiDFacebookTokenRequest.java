@@ -20,19 +20,14 @@ public class SPiDFacebookTokenRequest extends SPiDTokenRequest {
      * @param
      * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
-    public SPiDFacebookTokenRequest(String appId, String facebookToken, Date expiration, SPiDAuthorizationListener authorizationListener) {
+    public SPiDFacebookTokenRequest(String appId, String facebookToken, Date expiration, SPiDAuthorizationListener authorizationListener) throws SPiDException {
         super(authorizationListener);
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        SPiDJwt jwt = new SPiDJwt(appId, "authorization", config.getTokenURL(), expiration, "facebook", facebookToken);
         this.addBodyParameter("client_id", config.getClientID());
         this.addBodyParameter("client_secret", config.getClientSecret());
         this.addBodyParameter("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");
-        try {
-            SPiDJwt jwt = new SPiDJwt(appId, "authorization", config.getTokenURL(), expiration, "facebook", facebookToken);
-            this.addBodyParameter("assertion", jwt.encodedJwtString());
-        } catch (Exception e) {
-            // TODO: should have another exception
-            authorizationListener.onSPiDException(new SPiDException("Could not create JWT from facebook token"));
-        }
+        this.addBodyParameter("assertion", jwt.encodedJwtString());
     }
 }
