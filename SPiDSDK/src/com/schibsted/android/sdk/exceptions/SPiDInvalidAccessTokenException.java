@@ -10,10 +10,10 @@ public class SPiDInvalidAccessTokenException extends SPiDException {
     /**
      * Constructs a new SPiDInvalidAccessTokenException with the specified detail message and cause.
      *
-     * @param error
-     * @param descriptions
-     * @param errorCode
-     * @param type
+     * @param error        The error as a string, see predefined constants in this class
+     * @param descriptions The detail messages
+     * @param errorCode    The error code
+     * @param type         The error type
      */
     public SPiDInvalidAccessTokenException(String error, Map<String, String> descriptions, Integer errorCode, String type) {
         super(error, descriptions, errorCode, type);

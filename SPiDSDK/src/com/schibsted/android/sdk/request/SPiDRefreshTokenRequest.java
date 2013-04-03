@@ -1,14 +1,11 @@
 package com.schibsted.android.sdk.request;
 
-import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.configuration.SPiDConfiguration;
+import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 3/14/13
- * Time: 10:36 AM
+ * Contains a token refresh request to SPiD
  */
 public class SPiDRefreshTokenRequest extends SPiDTokenRequest {
     /**

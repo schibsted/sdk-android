@@ -8,10 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 4/2/13
- * Time: 4:41 PM
+ * Helper class for generating SPiD urls
  */
 public class SPiDUrl {
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";

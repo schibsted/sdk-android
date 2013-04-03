@@ -274,6 +274,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         execute((Void) null);
     }
 
+    /**
+     * Execute request authorized request, appends oauth token if needed
+     */
     public void executeAuthorizedRequest() {
         SPiDAccessToken accessToken = SPiDClient.getInstance().getAccessToken();
         if (method.equals(GET)) {

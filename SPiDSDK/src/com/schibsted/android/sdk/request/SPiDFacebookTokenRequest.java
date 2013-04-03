@@ -9,15 +9,15 @@ import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import java.util.Date;
 
 /**
- * Contains a code access token request to SPiD
+ * Contains a facebook access token request to SPiD
  */
 public class SPiDFacebookTokenRequest extends SPiDTokenRequest {
     /**
      * Constructor for the SPiDUserCredentialTokenRequest
      *
-     * @param
-     * @param
-     * @param
+     * @param appId                 Facebook app id
+     * @param expiration            Facebook token expiration
+     * @param facebookToken         Facebook token
      * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
     public SPiDFacebookTokenRequest(String appId, String facebookToken, Date expiration, SPiDAuthorizationListener authorizationListener) throws SPiDException {

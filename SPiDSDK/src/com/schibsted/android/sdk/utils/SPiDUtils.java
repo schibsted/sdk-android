@@ -5,16 +5,14 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Base64;
 import com.schibsted.android.sdk.exceptions.SPiDDeviceFingerprintException;
-import sun.misc.HexDumpEncoder;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.util.UUID;
 
 /**
- * Util class used for generating device fingerprint
+ * Helper class for various methods
  */
 public class SPiDUtils {
 
@@ -51,11 +49,24 @@ public class SPiDUtils {
         return uuid.toString();
     }
 
+    /**
+     * Encodes a string with Base64
+     *
+     * @param string String to be encoded
+     * @return Base64 encoded string
+     * @throws UnsupportedEncodingException
+     */
     public static String encodeBase64(String string) throws UnsupportedEncodingException {
         byte[] data = string.getBytes("UTF-8");
         return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
+    /**
+     * Converts a byte[] to a hex string
+     *
+     * @param array Array to be converted
+     * @return Array as a hex string
+     */
     public static String byteArrayToHexString(byte[] array) {
         StringBuilder hexString = new StringBuilder();
         for (byte b : array) {
@@ -67,6 +78,14 @@ public class SPiDUtils {
         return hexString.toString();
     }
 
+    /**
+     * Generated a hmac sha256 for a string
+     *
+     * @param key    Key used for hash generation
+     * @param string String to be hashed
+     * @return Hashed string
+     * @throws Exception
+     */
     public static String getHmacSHA256(String key, String string) throws Exception {
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA256"));

@@ -93,6 +93,9 @@ public class SPiDAccessToken {
         return userID;
     }
 
+    /**
+     * @return <code>true</code> if token is a client token, otherwise false
+     */
     public boolean isClientToken() {
         return (userID == null || userID.equals("false") || userID.equals("0"));
     }

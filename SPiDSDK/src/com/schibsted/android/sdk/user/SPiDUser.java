@@ -14,22 +14,29 @@ import com.schibsted.android.sdk.request.SPiDRequest;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: mikaellindstrom
- * Date: 3/21/13
- * Time: 2:16 PM
+ * Contains methods to create a new SPiD user
  */
 public class SPiDUser {
     private String email;
     private String password;
     private SPiDAuthorizationListener authorizationListener;
 
+    /**
+     * Constructor
+     *
+     * @param email                 Username
+     * @param password              Password
+     * @param authorizationListener Listener called on completion or failure, can be <code>null</code>
+     */
     public SPiDUser(String email, String password, SPiDAuthorizationListener authorizationListener) {
         this.email = email;
         this.password = password;
         this.authorizationListener = authorizationListener;
     }
 
+    /**
+     * Creates a SPiD user account with the specified credentials, acquires a client token if needed
+     */
     public void createAccount() {
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
         if (token == null || !token.isClientToken()) {
@@ -37,20 +44,26 @@ public class SPiDUser {
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new ClientTokenListener());
             clientTokenRequest.execute();
         } else {
-            createUser();
+            runSignupRequest();
         }
     }
 
-    private void createUser() {
+    /**
+     * Creates and runs a SPiD signup request
+     */
+    private void runSignupRequest() {
         SPiDRequest signupRequest = getSignupRequest(email, password);
         signupRequest.executeAuthorizedRequest();
 
     }
 
-    private boolean validateEmail() {
-        return true;
-    }
-
+    /**
+     * Creates a SPiD signup request
+     *
+     * @param email    Email
+     * @param password Password
+     * @return The signup request
+     */
     private SPiDRequest getSignupRequest(String email, String password) {
         String redirectUri = SPiDClient.getInstance().getConfig().getRedirectURL();
         SPiDRequest signupRequest = new SPiDApiPostRequest("/signup", new CreateUserListener());
@@ -60,12 +73,15 @@ public class SPiDUser {
         return signupRequest;
     }
 
+    /**
+     * Listener for when client token has been acquired
+     */
     private class ClientTokenListener implements SPiDAuthorizationListener {
 
         @Override
         public void onComplete() {
             SPiDLogger.log("Got client token, trying to create user");
-            createUser();
+            runSignupRequest();
         }
 
         @Override
@@ -84,6 +100,9 @@ public class SPiDUser {
         }
     }
 
+    /**
+     * Listener for when user has been created
+     */
     private class CreateUserListener implements SPiDRequestListener {
 
         @Override

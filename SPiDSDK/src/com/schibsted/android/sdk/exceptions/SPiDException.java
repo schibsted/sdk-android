@@ -173,6 +173,11 @@ public class SPiDException extends RuntimeException {
         }
     }
 
+    /**
+     * Extracts error description for <code>JSONObject</code>
+     *
+     * @return Descriptions as a <code>Map</code>
+     */
     private static Map<String, String> descriptionsFromJSONObject(JSONObject jsonObject) {
         Map<String, String> map = new HashMap<String, String>();
         Iterator keys = jsonObject.keys();
@@ -205,7 +210,7 @@ public class SPiDException extends RuntimeException {
     }
 
     /**
-     *
+     * @return Error descriptions
      */
     public Map<String, String> getDescriptions() {
         return descriptions;

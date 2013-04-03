@@ -11,10 +11,9 @@ import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 
 /**
- *
+ * Contains a JWT (JSON Web token)
  */
 public class SPiDJwt {
 
@@ -25,6 +24,15 @@ public class SPiDJwt {
     private String tokenType;
     private String tokenValue;
 
+    /**
+     * Constructs a new SPiDUserAbortedLoginException with the specified detail message.
+     *
+     * @param iss        Issuer
+     * @param aud        Audience
+     * @param exp        Expiration time
+     * @param tokenType  Token type(currently only facebook)
+     * @param tokenValue The actual token
+     */
     public SPiDJwt(String iss, String sub, String aud, Date exp, String tokenType, String tokenValue) {
         this.iss = iss;
         this.sub = sub;
@@ -34,10 +42,9 @@ public class SPiDJwt {
         this.tokenValue = tokenValue;
     }
 
-    public SPiDJwt(Map<String, Object> map) {
-
-    }
-
+    /**
+     * Validates the JWT
+     */
     private boolean validate() {
         if (iss == null || iss.length() <= 0) {
             SPiDLogger.log("JWT is missing value for iss");
@@ -66,6 +73,11 @@ public class SPiDJwt {
         return true;
     }
 
+    /**
+     * Encodes and signs the JWT as a string
+     *
+     * @return Encoded JWT
+     */
     public String encodedJwtString() throws SPiDException {
         if (!validate()) {
             throw new SPiDException("Invalid JWT");
@@ -108,7 +120,7 @@ public class SPiDJwt {
 
         String signSecret = SPiDClient.getInstance().getConfig().getSignSecret();
         String payload = headerBase64 + "." + claimBase64;
-        String signature = null;
+        String signature;
         try {
             signature = SPiDUtils.getHmacSHA256(signSecret, payload);
         } catch (Exception e) {
