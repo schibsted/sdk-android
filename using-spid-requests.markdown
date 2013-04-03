@@ -60,7 +60,7 @@ SPiDRequest request = new SPiDApiGetRequest("/test/?user_id=" + "123", new SPiDR
 request.executeAuthorizedRequest();
 {% endhighlight %}
 
-And a example to POST ´user_id=123´ to the endpoint ´/test´.
+And a example to POST `user_id=123` to the endpoint `/test`.
 {% highlight java %}
 SPiDRequest request = new SPiDApiPostRequest("/test", new SPiDRequestListener() {
     @Override
