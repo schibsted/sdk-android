@@ -59,12 +59,17 @@ protected class LoginListener implements SPiDAuthorizationListener {
 
     @Override
     public void onSPiDException(SPiDException exception) {
-        // Handle SPiDException
+        // Handle SPiDException (server errors)
     }
 
     @Override
     public void onIOException(IOException exception) {
-        // Handle IOException
+        // Handle IOException (connection problems)
+    }
+
+    @Override
+    public void onException(Exception exception) {
+        // Handle general Exception (fatal errors, should never happen if SPiDClient is correctly configured)
     }
 }
 {% endhighlight %}
