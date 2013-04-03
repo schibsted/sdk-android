@@ -1,3 +1,13 @@
-com.schibsted.android.example
 com.schibsted.android.sdk
+com.schibsted.android.sdk.accesstoken
+com.schibsted.android.sdk.configuration
 com.schibsted.android.sdk.exceptions
+com.schibsted.android.sdk.jwt
+com.schibsted.android.sdk.keychain
+com.schibsted.android.sdk.listener
+com.schibsted.android.sdk.logger
+com.schibsted.android.sdk.reponse
+com.schibsted.android.sdk.request
+com.schibsted.android.sdk.user
+com.schibsted.android.sdk.utils
+com.schibsted.android.sdk.webview

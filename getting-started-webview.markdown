@@ -35,30 +35,29 @@ try {
     SPiDClient.getInstance().getLostPasswordWebView(context,
                                                     null,
                                                     new SPiDExampleWebViewClient(),
-                                                    new LoginListener(context));
-} catch (Exception e) {
-    // Han‹dle problem encoding url, likely to be a configuration issue
-}
-{% endhighlight %}
+                                                    new SPiDAuthorizationListener() {
+        @Override
+        public void onComplete() {
+            // Successful login
+        }
 
-The `LoginListener` is a implementation of the `SPiDAuthorizationListener` which is the same as shown in "Setting up SPiD".
-{% highlight java %}
-protected class LoginListener implements SPiDAuthorizationListener {
-    private LoginListener() {
-        super();
-    }
-    @Override
-    public void onComplete() {
-        // Successful login
-    }
-    @Override
-    public void onSPiDException(SPiDException exception) {
-        // Handle SPiDException
-    }
-    @Override
-    public void onIOException(IOException exception) {
-        // Handle IOException
-    }
+        @Override
+        public void onSPiDException(SPiDException exception) {
+            // Handle SPiDException (server errors)
+        }
+
+        @Override
+        public void onIOException(IOException exception) {
+            // Handle IOException (connection problems)
+        }
+
+        @Override
+        public void onException(Exception exception) {
+            // Handle general Exception (fatal errors, should never happen if SPiDClient is correctly configured)
+        }
+    });
+} catch (Exception e) {
+    // Handle problem encoding url, likely to be a configuration issue
 }
 {% endhighlight %}
 
@@ -74,6 +73,12 @@ protected class SPiDExampleWebViewClient extends SPiDWebViewClient {
         // Hide loading spinner
     }
 }
+{% endhighlight %}
+
+Lastly the application need permission to access internet and phone state, the following lines is needed in AndroidManifest.xml
+{% highlight xml %}
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 {% endhighlight %}
 
 After the login has been completed and the completion handler has been executed you can start making [API requests](using-spid-requests.html "API requests").

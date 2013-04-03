@@ -20,8 +20,42 @@ When the login completes in the browser the following code the was setup in "Set
 {% highlight java %}
 Uri data = getIntent().getData();
 if (data != null && !SPiDClient.getInstance().isAuthorized()) {
-    SPiDClient.getInstance().handleIntent(data, new LoginListener());
+    SPiDClient.getInstance().handleIntent(data, new SPiDAuthorizationListener() {
+	    @Override
+	    public void onComplete() {
+	        // Successful login
+	    }
+
+	    @Override
+	    public void onSPiDException(SPiDException exception) {
+	        // Handle SPiDException (server errors)
+	    }
+
+	    @Override
+	    public void onIOException(IOException exception) {
+	        // Handle IOException (connection problems)
+	    }
+
+	    @Override
+	    public void onException(Exception exception) {
+	        // Handle general Exception (fatal errors, should never happen if SPiDClient is correctly configured)
+	    }
+	});
 }
+{% endhighlight %}
+
+To be able to receive browser redirects a android scheme must be configured in the AndroidManifest.xml, also the application need permission to access internet and phone state
+{% highlight xml %}
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+<application ...>
+    <activity ...>
+        <intent-filter>
+            ...
+            <data android:scheme="your-app-url-scheme"/>
+        </intent-filter>
+    </activity>	
+</application>
 {% endhighlight %}
 
 This will complete the login and call the listener. You can then start making [API requests](using-spid-requests.html "API requests").
