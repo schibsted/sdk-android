@@ -21,9 +21,9 @@
             <version>1.1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.google.android</groupId>
+            <groupId>android</groupId>
             <artifactId>android</artifactId>
-            <version>4.0.1.2</version>
+            <version>4.1.2_r4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
