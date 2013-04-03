@@ -17,13 +17,6 @@
         <module>SPiDExampleApp</module>
     </modules>
 
-    <repositories>
-        <repository>
-            <id>The mavenized Facebook Android API</id>
-            <url>http://avianey.github.com/facebook-api-android-maven/</url>
-        </repository>
-    </repositories>
-
     <build>
         <pluginManagement>
             <plugins>
