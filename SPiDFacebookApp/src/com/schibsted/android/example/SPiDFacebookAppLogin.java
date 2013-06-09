@@ -116,53 +116,6 @@ public class SPiDFacebookAppLogin extends Activity {
         }
     }
 
-    protected class LoginListener implements SPiDAuthorizationListener {
-        private Context context;
-
-        private LoginListener() {
-            this.context = SPiDClient.getInstance().getConfig().getContext();
-        }
-
-        @Override
-        public void onComplete() {
-            dismissLoadingDialog();
-            SPiDLogger.log("Successful login");
-            Intent intent = new Intent(context, SPiDFacebookAppMain.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-
-        @Override
-        public void onSPiDException(SPiDException exception) {
-            dismissLoadingDialog();
-            if (exception instanceof SPiDUnknownUserException) {
-                showNoExistingUserDialog();
-            } else {
-                SPiDLogger.log("Error while preforming login: " + exception.getError());
-                Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-                setupLoginContentView();
-            }
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            dismissLoadingDialog();
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-            setupLoginContentView();
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            dismissLoadingDialog();
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-            setupLoginContentView();
-        }
-    }
-
     private void showNoExistingUserDialog() {
         Context context = SPiDClient.getInstance().getConfig().getContext();
 
@@ -197,7 +150,9 @@ public class SPiDFacebookAppLogin extends Activity {
         cancelDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Session.getActiveSession().closeAndClearTokenInformation();
+                if (Session.getActiveSession() != null) {
+                    Session.getActiveSession().closeAndClearTokenInformation();
+                }
                 alertDialog.dismiss();
             }
         });
@@ -251,5 +206,52 @@ public class SPiDFacebookAppLogin extends Activity {
                 setupLoginContentView();
             }
         });
+    }
+
+    protected class LoginListener implements SPiDAuthorizationListener {
+        private Context context;
+
+        private LoginListener() {
+            this.context = SPiDClient.getInstance().getConfig().getContext();
+        }
+
+        @Override
+        public void onComplete() {
+            dismissLoadingDialog();
+            SPiDLogger.log("Successful login");
+            Intent intent = new Intent(context, SPiDFacebookAppMain.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+
+        @Override
+        public void onSPiDException(SPiDException exception) {
+            dismissLoadingDialog();
+            if (exception instanceof SPiDUnknownUserException) {
+                showNoExistingUserDialog();
+            } else {
+                SPiDLogger.log("Error while preforming login: " + exception.getError());
+                Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+                setupLoginContentView();
+            }
+        }
+
+        @Override
+        public void onIOException(IOException exception) {
+            dismissLoadingDialog();
+            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
+            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+            setupLoginContentView();
+        }
+
+        @Override
+        public void onException(Exception exception) {
+            dismissLoadingDialog();
+            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
+            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+            setupLoginContentView();
+        }
     }
 }

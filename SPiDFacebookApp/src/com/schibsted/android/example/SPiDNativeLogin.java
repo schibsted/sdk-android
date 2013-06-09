@@ -160,7 +160,9 @@ public class SPiDNativeLogin extends Activity {
 
         @Override
         public void onClick(View view) {
-            Session.getActiveSession().closeAndClearTokenInformation();
+            if (Session.getActiveSession() != null) {
+                Session.getActiveSession().closeAndClearTokenInformation();
+            }
             Intent intent = new Intent(context, SPiDFacebookAppLogin.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

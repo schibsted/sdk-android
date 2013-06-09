@@ -29,13 +29,6 @@ public class SPiDFacebookAppMain extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if () {
-            Intent intent = new Intent(this, SPiDFacebookAppLogin.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }*/
 
         setContentView(R.layout.main);
 
@@ -100,7 +93,9 @@ public class SPiDFacebookAppMain extends Activity {
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
-                    Session.getActiveSession().closeAndClearTokenInformation();
+                    if (Session.getActiveSession() != null) {
+                        Session.getActiveSession().closeAndClearTokenInformation();
+                    }
                     Intent intent = new Intent(context, SPiDFacebookAppLogin.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
