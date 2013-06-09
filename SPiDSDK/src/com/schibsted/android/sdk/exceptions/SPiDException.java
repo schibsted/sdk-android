@@ -26,6 +26,8 @@ public class SPiDException extends RuntimeException {
     public static final String INSUFFICIENT_SCOPE = "insufficient_scope";
     public static final String EXPIRED_TOKEN = "expired_token";
 
+    public static final String UNKNOWN_USER = "unknown_user";
+
     private static final String API_EXCEPTION = "ApiException";
     private static final String OAUTH_EXCEPTION = "OAuthException";
     private static final String SPID_EXCEPTION = "SPiDException";
@@ -166,6 +168,8 @@ public class SPiDException extends RuntimeException {
             return new SPiDApiException(error, descriptions, errorCode, type);
         } else if (error != null && (error.equals(INVALID_TOKEN) || error.equals(EXPIRED_TOKEN))) {
             return new SPiDInvalidAccessTokenException(error, descriptions, errorCode, type);
+        } else if (error != null && (error.equals(UNKNOWN_USER))) {
+            return new SPiDUnknownUserException(error, descriptions, errorCode, type);
         } else if (type.equals(OAUTH_EXCEPTION)) {
             return new SPiDOAuthException(error, descriptions, errorCode, type);
         } else {

@@ -43,8 +43,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="280dp"
-        android:text="Signup to SPiD"
-        android:id="@+id/signup_button"
+        android:text="Login to SPiD"
+        android:id="@+id/login_button"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/password_edit_text"/>
 
@@ -52,9 +52,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="280dp"
-        android:text="Already have an account? Log in!"
-        android:id="@+id/login_button"
+        android:text="Cancel"
+        android:id="@+id/cancel_button"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/signup_button"/>
+        android:layout_below="@+id/login_button"/>
 
 </RelativeLayout>

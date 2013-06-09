@@ -125,8 +125,7 @@ public class SPiDNativeAppSignup extends Activity {
             String password = passwordEditText.getText().toString();
 
             SPiDLogger.log("Email: " + email + " password: " + password);
-            SPiDUser user = new SPiDUser(email, password, new SignupListener(context));
-            user.createAccount();
+            SPiDUser.signupWithCredentials(email, password, new SignupListener(context));
         }
     }
 }
