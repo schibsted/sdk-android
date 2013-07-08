@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <data android:scheme="no.finn.app.adinput.android"/>
+                <data android:scheme="your-app-url-scheme"/>
             </intent-filter>
         </activity>
         <activity android:name=".SPiDNativeAppMain">

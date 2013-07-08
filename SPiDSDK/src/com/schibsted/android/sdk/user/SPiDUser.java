@@ -11,8 +11,10 @@ import com.schibsted.android.sdk.reponse.SPiDResponse;
 import com.schibsted.android.sdk.request.SPiDApiPostRequest;
 import com.schibsted.android.sdk.request.SPiDClientTokenRequest;
 import com.schibsted.android.sdk.request.SPiDRequest;
+import com.schibsted.android.sdk.utils.SPiDUrl;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -134,6 +136,11 @@ public class SPiDUser {
      */
     private static SPiDRequest createSignupRequest(String email, String password, SPiDAuthorizationListener authorizationListener) {
         String redirectUri = SPiDClient.getInstance().getConfig().getRedirectURL();
+        try {
+            redirectUri = SPiDUrl.getAuthorizationURL();
+        } catch (UnsupportedEncodingException e) {
+            SPiDLogger.log("Could not encode authorization redirect uri, falling back to app redirect uri");
+        }
         SPiDRequest signupRequest = new SPiDApiPostRequest("/signup", new AuthorizationRequestListener(authorizationListener));
         signupRequest.addBodyParameter("email", email);
         signupRequest.addBodyParameter("password", password);

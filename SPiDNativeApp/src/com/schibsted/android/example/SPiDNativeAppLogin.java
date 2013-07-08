@@ -3,6 +3,7 @@ package com.schibsted.android.example;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -49,6 +50,12 @@ public class SPiDNativeAppLogin extends Activity {
         }
 
         setupLoginContentView();
+
+        Uri data = getIntent().getData();
+        if (data != null && (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken())) {
+            SPiDLogger.log("Received app redirect");
+            SPiDClient.getInstance().handleIntent(data, new LoginListener(this));
+        }
     }
 
     private void setupLoginContentView() {
