@@ -53,7 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/login_button">
+        android:layout_below="@+id/login_button"
+        android:id="@+id/button_layout">
 
         <Button
             android:layout_width="wrap_content"
@@ -69,5 +70,26 @@
             android:text="New user?"
             android:id="@+id/signup_button"/>
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/terms_text"
+        android:layout_centerHorizontal="true"
+        android:text="By using this service you are agreeing the"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/button_layout"/>
+    />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/terms_link"
+        android:layout_centerHorizontal="true"
+        android:text="Terms of use"
+        android:textStyle="bold"
+        android:adjustViewBounds="true"
+        android:layout_below="@+id/terms_text"/>
+    />
 
 </RelativeLayout>

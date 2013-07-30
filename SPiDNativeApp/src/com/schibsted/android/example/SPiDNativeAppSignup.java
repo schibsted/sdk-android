@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
@@ -34,6 +35,9 @@ public class SPiDNativeAppSignup extends Activity {
 
         Button loginButton = (Button) findViewById(R.id.login_button);
         loginButton.setOnClickListener(new LoginButtonListener(this));
+
+        TextView termsLink = (TextView) findViewById(R.id.terms_link);
+        termsLink.setOnClickListener(new TermsButtonListener(this));
     }
 
     protected class SignupListener implements SPiDAuthorizationListener {
@@ -126,6 +130,19 @@ public class SPiDNativeAppSignup extends Activity {
 
             SPiDLogger.log("Email: " + email + " password: " + password);
             SPiDUser.signupWithCredentials(email, password, new SignupListener(context));
+        }
+    }
+
+    private class TermsButtonListener implements View.OnClickListener {
+        private Activity activity;
+
+        private TermsButtonListener(Activity context) {
+            this.activity = context;
+        }
+
+        @Override
+        public void onClick(View view) {
+            SPiDTermsDialog.showTerms(activity);
         }
     }
 }

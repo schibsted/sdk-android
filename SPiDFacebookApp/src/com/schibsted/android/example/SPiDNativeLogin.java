@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.Session;
 import com.schibsted.android.sdk.exceptions.SPiDException;
@@ -55,6 +56,9 @@ public class SPiDNativeLogin extends Activity {
 
         Button cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new CancelButtonListener(this));
+
+        TextView termsLink = (TextView) findViewById(R.id.terms_link);
+        termsLink.setOnClickListener(new TermsButtonListener(this));
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
@@ -168,6 +172,19 @@ public class SPiDNativeLogin extends Activity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+        }
+    }
+
+    private class TermsButtonListener implements View.OnClickListener {
+        private Activity activity;
+
+        private TermsButtonListener(Activity context) {
+            this.activity = context;
+        }
+
+        @Override
+        public void onClick(View view) {
+            SPiDTermsDialog.showTerms(activity);
         }
     }
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -85,6 +86,9 @@ public class SPiDFacebookAppLogin extends Activity {
                 }
             }
         });
+
+        TextView termsLink = (TextView) findViewById(R.id.terms_link);
+        termsLink.setOnClickListener(new TermsButtonListener(this));
     }
 
     private void showLoadingDialog() {
@@ -252,6 +256,19 @@ public class SPiDFacebookAppLogin extends Activity {
             SPiDLogger.log("Error while preforming login: " + exception.getMessage());
             Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
             setupLoginContentView();
+        }
+    }
+
+    private class TermsButtonListener implements View.OnClickListener {
+        private Activity activity;
+
+        private TermsButtonListener(Activity context) {
+            this.activity = context;
+        }
+
+        @Override
+        public void onClick(View view) {
+            SPiDTermsDialog.showTerms(activity);
         }
     }
 }

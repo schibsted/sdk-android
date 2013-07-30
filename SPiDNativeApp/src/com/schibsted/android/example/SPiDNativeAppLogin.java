@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.configuration.SPiDConfiguration;
@@ -69,6 +70,9 @@ public class SPiDNativeAppLogin extends Activity {
 
         Button signupButton = (Button) findViewById(R.id.signup_button);
         signupButton.setOnClickListener(new SignupButtonListener(this));
+
+        TextView termsLink = (TextView) findViewById(R.id.terms_link);
+        termsLink.setOnClickListener(new TermsButtonListener(this));
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
@@ -163,6 +167,19 @@ public class SPiDNativeAppLogin extends Activity {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
+        }
+    }
+
+    private class TermsButtonListener implements View.OnClickListener {
+        private Activity activity;
+
+        private TermsButtonListener(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public void onClick(View view) {
+            SPiDTermsDialog.showTerms(activity);
         }
     }
 }
