@@ -21,7 +21,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            style="@style/EditTextAppTheme"
+            android:background="@drawable/edit_text_holo_light"
+            android:textColor="#000000"
             android:hint="Email"
             android:id="@+id/dialog_login_edittext_username"
             android:inputType="textEmailAddress"/>
@@ -30,7 +31,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            style="@style/EditTextAppTheme"
+            android:background="@drawable/edit_text_holo_light"
+            android:textColor="#000000"
             android:hint="Password"
             android:id="@+id/dialog_login_edittext_password"
             android:inputType="textPassword"/>
