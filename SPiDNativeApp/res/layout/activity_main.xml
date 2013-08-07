@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:fillViewport="true"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#ffffff">
+
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/spidlogo"
+                android:adjustViewBounds="true"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:contentDescription="SPiDLogo"
+                />
+
+        <ProgressBar
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:id="@+id/activity_main_progressbar"
+                />
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:id="@+id/activity_main_textview_userinfo"
+                android:text=""
+                android:visibility="gone"
+                />
+
+        <View
+                android:layout_width="fill_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@android:color/darker_gray"
+                />
+
+        <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+                android:text="Logout from SPiD"
+                android:id="@+id/activity_main_button_logout"
+                />
+
+    </LinearLayout>
+</ScrollView>
