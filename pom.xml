@@ -15,6 +15,7 @@
         <module>SPiDNativeApp</module>
         <module>SPiDFacebookApp</module>
         <module>SPiDExampleApp</module>
+        <module>SPiDHybridApp</module>
     </modules>
 
     <build>
