@@ -51,6 +51,7 @@ public class LoginDialog extends DialogFragment {
                         toast.show();
                     }
                 } else {
+                    view.setEnabled(false);
                     SPiDLogger.log("Email: " + email + " password: " + password);
                     SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new LoginListener());
                     tokenRequest.execute();
@@ -82,6 +83,9 @@ public class LoginDialog extends DialogFragment {
     private class LoginListener implements SPiDAuthorizationListener {
 
         private void onError(Exception exception) {
+            Button loginButton = (Button) getView().findViewById(R.id.dialog_login_button_login);
+            loginButton.setEnabled(true);
+
             SPiDLogger.log("Error while preforming login: " + exception.getMessage());
             Toast.makeText(getActivity(), "Error while preforming login", Toast.LENGTH_LONG).show();
         }
@@ -89,7 +93,7 @@ public class LoginDialog extends DialogFragment {
         @Override
         public void onComplete() {
             MainActivity parent = (MainActivity) getActivity();
-            parent.setupContentView();
+            parent.loginWebView();
             dismiss();
         }
 
