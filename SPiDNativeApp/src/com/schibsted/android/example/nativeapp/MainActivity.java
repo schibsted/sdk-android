@@ -93,19 +93,21 @@ public class MainActivity extends Activity {
                     Toast.makeText(getApplicationContext(), "Session expired, please login again", Toast.LENGTH_LONG).show();
                     recreate();
                 } else {
-                    SPiDLogger.log("Error getting username: " + exception.getMessage());
-                    setUserInfo("Error fetching user information");
+                    onError(exception);
                 }
             }
 
             @Override
             public void onIOException(IOException exception) {
-                SPiDLogger.log("Error getting username: " + exception.getMessage());
-                setUserInfo("Error fetching user information");
+                onError(exception);
             }
 
             @Override
             public void onException(Exception exception) {
+                onError(exception);
+            }
+
+            private void onError(Exception exception) {
                 SPiDLogger.log("Error getting username: " + exception.getMessage());
                 setUserInfo("Error fetching user information");
             }
