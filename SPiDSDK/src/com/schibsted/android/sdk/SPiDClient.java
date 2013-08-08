@@ -2,6 +2,7 @@ package com.schibsted.android.sdk;
 
 import android.content.Intent;
 import android.net.Uri;
+
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.configuration.SPiDConfiguration;
 import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
@@ -13,7 +14,12 @@ import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
 import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
-import com.schibsted.android.sdk.request.*;
+import com.schibsted.android.sdk.request.SPiDApiGetRequest;
+import com.schibsted.android.sdk.request.SPiDApiPostRequest;
+import com.schibsted.android.sdk.request.SPiDCodeTokenRequest;
+import com.schibsted.android.sdk.request.SPiDRefreshTokenRequest;
+import com.schibsted.android.sdk.request.SPiDRequest;
+import com.schibsted.android.sdk.request.SPiDTokenRequest;
 import com.schibsted.android.sdk.utils.SPiDUrl;
 
 import java.io.IOException;
@@ -270,6 +276,19 @@ public class SPiDClient {
         request.addBodyParameter("clientId", config.getServerClientID());
         request.addBodyParameter("client_id", config.getServerClientID());
         request.addBodyParameter("type", "code");
+        request.executeAuthorizedRequest();
+    }
+
+    /**
+     * Request wrapper to getting session code used for hybrid login
+     *
+     * @param listener Listener called on completion or failure, can be <code>null</code>
+     */
+    public void getSessionCode(SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDApiPostRequest("/oauth/exchange", listener);
+        request.addBodyParameter("clientId", config.getServerClientID());
+        request.addBodyParameter("type", "session");
+        request.addBodyParameter("redirectUri", config.getServerRedirectUri());
         request.executeAuthorizedRequest();
     }
 

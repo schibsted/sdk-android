@@ -18,6 +18,7 @@ public class SPiDConfiguration {
     private String tokenURL;
     private String redirectURL;
     private String serverClientID;
+    private String serverRedirectUri;
     private Boolean useMobileWeb;
     private String apiVersion;
     private Boolean debugMode;
@@ -36,11 +37,12 @@ public class SPiDConfiguration {
      * @param forgotPasswordURL SPiD lost password url
      * @param tokenURL          SPiD token url
      * @param serverClientID    SPiD client id for server
+     * @param serverRedirectUri SPiD redirect uri for server
      * @param useMobileWeb      Use mobile flag
      * @param apiVersion        SPiD API version
      * @param context           Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, String serverRedirectUri, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.signSecret = signSecret;
@@ -52,6 +54,7 @@ public class SPiDConfiguration {
         this.forgotPasswordURL = forgotPasswordURL;
         this.tokenURL = tokenURL;
         this.serverClientID = serverClientID;
+        this.serverRedirectUri = serverRedirectUri;
         this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
         this.debugMode = debugMode;
@@ -225,6 +228,20 @@ public class SPiDConfiguration {
      */
     public void setServerClientID(String serverClientID) {
         this.serverClientID = serverClientID;
+    }
+
+    /**
+     * @return SPiD redirect uri for server, used for session code. Default value: <code>getRedirectUri()</code>
+     */
+    public String getServerRedirectUri() {
+        return serverRedirectUri;
+    }
+
+    /**
+     * @param serverRedirectUri SPiD redirect uri for server
+     */
+    public void setServerRedirectUri(String serverRedirectUri) {
+        this.serverRedirectUri = serverRedirectUri;
     }
 
     /**

@@ -17,6 +17,7 @@ public class SPiDConfigurationBuilder {
     private String forgotPasswordURL;
     private String tokenURL;
     private String serverClientID;
+    private String serverRedirectUri;
     private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
     private Boolean debugMode = Boolean.FALSE;
@@ -122,6 +123,15 @@ public class SPiDConfigurationBuilder {
     }
 
     /**
+     * @param serverRedirectUri SPiD redirect uri for server
+     * @return The SPiDConfigurationBuilder
+     */
+    public SPiDConfigurationBuilder serverRedirectUri(String serverRedirectUri) {
+        this.serverRedirectUri = serverRedirectUri;
+        return this;
+    }
+
+    /**
      * @param apiVersion SPiD API version
      * @return The SPiDConfigurationBuilder
      */
@@ -210,6 +220,10 @@ public class SPiDConfigurationBuilder {
             serverClientID = clientID;
         }
 
+        if (serverRedirectUri == null || serverRedirectUri.trim().equals("")) {
+            serverRedirectUri = redirectURL;
+        }
+
         return new SPiDConfiguration(
                 clientID,
                 clientSecret,
@@ -222,6 +236,7 @@ public class SPiDConfigurationBuilder {
                 forgotPasswordURL,
                 tokenURL,
                 serverClientID,
+                serverRedirectUri,
                 useMobileWeb,
                 apiVersion,
                 debugMode,
