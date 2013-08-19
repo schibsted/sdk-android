@@ -2,7 +2,8 @@
 title: Getting started with hybrid login
 layout: default
 ---
-#Hybrid login
+Hybrid login
+============
 
 Hybrid apps are applications with utilizes a WebView within the app. They require two logins, one for the native part of the application and one for the webview. SPiD has full support for this and the setup is similar to the native login exept we add steps to catch logins from the WebView. It is available on SPiD version 2.8.8 or later.
 
