@@ -12,7 +12,7 @@ The following flow diagram gives a overview of how it works.
 ![](images/hybridflow.png)
 
 First the native and/or facebook needs to be setup. After that we need to add the server client id and redirect uri to the SPiD configuration.
-```java
+{% highlight java %}
 SPiDConfiguration config = new SPiDConfigurationBuilder()
                 .clientID("your-client-id")
                 .clientSecret("your-client-secret")
@@ -23,10 +23,10 @@ SPiDConfiguration config = new SPiDConfigurationBuilder()
                 .serverRedirectUri("your-server-client-redirect-uri")
                 .context(this)
                 .build();
-```
+{% endhighlight %}
 
 When the app is successfully logged in nativly we need to login to the WebView. This is done by adding a step after login is completed in the login listener for the token request.
-```java
+{% highlight java %}
 SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new SPiDAuthorizationListener() {
     @Override 
     public void onComplete() {
@@ -49,10 +49,10 @@ SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest
     }
 });
 tokenRequest.execute();
-```
+{% endhighlight %}
 
 Then we add a new method to execute the login in the WebView.
-```java
+{% highlight java %}
 private void loginWebView() {
 	SPiDClient.getInstance().getSessionCode(new SPiDRequestListener() {
         @Override
@@ -86,11 +86,11 @@ private void loginWebView() {
         }
     });
 }
-```
+{% endhighlight %}
 
 We also need to setup a WebViewClient to override with url:s should be loaded.
 
-```xml
+{% highlight xml %}
 webView.setWebViewClient(new MainWebViewClient() {
 	@Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -114,7 +114,7 @@ webView.setWebViewClient(new MainWebViewClient() {
             return false;
         }
 });
-```
+{% endhighlight %}
 
 Now any login in the WebView will result in a native login window and the user will be logged in to both. Further more, if there is a token available at app start the login can be made directly in the background to prevent login when the user selects restricted content. For more information look at the example in the SDK.
 
