@@ -1,12 +1,14 @@
 package com.schibsted.android.sdk.request;
 
 import android.os.AsyncTask;
+
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDException;
 import com.schibsted.android.sdk.listener.SPiDRequestListener;
 import com.schibsted.android.sdk.logger.SPiDLogger;
 import com.schibsted.android.sdk.reponse.SPiDResponse;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -196,7 +198,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                     postList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
                 }
 
-                ((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(postList));
+                ((HttpPost) httpRequest).setEntity(new UrlEncodedFormEntity(postList, "UTF-8"));
             } else {
                 httpRequest = new HttpGet(url + getQueryAsString());
             }
