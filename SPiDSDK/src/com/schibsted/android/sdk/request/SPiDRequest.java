@@ -203,6 +203,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                 httpRequest = new HttpGet(url + getQueryAsString());
             }
 
+            // Add custom User-Agent
+            headers.put("User-Agent", SPiDClient.getInstance().getConfig().getUserAgent());
+
             List<Header> headerList = new ArrayList<Header>();
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 headerList.add(new BasicHeader(entry.getKey(), entry.getValue()));
