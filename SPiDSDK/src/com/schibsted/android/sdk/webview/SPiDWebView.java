@@ -6,6 +6,7 @@ import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
+
 import com.schibsted.android.sdk.SPiDClient;
 import com.schibsted.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
 import com.schibsted.android.sdk.listener.SPiDAuthorizationListener;
@@ -188,6 +189,9 @@ public class SPiDWebView {
         webView.getSettings().setDomStorageEnabled(true);
 
         // Fix bug where input never get virtual keyboard focus see: http://code.google.com/p/android/issues/detail?id=7189
+        webView.setFocusable(true);
+        webView.setFocusableInTouchMode(true);
+        webView.getSettings().setUseWideViewPort(false);
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
