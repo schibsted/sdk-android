@@ -1,6 +1,13 @@
 package com.schibsted.android.sdk.configuration;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
+
+import com.schibsted.android.sdk.SPiDClient;
+import com.schibsted.android.sdk.logger.SPiDLogger;
 
 /**
  * Builder class for SPiDConfiguration
@@ -185,6 +192,31 @@ public class SPiDConfigurationBuilder {
     }
 
     /**
+     * Setup custom User-Agent for all SPiD requests
+     *
+     * @return Custom User-Agent
+     */
+
+    private String getUserAgent() {
+        PackageManager packageManager = context.getPackageManager();
+        ApplicationInfo applicationInfo = null;
+        PackageInfo packageInfo = null;
+        try {
+            if (packageManager != null) {
+                applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+                packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            }
+        } catch (final PackageManager.NameNotFoundException e) {
+            SPiDLogger.log("Could not get package info");
+        }
+
+        String applicationName = (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "UnknownApplication");
+        String applicationVersion = packageInfo != null ? packageInfo.versionName : "UnknownVersion";
+
+        return applicationName + "/" + applicationVersion + " " + "SPiDAndroidSDK/" + SPiDClient.SPID_ANDROID_SDK_VERSION_STRING + " " + "Android/" + android.os.Build.MODEL + "/API " + Build.VERSION.SDK_INT;
+    }
+
+    /**
      * Builds a SPiDConfiguration object from the supplied values. It also check all that all mandatory values are set and generates default values for non-mandatory values that are missing.
      *
      * @return A SPiDConfiguration object
@@ -224,6 +256,8 @@ public class SPiDConfigurationBuilder {
             serverRedirectUri = redirectURL;
         }
 
+        String userAgent = getUserAgent();
+
         return new SPiDConfiguration(
                 clientID,
                 clientSecret,
@@ -240,6 +274,7 @@ public class SPiDConfigurationBuilder {
                 useMobileWeb,
                 apiVersion,
                 debugMode,
+                userAgent,
                 context);
     }
 }

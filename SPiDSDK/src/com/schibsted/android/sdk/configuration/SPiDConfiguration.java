@@ -22,6 +22,7 @@ public class SPiDConfiguration {
     private Boolean useMobileWeb;
     private String apiVersion;
     private Boolean debugMode;
+    private String userAgent;
     private Context context;
 
     /**
@@ -40,9 +41,10 @@ public class SPiDConfiguration {
      * @param serverRedirectUri SPiD redirect uri for server
      * @param useMobileWeb      Use mobile flag
      * @param apiVersion        SPiD API version
+     * @param userAgent         SPiD custom User-Agent
      * @param context           Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, String serverRedirectUri, Boolean useMobileWeb, String apiVersion, Boolean debugMode, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, String serverRedirectUri, Boolean useMobileWeb, String apiVersion, Boolean debugMode, String userAgent, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.signSecret = signSecret;
@@ -58,6 +60,7 @@ public class SPiDConfiguration {
         this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
         this.debugMode = debugMode;
+        this.userAgent = userAgent;
         this.context = context;
     }
 
@@ -270,6 +273,13 @@ public class SPiDConfiguration {
      */
     public void setDebugMode(Boolean debugMode) {
         this.debugMode = debugMode;
+    }
+
+    /**
+     * @return SPiD custom User-Agent
+     */
+    public String getUserAgent() {
+        return userAgent;
     }
 
     /**
