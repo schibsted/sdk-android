@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class SPiDClient {
 
-    public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.1.3";
+    public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.1.4";
 
     private static final SPiDClient instance = new SPiDClient();
 
