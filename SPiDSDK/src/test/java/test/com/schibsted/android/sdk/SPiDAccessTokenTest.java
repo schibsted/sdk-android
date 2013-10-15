@@ -2,7 +2,7 @@ package com.schibsted.android.sdk;
 
 import com.schibsted.android.sdk.accesstoken.SPiDAccessToken;
 import com.schibsted.android.sdk.exceptions.SPiDAccessTokenException;
-import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.robolectric.Robolectric;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -15,7 +15,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(RobolectricGradleTestRunner.class)
 public class SPiDAccessTokenTest {
 
     private static String TestAccessToken = "test-access-token";
