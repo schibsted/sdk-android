@@ -1,1 +1,1 @@
-include ':SPiDSDK', ':SPiDNativeApp'
+include ':SPiDSDK', ':SPiDExampleApp', ':SPiDFacebookApp', ':SPiDHybridApp', ':SPiDNativeApp'
