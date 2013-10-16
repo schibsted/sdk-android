@@ -30,3 +30,8 @@ dependencies {
   testCompile 'org.robolectric:robolectric:2.1.+'
 }
 
+task generateJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath = files(android.plugin.runtimeJarList)
+}
+generateJavadocs.dependsOn assemble
