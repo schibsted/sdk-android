@@ -11,6 +11,9 @@ buildscript {
 
 apply plugin: 'android-library'
 apply plugin: 'android-test'
+apply plugin: 'maven'
+
+group = "com.schibsted.android.sdk"
 
 android {
     compileSdkVersion 18
@@ -35,3 +38,12 @@ task generateJavadocs(type: Javadoc) {
     classpath = files(android.plugin.runtimeJarList)
 }
 generateJavadocs.dependsOn assemble
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+        }
+    }
+}
+task install(dependsOn: uploadArchives)
