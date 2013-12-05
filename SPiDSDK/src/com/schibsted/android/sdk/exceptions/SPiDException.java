@@ -27,6 +27,7 @@ public class SPiDException extends RuntimeException {
     public static final String EXPIRED_TOKEN = "expired_token";
 
     public static final String UNKNOWN_USER = "unknown_user";
+    public static final String INVALID_USER_CREDENTIALS = "invalid_user_credentials";
 
     private static final String API_EXCEPTION = "ApiException";
     private static final String OAUTH_EXCEPTION = "OAuthException";
