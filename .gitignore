@@ -1,0 +1,4 @@
+target
+gen-external-apklibs
+*/gen/*
+*/tmp/*
