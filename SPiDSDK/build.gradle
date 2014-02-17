@@ -6,7 +6,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.1'
+        classpath 'com.android.tools.build:gradle:0.7.0'
         classpath 'com.squareup.gradle:gradle-android-test-plugin:0.9.1-SNAPSHOT'
     }
 }
@@ -29,8 +29,8 @@ dependencies {
     repositories {
         mavenCentral()
     }
-  testCompile 'junit:junit:4.10'
-  testCompile 'org.robolectric:robolectric:2.1.+'
+    testCompile 'junit:junit:4.10'
+    testCompile 'org.robolectric:robolectric:2.1.+'
 }
 
 uploadArchives {
@@ -51,7 +51,7 @@ task generateJar(type: Copy) {
     from('build/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', "${project.name}-${project.version}.jar")
+    rename('classes.jar', "${project.name}-${project.version}.jar")
 }
 
 task generateSourceJar(type: Jar) {
