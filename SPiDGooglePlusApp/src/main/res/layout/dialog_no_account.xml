@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:background="#ffffff">
+
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:width="200dp"
+        android:textColor="#000000"
+        android:text="No SPiD user exists for your facebook account, do you want to create a user or attach your facebook to a existing SPiD account?" />
+
+    <Button
+        android:id="@+id/createNewUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:text="New account"
+        style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="0dp"
+        android:background="@android:color/darker_gray" />
+
+    <Button
+        android:id="@+id/attachFacebookUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:text="Existing account"
+        style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:layout_margin="5dp"
+        android:background="@android:color/darker_gray" />
+
+    <Button
+        android:id="@+id/cancelDialog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:width="200dp"
+        android:text="Cancel"
+        style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
+
+</LinearLayout>
