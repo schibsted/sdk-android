@@ -56,7 +56,7 @@ public class NativeLoginDialog extends DialogFragment {
             }
         });
 
-        TextView termsLink = (TextView) dialogView.findViewById(R.id.terms_link);
+        TextView termsLink = (TextView) dialogView.findViewById(R.id.dialog_login_textview_termslink);
         termsLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,17 +85,21 @@ public class NativeLoginDialog extends DialogFragment {
 
                 @Override
                 public void onSPiDException(SPiDException exception) {
-                    onError("SPiDException");
+                    String error = exception.getError();
+                    if (error.equals("invalid_user_credentials")) {
+                        error = "Invalid email/password";
+                    }
+                    onError(error);
                 }
 
                 @Override
                 public void onIOException(IOException exception) {
-                    onError("IOException");
+                    onError(exception.getMessage());
                 }
 
                 @Override
                 public void onException(Exception exception) {
-                    onError("Exception");
+                    onError(exception.getMessage());
                 }
 
                 private void onError(String error) {
