@@ -3,16 +3,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/menu_item_login"
-            android:showAsAction="always"
-            android:title="Login">
-    </item>
+        android:id="@+id/menu_item_login"
+        android:showAsAction="always"
+        android:title="Login"></item>
 
     <item
-            android:id="@+id/menu_item_logout"
-            android:showAsAction="always"
-            android:visible="false"
-            android:title="Logout">
-    </item>
+        android:id="@+id/menu_item_logout"
+        android:showAsAction="always"
+        android:visible="false"
+        android:title="Logout"></item>
 
 </menu>
