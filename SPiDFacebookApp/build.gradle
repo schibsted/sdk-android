@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.1'
+        classpath 'com.android.tools.build:gradle:0.12.2'
     }
 }
 apply plugin: 'android'
@@ -14,15 +14,17 @@ repositories {
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "18.1.1"
+    buildToolsVersion "19.1.0"
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 14
+        minSdkVersion 15
+        targetSdkVersion 16
+        versionCode 1
+        versionName "1.0"
     }
 }
 
 dependencies {
     compile project(':SPiDSDK')
-}
+    compile project(':facebook')}
 
