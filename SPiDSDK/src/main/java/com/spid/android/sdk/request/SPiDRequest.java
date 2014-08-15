@@ -37,7 +37,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
-    private static final Integer MaxRetryCount = 0;
+    private static final Integer MAX_RETRY_COUNT = 0;
+
     protected SPiDRequestListener listener;
     private String url;
     private String method;
@@ -65,7 +66,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.listener = listener;
 
         this.retryCount = 0;
-        this.maxRetryCount = MaxRetryCount;
+        this.maxRetryCount = MAX_RETRY_COUNT;
 
         SPiDLogger.log("Created request: " + url);
     }
@@ -77,7 +78,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      * @param listener Called on completion or error, can be <code>null</code>
      */
     public SPiDRequest(String url, SPiDRequestListener listener) {
-        this("GET", url, listener);
+        this(GET, url, listener);
     }
 
     /**
@@ -152,7 +153,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      */
     private SPiDRequest copy() {
         SPiDRequest request = new SPiDRequest(method, url, listener);
-        request.retryCount = retryCount;
+        request.setRetryCount(retryCount);
         request.setHeaders(headers);
         request.setQuery(query);
         request.setBody(body);
@@ -174,7 +175,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     }
 
     /**
-     * @param body The htpp body
+     * @param body The http body
      */
     private void setBody(Map<String, String> body) {
         this.body = body;
@@ -190,7 +191,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     protected SPiDResponse doInBackground(Void... voids) {
         try {
             HttpRequestBase httpRequest;
-            if (this.method.toUpperCase().equals("POST")) {
+            if (POST.equalsIgnoreCase(method)) {
                 httpRequest = new HttpPost(url);
 
                 List<NameValuePair> postList = new ArrayList<NameValuePair>();
@@ -239,7 +240,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     }
 
     /**
-     * Checks the <code>SPiDResponse</code> for errors,handles retries and invokes the callback listener
+     * Checks the <code>SPiDResponse</code> for errors, handles retries and invokes the callback listener
      *
      * @param response The <code>SPiDResponse</code> created in doInBackground
      */
@@ -253,7 +254,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                 if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
                     if (retryCount < maxRetryCount) {
                         SPiDRequest request = this.copy();
-                        request.retryCount++;
+                        request.increaseRetryCount();
+//                        request.retryCount++;
                         SPiDClient.getInstance().addWaitingRequest(request);
                         SPiDClient.getInstance().refreshAccessToken(null);
                         SPiDLogger.log("Retrying attempt: " + request.retryCount + " for request: " + request.url);
@@ -285,16 +287,18 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
     public void executeAuthorizedRequest() {
         SPiDAccessToken accessToken = SPiDClient.getInstance().getAccessToken();
         if (method.equals(GET)) {
-            if (!url.contains("oauth_token") && accessToken != null) {
-                if (url.contains("?")) {
-                    url = url + "&oauth_token=" + accessToken.getAccessToken();
-                } else {
-                    url = url + "?oauth_token=" + accessToken.getAccessToken();
-                }
+            if (!url.contains(SPiDClient.OAUTH_TOKEN) && accessToken != null) {
+                url = url.contains("?") ? url + "&" : url + "?";
+                url = url + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
+//                if (url.contains("?")) {
+//                    url = url + "&" + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
+//                } else {
+//                    url = url + "?" + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
+//                }
             }
-        } else {
-            if (!body.containsKey("oauth_token") && accessToken != null) {
-                addBodyParameter("oauth_token", accessToken.getAccessToken());
+        } else { // POST
+            if (!body.containsKey(SPiDClient.OAUTH_TOKEN) && accessToken != null) {
+                addBodyParameter(SPiDClient.OAUTH_TOKEN, accessToken.getAccessToken());
             }
         }
         execute();
@@ -307,5 +311,20 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      */
     public void setMaxRetryCount(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;
+    }
+
+    public Integer getRetryCount() {
+        return retryCount;
+    }
+
+    public void setRetryCount(Integer retryCount) {
+        this.retryCount = retryCount;
+    }
+
+    /**
+     * Increases the retryCount by 1
+     */
+    public void increaseRetryCount() {
+        retryCount++;
     }
 }

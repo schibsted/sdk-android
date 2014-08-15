@@ -2,8 +2,6 @@ package com.spid.android.sdk.exceptions;
 
 import org.json.JSONObject;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -157,8 +155,9 @@ public class SPiDException extends RuntimeException {
 
         Integer errorCode;
         try {
-            errorCode = NumberFormat.getInstance().parse(errorCodeString).intValue();
-        } catch (ParseException e) {
+//            errorCode = NumberFormat.getInstance().parse(errorCodeString).intValue();
+            errorCode = Integer.valueOf(errorCodeString);
+        } catch (NumberFormatException e) {
             errorCode = -1;
         }
 

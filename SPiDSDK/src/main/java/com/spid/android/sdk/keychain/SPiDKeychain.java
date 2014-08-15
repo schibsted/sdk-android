@@ -1,21 +1,22 @@
 package com.spid.android.sdk.keychain;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.util.Base64;
-import com.spid.android.sdk.SPiDClient;
+
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.exceptions.SPiDKeychainException;
 import com.spid.android.sdk.logger.SPiDLogger;
+import com.spid.android.sdk.utils.SPiDUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
 
 /**
  * Helper class used to securely encrypt/decrypt access token to SharedPreferences
@@ -31,8 +32,7 @@ public class SPiDKeychain {
      */
     public static void encryptAccessTokenToSharedPreferences(String encryptionKey, SPiDAccessToken accessToken) {
         SPiDLogger.log("Saving: " + accessToken.getAccessToken() + ", " + Long.toString(accessToken.getExpiresAt().getTime()) + ", " + accessToken.getRefreshToken() + ", " + accessToken.getUserID());
-        Context context = SPiDClient.getInstance().getConfig().getContext();
-        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
+        SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
         SharedPreferences.Editor editor = secure.edit();
         try {
             editor.putString("access_token", encryptString(encryptionKey, accessToken.getAccessToken()));
@@ -56,8 +56,7 @@ public class SPiDKeychain {
      * @return Access token if found, otherwise null
      */
     public static SPiDAccessToken decryptAccessTokenFromSharedPreferences(String encryptionKey) {
-        Context context = SPiDClient.getInstance().getConfig().getContext();
-        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
+        SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
         if (secure.contains("access_token")) {
             SPiDAccessToken token;
             try {
@@ -83,8 +82,7 @@ public class SPiDKeychain {
      * Clears access token from SharedPreferences
      */
     public static void clearAccessTokenFromSharedPreferences() {
-        Context context = SPiDClient.getInstance().getConfig().getContext();
-        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
+        SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
         SharedPreferences.Editor editor = secure.edit();
         editor.remove("access_token");
         editor.remove("expires_at");

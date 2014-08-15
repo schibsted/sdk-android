@@ -19,6 +19,7 @@ import java.io.UnsupportedEncodingException;
  * Helper methods to create various webviews
  */
 public class SPiDWebView {
+
     /**
      * Sets up a WebView with SPiD login
      *

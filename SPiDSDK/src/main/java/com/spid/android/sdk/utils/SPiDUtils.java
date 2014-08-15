@@ -1,52 +1,36 @@
 package com.spid.android.sdk.utils;
 
 import android.content.Context;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
+import android.content.SharedPreferences;
 import android.util.Base64;
-import com.spid.android.sdk.exceptions.SPiDDeviceFingerprintException;
+
+import com.spid.android.sdk.SPiDClient;
+
+import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
 
 /**
  * Helper class for various methods
  */
-public class SPiDUtils {
+public final class SPiDUtils {
+
+    private static String sID = null;
+
+    public static final String DEVICE_ID = "DEVICE_ID";
+
+    private SPiDUtils() {
+    }
 
     /**
-     * Generates a unique device fingerprint
+     * Returns a unique id for this device
      *
-     * @param context Android application context
      * @return The device fingerprint
      */
-    public static String getDeviceFingerprint(Context context) {
-        UUID uuid;
-
-        final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        // Use the Android ID unless it's broken, in which case fallback on deviceId,
-        // unless it's not available, then fallback on a random number
-        try {
-            // 9774d56d682e549c is used in multiple devices due to a bug android 2.2, should not affect later versions
-            if (!"9774d56d682e549c".equals(androidId)) {
-                uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
-            } else {
-                final String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-                if (deviceId != null) {
-                    uuid = UUID.nameUUIDFromBytes(deviceId.getBytes("utf8"));
-                } else {
-                    uuid = UUID.randomUUID();
-                }
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new SPiDDeviceFingerprintException("Error generating device fingerprint", e);
-        }
-
-        // TODO: Should store in SharedPreferences?
-        return uuid.toString();
+    public static String getDeviceFingerprint() {
+        return readId();
     }
 
     /**
@@ -91,5 +75,40 @@ public class SPiDUtils {
         mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA256"));
         byte[] bs = mac.doFinal(string.getBytes());
         return byteArrayToHexString(bs);
+    }
+
+    private synchronized static String readId() {
+        if (sID == null) {
+            sID = readDeviceId();
+            if (sID == null) {
+                sID = generateDeviceId();
+            }
+        }
+        return sID;
+    }
+
+    private static String readDeviceId() {
+        SharedPreferences secure = getSecurePreferencesFile();
+        return secure.getString(DEVICE_ID, null);
+    }
+
+    private static String generateDeviceId() {
+        String id = UUID.randomUUID().toString();
+        SharedPreferences secure = getSecurePreferencesFile();
+        SharedPreferences.Editor editor = secure.edit();
+        editor.putString(DEVICE_ID, id);
+        editor.commit();
+        return id;
+    }
+
+    /**
+     * Returns the shared preferences in private mode
+     *
+     * @return The private shared preferences
+     */
+    public static SharedPreferences getSecurePreferencesFile() {
+        Context context = SPiDClient.getInstance().getConfig().getContext();
+        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
+        return secure;
     }
 }

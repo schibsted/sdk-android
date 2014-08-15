@@ -1,5 +1,7 @@
 package com.spid.android.sdk.jwt;
 
+import android.text.TextUtils;
+
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.logger.SPiDLogger;
@@ -18,27 +20,28 @@ import java.util.Date;
  */
 public class SPiDJwt {
 
-    private String iss;
+    private String issuer;
     private String sub;
-    private String aud;
-    private Date exp;
+    private String audience;
+    private Date expirationDate;
     private String tokenType;
     private String tokenValue;
 
     /**
      * Constructs a new SPiDUserAbortedLoginException with the specified detail message.
      *
-     * @param iss        Issuer
-     * @param aud        Audience
-     * @param exp        Expiration time
-     * @param tokenType  Token type(currently only facebook)
-     * @param tokenValue The actual token
+     * @param issuer            Issuer
+     * @param sub
+     * @param audience          Audience
+     * @param expirationDate    Expiration time
+     * @param tokenType         Token type(currently only facebook)
+     * @param tokenValue        The actual token
      */
-    public SPiDJwt(String iss, String sub, String aud, Date exp, String tokenType, String tokenValue) {
-        this.iss = iss;
+    public SPiDJwt(String issuer, String sub, String audience, Date expirationDate, String tokenType, String tokenValue) {
+        this.issuer = issuer;
         this.sub = sub;
-        this.aud = aud;
-        this.exp = exp;
+        this.audience = audience;
+        this.expirationDate = expirationDate;
         this.tokenType = tokenType;
         this.tokenValue = tokenValue;
     }
@@ -47,31 +50,32 @@ public class SPiDJwt {
      * Validates the JWT
      */
     private boolean validate() {
-        if (iss == null || iss.length() <= 0) {
-            SPiDLogger.log("JWT is missing value for iss");
-            return false;
+        boolean isNoError = true;
+        if (TextUtils.isEmpty(issuer)) {
+            SPiDLogger.log("JWT is missing value for issuer");
+            isNoError = false;
         }
-        if (sub == null || sub.length() <= 0) {
+        if (TextUtils.isEmpty(sub)) {
             SPiDLogger.log("JWT is missing value for sub");
-            return false;
+            isNoError = false;
         }
-        if (aud == null || aud.length() <= 0) {
-            SPiDLogger.log("JWT is missing value for aud");
-            return false;
+        if (TextUtils.isEmpty(audience)) {
+            SPiDLogger.log("JWT is missing value for audience");
+            isNoError = false;
         }
-        if (exp == null) {
-            SPiDLogger.log("JWT is missing value for exp");
-            return false;
+        if (expirationDate == null) {
+            SPiDLogger.log("JWT is missing value for expirationDate");
+            isNoError = false;
         }
-        if (tokenType == null || tokenType.length() <= 0) {
+        if (TextUtils.isEmpty(tokenType)) {
             SPiDLogger.log("JWT is missing value for token type");
-            return false;
+            isNoError = false;
         }
-        if (tokenValue == null || tokenValue.length() <= 0) {
+        if (TextUtils.isEmpty(tokenValue)) {
             SPiDLogger.log("JWT is missing value for token value");
-            return false;
+            isNoError = false;
         }
-        return true;
+        return isNoError;
     }
 
     /**
@@ -101,15 +105,15 @@ public class SPiDJwt {
         }
 
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-        String date = format.format(exp);
+        String date = format.format(expirationDate);
 
         String claimBase64;
         try {
             JSONObject claimJson = new JSONObject();
-            claimJson.put("iss", iss);
+            claimJson.put("issuer", issuer);
             claimJson.put("sub", sub);
-            claimJson.put("aud", aud);
-            claimJson.put("exp", date);
+            claimJson.put("audience", audience);
+            claimJson.put("expirationDate", date);
             claimJson.put("token_type", tokenType);
             claimJson.put("token_value", tokenValue);
             claimBase64 = SPiDUtils.encodeBase64(claimJson.toString());

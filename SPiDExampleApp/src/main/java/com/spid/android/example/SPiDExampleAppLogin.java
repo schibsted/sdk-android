@@ -156,7 +156,6 @@ public class SPiDExampleAppLogin extends Activity {
         }
 
         public void onClick(View v) {
-            webView = null;
             try {
                 webView = SPiDWebView.webViewAuthorization(context, null, new SPiDExampleWebViewClient(), new LoginListener(context));
                 setContentView(webView);

@@ -35,6 +35,8 @@ public class SPiDClient {
 
     public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.1.4";
 
+    public static final String OAUTH_TOKEN = "oauth_token";
+
     private static final SPiDClient instance = new SPiDClient();
 
     private SPiDConfiguration config;
