@@ -16,14 +16,14 @@
         android:adjustViewBounds="true"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:contentDescription="SPiDLogo"/>
+        android:contentDescription="@string/SPiDLogo"/>
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:width="280dp"
-        android:hint="Email"
+        android:hint="@string/email"
         android:id="@+id/username_edit_text"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/spid_logo"
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="280dp"
-        android:hint="Password"
+        android:hint="@string/password"
         android:id="@+id/password_edit_text"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/username_edit_text"
@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="280dp"
-        android:text="Login to SPiD"
+        android:text="@string/loginToSPiD"
         android:id="@+id/login_button"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/password_edit_text"/>
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="280dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:id="@+id/cancel_button"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/login_button"/>
@@ -62,20 +62,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/terms_text"
         android:layout_centerHorizontal="true"
-        android:text="By using this service you are agreeing the"
+        android:text="@string/agreementTerms"
         android:adjustViewBounds="true"
         android:layout_below="@+id/cancel_button"/>
-    />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/terms_link"
         android:layout_centerHorizontal="true"
-        android:text="Terms of use"
+        android:text="@string/termsOfUse"
         android:textStyle="bold"
         android:adjustViewBounds="true"
         android:layout_below="@+id/terms_text"/>
-    />
 
 </RelativeLayout>

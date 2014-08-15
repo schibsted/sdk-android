@@ -20,12 +20,12 @@ import java.util.Date;
  */
 public class SPiDJwt {
 
-    private String issuer;
-    private String sub;
-    private String audience;
-    private Date expirationDate;
-    private String tokenType;
-    private String tokenValue;
+    private final String issuer;
+    private final String sub;
+    private final String audience;
+    private final Date expirationDate;
+    private final String tokenType;
+    private final String tokenValue;
 
     /**
      * Constructs a new SPiDUserAbortedLoginException with the specified detail message.

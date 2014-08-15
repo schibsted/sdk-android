@@ -7,6 +7,8 @@ import android.content.Context;
  */
 public class SPiDConfiguration {
 
+    private final String userAgent;
+
     private String clientID;
     private String clientSecret;
     private String signSecret;
@@ -22,7 +24,6 @@ public class SPiDConfiguration {
     private Boolean useMobileWeb;
     private String apiVersion;
     private Boolean debugMode;
-    private String userAgent;
     private Context context;
 
     /**

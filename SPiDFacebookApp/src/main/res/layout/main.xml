@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/user_text_view"
-        android:text="Welcome Unknown user!"
+        android:text="@string/welcomeUnknownUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -38,6 +38,6 @@
         android:layout_below="@+id/user_text_view"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:minHeight="10px"
-        android:maxHeight="10px"/>
+        android:minHeight="10dp"
+        android:maxHeight="10dp"/>
 </RelativeLayout>

@@ -97,7 +97,7 @@ public final class SPiDUtils {
         SharedPreferences secure = getSecurePreferencesFile();
         SharedPreferences.Editor editor = secure.edit();
         editor.putString(DEVICE_ID, id);
-        editor.commit();
+        editor.apply();
         return id;
     }
 
@@ -108,7 +108,6 @@ public final class SPiDUtils {
      */
     public static SharedPreferences getSecurePreferencesFile() {
         Context context = SPiDClient.getInstance().getConfig().getContext();
-        SharedPreferences secure = context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
-        return secure;
+        return context.getSharedPreferences(context.getPackageName() + ".sdk", Context.MODE_PRIVATE);
     }
 }

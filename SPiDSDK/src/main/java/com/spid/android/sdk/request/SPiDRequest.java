@@ -37,11 +37,14 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     public static final String GET = "GET";
     public static final String POST = "POST";
-    private static final Integer MAX_RETRY_COUNT = 0;
 
-    protected SPiDRequestListener listener;
+    private static final Integer DEFAULT_MAX_RETRY_COUNT = 0;
+    private final String method;
+
+    protected final SPiDRequestListener listener;
+
     private String url;
-    private String method;
+
     private Map<String, String> headers;
     private Map<String, String> query;
     private Map<String, String> body;
@@ -66,7 +69,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         this.listener = listener;
 
         this.retryCount = 0;
-        this.maxRetryCount = MAX_RETRY_COUNT;
+        this.maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
 
         SPiDLogger.log("Created request: " + url);
     }
@@ -255,7 +258,6 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                     if (retryCount < maxRetryCount) {
                         SPiDRequest request = this.copy();
                         request.increaseRetryCount();
-//                        request.retryCount++;
                         SPiDClient.getInstance().addWaitingRequest(request);
                         SPiDClient.getInstance().refreshAccessToken(null);
                         SPiDLogger.log("Retrying attempt: " + request.retryCount + " for request: " + request.url);

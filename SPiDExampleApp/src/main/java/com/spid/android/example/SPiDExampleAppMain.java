@@ -81,7 +81,7 @@ public class SPiDExampleAppMain extends Activity {
     }
 
     protected class RefreshTokenButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public RefreshTokenButtonListener(Context context) {
             this.context = context;
@@ -120,7 +120,7 @@ public class SPiDExampleAppMain extends Activity {
     }
 
     protected class OneTimeCodeButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public OneTimeCodeButtonListener(Context context) {
             this.context = context;
@@ -165,7 +165,7 @@ public class SPiDExampleAppMain extends Activity {
     }
 
     protected class LogoutButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public LogoutButtonListener(Context context) {
             this.context = context;

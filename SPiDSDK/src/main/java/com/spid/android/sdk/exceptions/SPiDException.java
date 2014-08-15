@@ -10,6 +10,7 @@ import java.util.Map;
  * Base class for all exceptions in SPiD.
  */
 public class SPiDException extends RuntimeException {
+
     public static final String REDIRECT_URI_MISMATCH = "redirect_uri_mismatch";
     public static final String UNAUTHORIZED_CLIENT = "unauthorized_client";
     public static final String ACCESS_DENIED = "access_denied";
@@ -30,7 +31,7 @@ public class SPiDException extends RuntimeException {
     private static final String OAUTH_EXCEPTION = "OAuthException";
     private static final String SPID_EXCEPTION = "SPiDException";
 
-    private static final Integer UNKNOWN_CODE = -1;
+    public static final Integer UNKNOWN_CODE = -1;
 
     private String error;
     private Integer errorCode;
@@ -44,11 +45,7 @@ public class SPiDException extends RuntimeException {
      */
     public SPiDException(String message) {
         super(message);
-        this.error = SPID_EXCEPTION;
-        this.errorCode = UNKNOWN_CODE;
-        this.errorType = SPID_EXCEPTION;
-        this.descriptions = new HashMap<String, String>();
-        this.descriptions.put("error", message);
+        initDefaultValues(message);
     }
 
     /**
@@ -58,11 +55,7 @@ public class SPiDException extends RuntimeException {
      */
     public SPiDException(Throwable cause) {
         super(cause);
-        this.error = SPID_EXCEPTION;
-        this.errorCode = UNKNOWN_CODE;
-        this.errorType = SPID_EXCEPTION;
-        this.descriptions = new HashMap<String, String>();
-        this.descriptions.put("error", cause.getMessage());
+        initDefaultValues(cause.getMessage());
     }
 
     /**
@@ -73,11 +66,7 @@ public class SPiDException extends RuntimeException {
      */
     public SPiDException(String message, Throwable throwable) {
         super(message, throwable);
-        this.error = SPID_EXCEPTION;
-        this.errorCode = UNKNOWN_CODE;
-        this.errorType = SPID_EXCEPTION;
-        this.descriptions = new HashMap<String, String>();
-        this.descriptions.put("error", message);
+        initDefaultValues(message);
     }
 
     /**
@@ -113,6 +102,13 @@ public class SPiDException extends RuntimeException {
         this.descriptions = descriptions;
     }
 
+    private void initDefaultValues(String message) {
+        this.error = SPID_EXCEPTION;
+        this.errorCode = UNKNOWN_CODE;
+        this.errorType = SPID_EXCEPTION;
+        this.descriptions = new HashMap<String, String>();
+        this.descriptions.put("error", message);
+    }
 
     /**
      * Creates a SPiDException from a JSONObject
@@ -158,7 +154,7 @@ public class SPiDException extends RuntimeException {
 //            errorCode = NumberFormat.getInstance().parse(errorCodeString).intValue();
             errorCode = Integer.valueOf(errorCodeString);
         } catch (NumberFormatException e) {
-            errorCode = -1;
+            errorCode = SPiDException.UNKNOWN_CODE;
         }
 
         type = type != null ? type : SPID_EXCEPTION;

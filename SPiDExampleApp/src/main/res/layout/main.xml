@@ -19,7 +19,7 @@
 
     <TextView
             android:id="@+id/userTextView"
-            android:text="Welcome Unknown user!"
+            android:text="@string/welcomeUnknownUser"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -30,7 +30,7 @@
 
     <TextView
             android:id="@+id/tokenExpiresTextView"
-            android:text="Token expires at: unknown"
+            android:text="@string/tokenExpires"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -41,7 +41,7 @@
 
     <TextView
             android:id="@+id/oneTimeCodeTextView"
-            android:text="One time code: none"
+            android:text="@string/oneTimeCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -65,15 +65,15 @@
 
     <Button
             android:id="@+id/oneTimeCodeButton"
-            android:text="@string/oneTimeCode"
+            android:text="@string/getOneTimeCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/refreshTokenButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:minHeight="10px"
-            android:maxHeight="10px"/>
+            android:minHeight="10dp"
+            android:maxHeight="10dp"/>
 
     <Button
             android:id="@+id/logoutButton"
@@ -85,6 +85,6 @@
             android:layout_below="@+id/oneTimeCodeButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:minHeight="10px"
-            android:maxHeight="10px"/>
+            android:minHeight="10dp"
+            android:maxHeight="10dp"/>
 </RelativeLayout>

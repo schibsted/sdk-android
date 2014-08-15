@@ -3,4 +3,11 @@
     <string name="app_name">HybridApp</string>
     <string name="logout">Logout from SPiD</string>
     <string name="SPiDLogo">SPiD Logo</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="done">Done</string>
+    <string name="password">Password</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="termsAgreement">By using this service you are agreeing to the</string>
+    <string name="termsOfUse">Terms of use</string>
 </resources>

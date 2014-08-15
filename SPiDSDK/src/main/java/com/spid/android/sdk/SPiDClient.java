@@ -42,7 +42,7 @@ public class SPiDClient {
     private SPiDConfiguration config;
     private SPiDAccessToken token;
     private SPiDAuthorizationListener authorizationListener;
-    private List<SPiDRequest> waitingRequests;
+    private final List<SPiDRequest> waitingRequests;
 
     /**
      * Constructor for SPiDClient, private since class is a singleton and should always be accessed through <code>getInstance()</code>
@@ -204,12 +204,14 @@ public class SPiDClient {
                 request.setMaxRetryCount(-1);
                 request.execute();
             } else {
-                if (listener != null)
+                if (listener != null) {
                     listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+                }
             }
         } else {
-            if (listener != null)
+            if (listener != null) {
                 listener.onComplete();
+            }
         }
     }
 
@@ -217,8 +219,9 @@ public class SPiDClient {
      * @return Access token expiry date of <code>null</code> if there is no access token
      */
     public Date getTokenExpiresAt() {
-        if (token != null)
+        if (token != null) {
             return token.getExpiresAt();
+        }
         return null;
     }
 
@@ -315,7 +318,7 @@ public class SPiDClient {
         waitingRequests.clear();
 
         for (SPiDRequest request : requests) {
-            if (request.getMethod().equals("GET")) {
+            if (SPiDRequest.GET.equals(request.getMethod())) {
                 request.addQueryParameter("oauth_token", token.getAccessToken());
             } else { // POST
                 request.addBodyParameter("oauth_token", token.getAccessToken());
@@ -364,7 +367,7 @@ public class SPiDClient {
      * Listener for the logout request
      */
     private class LogoutListener implements SPiDRequestListener {
-        private SPiDAuthorizationListener listener;
+        private final SPiDAuthorizationListener listener;
 
         /**
          * Creates a LogoutListener

@@ -186,7 +186,7 @@ public class MainActivity extends Activity {
     }
 
     protected class LogoutButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public LogoutButtonListener(Context context) {
             this.context = context;

@@ -14,7 +14,7 @@ import java.io.IOException;
  */
 public class SPiDTokenRequest extends SPiDRequest {
 
-    private SPiDAuthorizationListener authorizationListener;
+    private final SPiDAuthorizationListener authorizationListener;
 
     /**
      * Constructor for the SPiDTokenRequest

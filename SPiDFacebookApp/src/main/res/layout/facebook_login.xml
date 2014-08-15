@@ -16,7 +16,7 @@
         android:adjustViewBounds="true"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:contentDescription="SPiDLogo"/>
+        android:contentDescription="@string/SPiDLogo"/>
 
     <com.facebook.widget.LoginButton
         android:id="@+id/authButton"
@@ -32,20 +32,18 @@
         android:layout_height="wrap_content"
         android:id="@+id/terms_text"
         android:layout_centerHorizontal="true"
-        android:text="By using this service you are agreeing the"
+        android:text="@string/termsAgreement"
         android:adjustViewBounds="true"
         android:layout_below="@+id/authButton"/>
-    />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/terms_link"
         android:layout_centerHorizontal="true"
-        android:text="Terms of use"
+        android:text="@string/termsOfUse"
         android:textStyle="bold"
         android:adjustViewBounds="true"
         android:layout_below="@+id/terms_text"/>
-    />
 
 </RelativeLayout>

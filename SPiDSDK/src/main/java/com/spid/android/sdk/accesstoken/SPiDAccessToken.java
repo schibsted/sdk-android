@@ -12,10 +12,10 @@ import java.util.Date;
  */
 public class SPiDAccessToken {
 
-    public static String SPiDAccessTokenKey = "access_token";
-    public static String SPiDAccessTokenExpiresInKey = "expires_in";
-    public static String SPiDAccessTokenRefreshTokenKey = "refresh_token";
-    public static String SPiDAccessTokenUserIdKey = "user_id";
+    public static final String SPID_ACCESS_TOKEN_KEY = "access_token";
+    public static final String SPID_ACCESS_TOKEN_KEY_EXPIRES_IN = "expires_in";
+    public static final String REFRESH_SPID_ACCESS_TOKEN_KEY = "refresh_token";
+    public static final String SPID_ACCESS_TOKEN_USER_ID = "user_id";
 
     private String accessToken;
     private Date expiresAt;
@@ -29,9 +29,9 @@ public class SPiDAccessToken {
      */
     public SPiDAccessToken(JSONObject jsonObject) {
         try {
-            this.accessToken = jsonObject.getString(SPiDAccessTokenKey);
+            this.accessToken = jsonObject.getString(SPID_ACCESS_TOKEN_KEY);
 
-            Integer expiresIn = jsonObject.getInt(SPiDAccessTokenExpiresInKey);
+            Integer expiresIn = jsonObject.getInt(SPID_ACCESS_TOKEN_KEY_EXPIRES_IN);
             Calendar cal = Calendar.getInstance();
             cal.setTime(new Date());
             cal.add(Calendar.SECOND, expiresIn);
@@ -39,8 +39,8 @@ public class SPiDAccessToken {
             this.expiresAt = cal.getTime();
 
             // Optional values
-            this.refreshToken = jsonObject.optString(SPiDAccessTokenRefreshTokenKey, null);
-            this.userID = jsonObject.optString(SPiDAccessTokenUserIdKey, null);
+            this.refreshToken = jsonObject.optString(REFRESH_SPID_ACCESS_TOKEN_KEY, null);
+            this.userID = jsonObject.optString(SPID_ACCESS_TOKEN_USER_ID, null);
         } catch (JSONException e) {
             throw new SPiDAccessTokenException("Received invalid access token data");
         }

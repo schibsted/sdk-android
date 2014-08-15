@@ -52,7 +52,7 @@ public class LoginDialog extends DialogFragment {
                     }
                 } else {
                     view.setEnabled(false);
-                    SPiDLogger.log("Email: " + email + " password: " + password);
+                    SPiDLogger.log("Email: " + email);
                     SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new LoginListener());
                     tokenRequest.execute();
                 }

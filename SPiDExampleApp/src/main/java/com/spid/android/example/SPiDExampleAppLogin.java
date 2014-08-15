@@ -79,7 +79,7 @@ public class SPiDExampleAppLogin extends Activity {
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
-        private Context context;
+        private final Context context;
 
         private LoginListener(Context context) {
             this.context = context;
@@ -131,7 +131,7 @@ public class SPiDExampleAppLogin extends Activity {
     }
 
     protected class LoginBrowserButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public LoginBrowserButtonListener(Context context) {
             this.context = context;
@@ -149,7 +149,7 @@ public class SPiDExampleAppLogin extends Activity {
     }
 
     protected class LoginWebViewButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public LoginWebViewButtonListener(Context context) {
             this.context = context;

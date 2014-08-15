@@ -153,7 +153,7 @@ public class SPiDUser {
      */
     private static class AuthorizationRequestListener implements SPiDRequestListener {
 
-        SPiDAuthorizationListener listener;
+        final SPiDAuthorizationListener listener;
 
         private AuthorizationRequestListener(SPiDAuthorizationListener authorizationListener) {
             this.listener = authorizationListener;

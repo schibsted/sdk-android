@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,11 @@ import java.util.Map;
  * Contains a response from SPiD
  */
 public class SPiDResponse {
-    private Integer code;
+
+    private final Integer code;
+    private final Map<String, String> headers;
+
     private String body;
-    private Map<String, String> headers;
     private JSONObject jsonObject;
     private Exception exception;
 
@@ -31,19 +34,7 @@ public class SPiDResponse {
      * @param exception exception
      */
     public SPiDResponse(Exception exception) {
-        this.code = -1;
-        this.body = "";
-        this.headers = new HashMap<String, String>();
-        this.exception = exception;
-    }
-
-    /**
-     * Constructor for SPiDResponse
-     *
-     * @param exception IOexception
-     */
-    public SPiDResponse(IOException exception) {
-        this.code = -1;
+        this.code = SPiDException.UNKNOWN_CODE;
         this.body = "";
         this.headers = new HashMap<String, String>();
         this.exception = exception;
@@ -98,14 +89,14 @@ public class SPiDResponse {
      * @return If request was successful, i.e. 200 >= http code < 400
      */
     public boolean isSuccessful() {
-        return getCode() >= 200 && getCode() < 400;
+        return getCode() >= HttpURLConnection.HTTP_OK && getCode() < HttpURLConnection.HTTP_BAD_REQUEST;
     }
 
     /**
      * @return The http status code
      */
     public int getCode() {
-        return code != null ? code : -1;
+        return code != null ? code : SPiDException.UNKNOWN_CODE;
     }
 
     /**

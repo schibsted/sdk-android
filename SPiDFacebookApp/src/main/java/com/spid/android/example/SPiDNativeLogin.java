@@ -62,7 +62,7 @@ public class SPiDNativeLogin extends Activity {
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
-        private Context context;
+        private final Context context;
 
         private LoginListener(Context context) {
             this.context = context;
@@ -135,7 +135,7 @@ public class SPiDNativeLogin extends Activity {
     }
 
     private class LoginButtonListener implements View.OnClickListener {
-        Context context;
+        final Context context;
 
         public LoginButtonListener(Context context) {
             this.context = context;
@@ -156,7 +156,7 @@ public class SPiDNativeLogin extends Activity {
     }
 
     private class CancelButtonListener implements View.OnClickListener {
-        private Context context;
+        private final Context context;
 
         public CancelButtonListener(Context context) {
             this.context = context;
@@ -176,7 +176,7 @@ public class SPiDNativeLogin extends Activity {
     }
 
     private class TermsButtonListener implements View.OnClickListener {
-        private Activity activity;
+        private final Activity activity;
 
         private TermsButtonListener(Activity context) {
             this.activity = context;

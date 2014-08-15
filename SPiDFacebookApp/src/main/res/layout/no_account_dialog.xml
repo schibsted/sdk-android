@@ -12,31 +12,27 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:width="200dp"
-        android:text="No SPiD user exists for your facebook account, do you want to create a user or attach your facebook to a existing SPiD account?"
-        />
+        android:text="@string/spidUserMissing"/>
 
     <Button
         android:id="@+id/createNewUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="New account"
-        />
+        android:text="@string/newAccount"/>
 
     <Button
         android:id="@+id/attachFacebookUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="Existing account"
-        />
+        android:text="@string/existingAccount"/>
 
     <Button
         android:id="@+id/cancelDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="Cancel"
-        />
+        android:text="@string/cancel"/>
 
 </LinearLayout>

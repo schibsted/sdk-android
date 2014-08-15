@@ -46,7 +46,7 @@ public class SPiDKeychain {
             clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -61,7 +61,7 @@ public class SPiDKeychain {
             SPiDAccessToken token;
             try {
                 String accessToken = decryptString(encryptionKey, secure.getString("access_token", ""));
-                Long expiresAt = new Long(decryptString(encryptionKey, secure.getString("expires_at", "")));
+                Long expiresAt = Long.valueOf(decryptString(encryptionKey, secure.getString("expires_at", "")));
                 String refreshToken = decryptString(encryptionKey, secure.getString("refresh_token", ""));
                 String userId = decryptString(encryptionKey, secure.getString("user_id", ""));
                 token = new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
@@ -88,7 +88,7 @@ public class SPiDKeychain {
         editor.remove("expires_at");
         editor.remove("refresh_token");
         editor.remove("user_id");
-        editor.commit();
+        editor.apply();
     }
 
     /**

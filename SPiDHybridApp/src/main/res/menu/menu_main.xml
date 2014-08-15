@@ -4,13 +4,13 @@
 
     <item
         android:id="@+id/menu_item_login"
-        android:showAsAction="always"
-        android:title="Login"></item>
+        android:showAsAction="ifRoom"
+        android:title="@string/login"></item>
 
     <item
         android:id="@+id/menu_item_logout"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom"
         android:visible="false"
-        android:title="Logout"></item>
+        android:title="@string/logout"></item>
 
 </menu>

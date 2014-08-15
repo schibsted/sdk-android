@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:contentDescription="SPiDLogo"
+        android:contentDescription="@string/SPiDLogo"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:src="@drawable/spidlogo" />
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
-        android:hint="Email"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:textColor="#000000" />
 
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
-        android:hint="Password"
+        android:hint="@string/password"
         android:inputType="textPassword"
         android:textColor="#000000" />
 
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
-        android:text="Login to SPiD" />
+        android:text="@string/loginToSpid" />
 
     <View
         android:layout_width="fill_parent"
@@ -64,7 +64,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Forgot password?" />
+            android:text="@string/forgotPassword" />
 
         <View
             android:layout_width="1px"
@@ -78,7 +78,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="New user?" />
+            android:text="@string/newUser" />
 
     </LinearLayout>
 
@@ -87,7 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
-        android:text="By using this service you are agreeing the"
+        android:text="@string/agreementToTerms"
         android:textColor="@android:color/darker_gray" />
 
     <TextView
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Terms of use"
+        android:text="@string/termsOfUse"
         android:textColor="@android:color/darker_gray"
         android:textStyle="bold" />
 

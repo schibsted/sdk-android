@@ -14,19 +14,19 @@
             android:adjustViewBounds="true"
             android:paddingLeft="50dp"
             android:paddingRight="50dp"
-            android:contentDescription="SPiDLogo"/>
+            android:contentDescription="@string/SPiDLogo"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Login to SPiD with browser"
+            android:text="@string/loginBrowserText"
             android:id="@+id/LoginBrowserButton"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/SPiDLogo"/>
     <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login to SPiD with WebView"
+            android:text="@string/loginWebViewText"
             android:id="@+id/LoginWebViewButton"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/LoginBrowserButton"/>

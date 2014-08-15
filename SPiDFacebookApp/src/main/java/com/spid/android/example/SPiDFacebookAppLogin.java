@@ -213,7 +213,7 @@ public class SPiDFacebookAppLogin extends Activity {
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
-        private Context context;
+        private final Context context;
 
         private LoginListener() {
             this.context = SPiDClient.getInstance().getConfig().getContext();
@@ -260,7 +260,7 @@ public class SPiDFacebookAppLogin extends Activity {
     }
 
     private class TermsButtonListener implements View.OnClickListener {
-        private Activity activity;
+        private final Activity activity;
 
         private TermsButtonListener(Activity context) {
             this.activity = context;
