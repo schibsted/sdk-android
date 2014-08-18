@@ -44,6 +44,23 @@ public class SPiDClient {
     private SPiDAuthorizationListener authorizationListener;
     private final List<SPiDRequest> waitingRequests;
 
+    private enum RequestType {
+
+        CODE("code"),
+        SESSION("session");
+
+        private String type;
+
+        RequestType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return type;
+        }
+    }
+
     /**
      * Constructor for SPiDClient, private since class is a singleton and should always be accessed through <code>getInstance()</code>
      */
@@ -55,7 +72,7 @@ public class SPiDClient {
     }
 
     /**
-     * Singleton method for SPiDClient which returns the SPiDClient instance, creates a new instance if it does not exist
+     * Singleton method for SPiDClient which returns the SPiDClient instance
      *
      * @return SPiDClient instance
      */
@@ -128,7 +145,7 @@ public class SPiDClient {
     public boolean handleIntent(Uri data, SPiDAuthorizationListener listener) {
         if (shouldHandleIntent(data)) {
             if (data.getPath().endsWith("login")) {
-                String code = data.getQueryParameter("code");
+                String code = data.getQueryParameter(RequestType.CODE.toString());
                 if (code == null) {
                     if (listener != null) {
                         listener.onSPiDException(new SPiDUserAbortedLoginException("User aborted login"));
@@ -282,7 +299,7 @@ public class SPiDClient {
         SPiDRequest request = new SPiDApiPostRequest("/oauth/exchange", listener);
         request.addBodyParameter("clientId", config.getServerClientID());
         request.addBodyParameter("client_id", config.getServerClientID());
-        request.addBodyParameter("type", "code");
+        request.addBodyParameter("type", RequestType.CODE.toString());
         request.executeAuthorizedRequest();
     }
 
@@ -294,7 +311,7 @@ public class SPiDClient {
     public void getSessionCode(SPiDRequestListener listener) {
         SPiDRequest request = new SPiDApiPostRequest("/oauth/exchange", listener);
         request.addBodyParameter("clientId", config.getServerClientID());
-        request.addBodyParameter("type", "session");
+        request.addBodyParameter("type", RequestType.SESSION.toString());
         request.addBodyParameter("redirectUri", config.getServerRedirectUri());
         request.executeAuthorizedRequest();
     }

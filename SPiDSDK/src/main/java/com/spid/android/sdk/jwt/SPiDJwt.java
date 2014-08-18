@@ -50,32 +50,32 @@ public class SPiDJwt {
      * Validates the JWT
      */
     private boolean validate() {
-        boolean isNoError = true;
+        boolean isSuccessful = true;
         if (TextUtils.isEmpty(issuer)) {
             SPiDLogger.log("JWT is missing value for issuer");
-            isNoError = false;
+            isSuccessful = false;
         }
         if (TextUtils.isEmpty(sub)) {
             SPiDLogger.log("JWT is missing value for sub");
-            isNoError = false;
+            isSuccessful = false;
         }
         if (TextUtils.isEmpty(audience)) {
             SPiDLogger.log("JWT is missing value for audience");
-            isNoError = false;
+            isSuccessful = false;
         }
         if (expirationDate == null) {
             SPiDLogger.log("JWT is missing value for expirationDate");
-            isNoError = false;
+            isSuccessful = false;
         }
         if (TextUtils.isEmpty(tokenType)) {
             SPiDLogger.log("JWT is missing value for token type");
-            isNoError = false;
+            isSuccessful = false;
         }
         if (TextUtils.isEmpty(tokenValue)) {
             SPiDLogger.log("JWT is missing value for token value");
-            isNoError = false;
+            isSuccessful = false;
         }
-        return isNoError;
+        return isSuccessful;
     }
 
     /**

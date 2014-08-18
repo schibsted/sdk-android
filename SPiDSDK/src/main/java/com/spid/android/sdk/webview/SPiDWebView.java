@@ -18,7 +18,9 @@ import java.io.UnsupportedEncodingException;
 /**
  * Helper methods to create various webviews
  */
-public class SPiDWebView {
+public final class SPiDWebView {
+
+    private SPiDWebView() {}
 
     /**
      * Sets up a WebView with SPiD login
@@ -176,7 +178,7 @@ public class SPiDWebView {
      */
     public static WebView getWebView(final Context context, WebView webView, String url, SPiDWebViewClient webViewClient) {
         if (SPiDClient.getInstance().isAuthorized()) {
-            SPiDLogger.log("Access token found, preforming a soft logout to cleanup before login");
+            SPiDLogger.log("Access token found, performing a soft logout to cleanup before login");
             // Fire and forget
             SPiDClient.getInstance().apiLogout(null);
             SPiDClient.getInstance().clearAccessToken();
