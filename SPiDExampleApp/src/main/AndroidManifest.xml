@@ -21,6 +21,8 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
+                <data android:scheme="your-app-url-scheme"/>
+
             </intent-filter>
         </activity>
         <activity android:name="com.spid.android.example.SPiDExampleAppMain">
