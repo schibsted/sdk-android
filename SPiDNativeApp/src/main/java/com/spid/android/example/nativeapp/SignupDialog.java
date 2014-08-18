@@ -33,7 +33,6 @@ public class SignupDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View dialogView = inflater.inflate(R.layout.dialog_signup, container);
-        final Toast toast = Toast.makeText(getActivity(), "Missing email and/or password", Toast.LENGTH_LONG);
 
         Button signupButton = (Button) dialogView.findViewById(R.id.dialog_signup_button_signup);
         signupButton.setOnClickListener(new View.OnClickListener() {
@@ -45,11 +44,9 @@ public class SignupDialog extends DialogFragment {
                 EditText passwordEditText = (EditText) dialogView.findViewById(R.id.dialog_signup_edittext_password);
                 String password = passwordEditText.getText().toString();
 
-                if (email.equals("") || password.equals("")) {
+                if (email.isEmpty() || password.isEmpty()) {
                     SPiDLogger.log("Missing email and/or password");
-                    if (!toast.getView().isShown()) {
-                        toast.show();
-                    }
+                    Toast.makeText(getActivity(), "Missing email and/or password", Toast.LENGTH_LONG).show();
                 } else {
                     SPiDLogger.log("Email: " + email + " password: " + password);
                     SPiDUser.signupWithCredentials(email, password, new SignupListener());

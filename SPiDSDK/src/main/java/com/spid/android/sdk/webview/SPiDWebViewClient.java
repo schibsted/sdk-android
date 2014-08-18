@@ -58,7 +58,7 @@ public class SPiDWebViewClient extends WebViewClient {
                         SPiDLogger.log("User aborted login");
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();
-                } else if (code.length() > 0) {
+                } else if (!code.isEmpty()) {
                     SPiDTokenRequest request = new SPiDCodeTokenRequest(code, SPiDClient.getInstance().getAuthorizationListener());
                     request.execute();
                 } else {

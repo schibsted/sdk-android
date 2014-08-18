@@ -254,7 +254,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                 listener.onIOException((IOException) exception);
             } else if (exception instanceof SPiDException) {
                 String error = ((SPiDException) exception).getError();
-                if (error != null && (error.equals(SPiDException.EXPIRED_TOKEN) || error.equals(SPiDException.INVALID_TOKEN))) {
+                if (SPiDException.EXPIRED_TOKEN.equals(error) || SPiDException.INVALID_TOKEN.equals(error)) {
                     if (retryCount < maxRetryCount) {
                         SPiDRequest request = this.copy();
                         request.increaseRetryCount();
@@ -292,11 +292,6 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             if (!url.contains(SPiDClient.OAUTH_TOKEN) && accessToken != null) {
                 url = url.contains("?") ? url + "&" : url + "?";
                 url = url + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
-//                if (url.contains("?")) {
-//                    url = url + "&" + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
-//                } else {
-//                    url = url + "?" + SPiDClient.OAUTH_TOKEN + "=" + accessToken.getAccessToken();
-//                }
             }
         } else { // POST
             if (!body.containsKey(SPiDClient.OAUTH_TOKEN) && accessToken != null) {

@@ -33,7 +33,6 @@ public class LoginDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View dialogView = inflater.inflate(R.layout.dialog_login, container);
-        final Toast toast = Toast.makeText(getActivity(), "Both Email and Password are required", Toast.LENGTH_LONG);
 
         Button loginButton = (Button) dialogView.findViewById(R.id.dialog_login_button_login);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -45,11 +44,9 @@ public class LoginDialog extends DialogFragment {
                 EditText passwordEditText = (EditText) dialogView.findViewById(R.id.dialog_login_edittext_password);
                 String password = passwordEditText.getText().toString();
 
-                if (email.equals("") || password.equals("")) {
+                if (email.isEmpty() || password.isEmpty()) {
                     SPiDLogger.log("Missing email and/or password");
-                    if (!toast.getView().isShown()) {
-                        toast.show();
-                    }
+                    Toast.makeText(getActivity(), "Both Email and Password are required", Toast.LENGTH_LONG).show();
                 } else {
                     view.setEnabled(false);
                     SPiDLogger.log("Email: " + email);

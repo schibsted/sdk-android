@@ -8,6 +8,7 @@ import com.spid.android.sdk.listener.SPiDRequestListener;
  * Contains a SPiD Api GET request
  */
 public class SPiDApiGetRequest extends SPiDRequest {
+
     /**
      * Creates a GET API request to SPiD
      *

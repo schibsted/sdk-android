@@ -60,7 +60,6 @@ public class SPiDClient {
      * @return SPiDClient instance
      */
     public static SPiDClient getInstance() {
-        // TODO throw exception if config == null
         return instance;
     }
 
@@ -137,7 +136,7 @@ public class SPiDClient {
                         SPiDLogger.log("User aborted login");
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();
-                } else if (code.length() > 0) {
+                } else if (!code.isEmpty()) {
                     SPiDTokenRequest request = new SPiDCodeTokenRequest(code, listener);
                     request.execute();
                     return true;

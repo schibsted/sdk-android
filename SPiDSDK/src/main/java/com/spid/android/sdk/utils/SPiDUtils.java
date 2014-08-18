@@ -17,6 +17,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class SPiDUtils {
 
+    public static final String HMAC_SHA_2561 = "HmacSHA256";
+
     private static String sID = null;
 
     public static final String DEVICE_ID = "DEVICE_ID";
@@ -36,44 +38,41 @@ public final class SPiDUtils {
     /**
      * Encodes a string with Base64
      *
-     * @param string String to be encoded
-     * @return Base64 encoded string
+     * @param input String to be encoded
+     * @return Base64 encoded input
      * @throws UnsupportedEncodingException
      */
-    public static String encodeBase64(String string) throws UnsupportedEncodingException {
-        byte[] data = string.getBytes("UTF-8");
+    public static String encodeBase64(String input) throws UnsupportedEncodingException {
+        byte[] data = input.getBytes("UTF-8");
         return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
     /**
      * Converts a byte[] to a hex string
      *
-     * @param array Array to be converted
+     * @param byteArray Array to be converted
      * @return Array as a hex string
      */
-    public static String byteArrayToHexString(byte[] array) {
-        StringBuilder hexString = new StringBuilder();
-        for (byte b : array) {
-            int intVal = b & 0xff;
-            if (intVal < 0x10)
-                hexString.append("0");
-            hexString.append(Integer.toHexString(intVal));
+    public static String byteArrayToHexString(byte[] byteArray) {
+        final StringBuilder builder = new StringBuilder();
+        for(byte b : byteArray) {
+            builder.append(String.format("%02x", b));
         }
-        return hexString.toString();
+        return builder.toString();
     }
 
     /**
      * Generated a hmac sha256 for a string
      *
      * @param key    Key used for hash generation
-     * @param string String to be hashed
+     * @param input  String to be hashed
      * @return Hashed string
      * @throws Exception
      */
-    public static String getHmacSHA256(String key, String string) throws Exception {
-        Mac mac = Mac.getInstance("HmacSHA256");
-        mac.init(new SecretKeySpec(key.getBytes(), "HmacSHA256"));
-        byte[] bs = mac.doFinal(string.getBytes());
+    public static String getHmacSHA256(String key, String input) throws Exception {
+        Mac mac = Mac.getInstance(HMAC_SHA_2561);
+        mac.init(new SecretKeySpec(key.getBytes(), HMAC_SHA_2561));
+        byte[] bs = mac.doFinal(input.getBytes());
         return byteArrayToHexString(bs);
     }
 

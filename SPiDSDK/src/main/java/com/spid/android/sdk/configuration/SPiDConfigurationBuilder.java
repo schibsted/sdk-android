@@ -173,7 +173,7 @@ public class SPiDConfigurationBuilder {
      * @throws IllegalArgumentException
      */
     protected void isEmptyString(String string, String errorMessage) {
-        if (string == null || string.trim().equals("")) {
+        if (string == null || string.trim().isEmpty()) {
             throw new IllegalArgumentException(errorMessage);
         }
     }
@@ -228,31 +228,31 @@ public class SPiDConfigurationBuilder {
         isEmptyString(serverURL, "ServerURL is missing");
         isNull(context, "Context is missing");
 
-        if (redirectURL == null || redirectURL.trim().equals("")) {
+        if (redirectURL == null || redirectURL.trim().isEmpty()) {
             redirectURL = appURLScheme + "://";
         }
 
-        if (authorizationURL == null || authorizationURL.trim().equals("")) {
+        if (authorizationURL == null || authorizationURL.trim().isEmpty()) {
             authorizationURL = serverURL + "/auth/login";
         }
 
-        if (tokenURL == null || tokenURL.trim().equals("")) {
+        if (tokenURL == null || tokenURL.trim().isEmpty()) {
             tokenURL = serverURL + "/oauth/token";
         }
 
-        if (signupURL == null || signupURL.trim().equals("")) {
+        if (signupURL == null || signupURL.trim().isEmpty()) {
             signupURL = serverURL + "/auth/signup";
         }
 
-        if (forgotPasswordURL == null || forgotPasswordURL.trim().equals("")) {
+        if (forgotPasswordURL == null || forgotPasswordURL.trim().isEmpty()) {
             forgotPasswordURL = serverURL + "/auth/forgotpassword";
         }
 
-        if (serverClientID == null || serverClientID.trim().equals("")) {
+        if (serverClientID == null || serverClientID.trim().isEmpty()) {
             serverClientID = clientID;
         }
 
-        if (serverRedirectUri == null || serverRedirectUri.trim().equals("")) {
+        if (serverRedirectUri == null || serverRedirectUri.trim().isEmpty()) {
             serverRedirectUri = redirectURL;
         }
 

@@ -17,10 +17,10 @@ public class SPiDAccessToken {
     public static final String REFRESH_SPID_ACCESS_TOKEN_KEY = "refresh_token";
     public static final String SPID_ACCESS_TOKEN_USER_ID = "user_id";
 
-    private String accessToken;
-    private Date expiresAt;
-    private String refreshToken;
-    private String userID;
+    private final String accessToken;
+    private final Date expiresAt;
+    private final String refreshToken;
+    private final String userID;
 
     /**
      * Constructor for SPiDAccessToken object, used with response from SPiD
@@ -97,6 +97,6 @@ public class SPiDAccessToken {
      * @return <code>true</code> if token is a client token, otherwise false
      */
     public boolean isClientToken() {
-        return (userID == null || userID.equals("false") || userID.equals("0"));
+        return (userID == null || Boolean.FALSE.toString().equalsIgnoreCase(userID) || userID.equals("0"));
     }
 }

@@ -47,10 +47,9 @@ public class SPiDResponse {
      */
     public SPiDResponse(HttpResponse httpResponse) {
         this.code = httpResponse.getStatusLine().getStatusCode();
-        this.body = "";
         this.headers = new HashMap<String, String>();
         this.exception = null;
-        BufferedReader reader;
+        BufferedReader reader = null;
 
         for (Header header : httpResponse.getAllHeaders()) {
             this.headers.put(header.getName(), header.getValue());
@@ -58,18 +57,24 @@ public class SPiDResponse {
 
         try {
             reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-            for (String line; (line = reader.readLine()) != null; ) {
-                this.body += line;
+            StringBuilder builder = new StringBuilder();
+            String line = reader.readLine();
+            while (line != null) {
+                builder.append(line);
+                line = reader.readLine();
             }
+            body = builder.toString();
         } catch (IOException exception) {
             this.exception = exception;
+        } finally {
+            closeQuietly(reader);
         }
 
-        if (this.body.length() > 0) {
+        if (!this.body.isEmpty()) {
             SPiDLogger.log("Received response: " + this.body);
             try {
                 this.jsonObject = new JSONObject(this.body);
-                if (this.jsonObject.has("error") && !(this.jsonObject.getString("error").equals("null"))) {
+                if (this.jsonObject.has("error") && !("null".equals(this.jsonObject.getString("error")))) {
                     this.exception = SPiDException.create(this.jsonObject);
                 }
             } catch (JSONException e) {
@@ -82,6 +87,16 @@ public class SPiDResponse {
 
         if (!isSuccessful()) {
             this.exception = SPiDException.create(this.jsonObject);
+        }
+    }
+
+    private void closeQuietly(BufferedReader reader) {
+        if(reader != null) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                // ignore
+            }
         }
     }
 

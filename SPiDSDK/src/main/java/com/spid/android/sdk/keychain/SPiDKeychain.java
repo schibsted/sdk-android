@@ -56,15 +56,14 @@ public class SPiDKeychain {
      * @return Access token if found, otherwise null
      */
     public static SPiDAccessToken decryptAccessTokenFromSharedPreferences(String encryptionKey) {
-        SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
-        if (secure.contains("access_token")) {
-            SPiDAccessToken token;
+        if(hasAccessToken()) {
+            SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
             try {
                 String accessToken = decryptString(encryptionKey, secure.getString("access_token", ""));
                 Long expiresAt = Long.valueOf(decryptString(encryptionKey, secure.getString("expires_at", "")));
                 String refreshToken = decryptString(encryptionKey, secure.getString("refresh_token", ""));
                 String userId = decryptString(encryptionKey, secure.getString("user_id", ""));
-                token = new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
+                return new SPiDAccessToken(accessToken, expiresAt, refreshToken, userId);
             } catch (GeneralSecurityException e) {
                 clearAccessTokenFromSharedPreferences();
                 throw new SPiDKeychainException("GeneralSecurityException", e);
@@ -72,10 +71,14 @@ public class SPiDKeychain {
                 clearAccessTokenFromSharedPreferences();
                 throw new SPiDKeychainException("UnsupportedEncodingException", e);
             }
-            return token;
         } else {
             return null;
         }
+    }
+
+    private static boolean hasAccessToken() {
+        SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
+        return secure.contains("access_token");
     }
 
     /**

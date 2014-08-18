@@ -141,7 +141,7 @@ public class SPiDException extends RuntimeException {
             descriptions.put("error", data.optString("error_description", "Missing error description"));
         }
 
-        if (error == null && type != null) {
+        if (error.isEmpty() && !type.isEmpty()) {
             error = type;
         }
 
@@ -151,21 +151,20 @@ public class SPiDException extends RuntimeException {
 
         Integer errorCode;
         try {
-//            errorCode = NumberFormat.getInstance().parse(errorCodeString).intValue();
             errorCode = Integer.valueOf(errorCodeString);
         } catch (NumberFormatException e) {
             errorCode = SPiDException.UNKNOWN_CODE;
         }
 
-        type = type != null ? type : SPID_EXCEPTION;
+        type = type.isEmpty() ? SPID_EXCEPTION : type;
 
-        if (type.equals(API_EXCEPTION)) {
+        if (API_EXCEPTION.equals(type)) {
             return new SPiDApiException(error, descriptions, errorCode, type);
-        } else if (error != null && (error.equals(INVALID_TOKEN) || error.equals(EXPIRED_TOKEN))) {
+        } else if (INVALID_TOKEN.equals(error) || EXPIRED_TOKEN.equals(error)) {
             return new SPiDInvalidAccessTokenException(error, descriptions, errorCode, type);
-        } else if (error != null && (error.equals(UNKNOWN_USER))) {
+        } else if (UNKNOWN_USER.equals(error)) {
             return new SPiDUnknownUserException(error, descriptions, errorCode, type);
-        } else if (type.equals(OAUTH_EXCEPTION)) {
+        } else if (OAUTH_EXCEPTION.equals(type)) {
             return new SPiDOAuthException(error, descriptions, errorCode, type);
         } else {
             return new SPiDException(error, descriptions, errorCode, SPID_EXCEPTION);

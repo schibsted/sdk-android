@@ -3,6 +3,7 @@ package com.spid.android.sdk.utils;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
+import com.spid.android.sdk.exceptions.SPiDException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -10,8 +11,17 @@ import java.net.URLEncoder;
 /**
  * Helper class for generating SPiD urls
  */
-public class SPiDUrl {
+public final class SPiDUrl {
+
     private static final String AUTHORIZE_URL = "%s?client_id=%s&redirect_uri=%s&grant_type=%s&response_type=%s&platform=%s&force=%s";
+
+    private enum Authorization {
+        AUTHORIZATION,
+        SIGNUP,
+        FORGOT_PASSWORD
+    }
+
+    private SPiDUrl() {}
 
     /**
      * Generates URL for authorization in SPiD
@@ -21,9 +31,7 @@ public class SPiDUrl {
      *
      */
     public static String getAuthorizationURL() throws UnsupportedEncodingException {
-        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getAuthorizationURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+        return getEncodedUrl(Authorization.AUTHORIZATION);
     }
 
     /**
@@ -33,9 +41,7 @@ public class SPiDUrl {
      * @throws UnsupportedEncodingException
      */
     public static String getSignupURL() throws UnsupportedEncodingException {
-        SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getSignupURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+        return getEncodedUrl(Authorization.SIGNUP);
     }
 
     /**
@@ -45,9 +51,27 @@ public class SPiDUrl {
      * @throws UnsupportedEncodingException
      */
     public static String getForgotPasswordURL() throws UnsupportedEncodingException {
+        return getEncodedUrl(Authorization.FORGOT_PASSWORD);
+    }
+
+    private static String getEncodedUrl(Authorization authorization) throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
+        String url;
+        switch(authorization) {
+            case AUTHORIZATION:
+                url = config.getAuthorizationURL();
+                break;
+            case SIGNUP:
+                url = config.getSignupURL();
+                break;
+            case FORGOT_PASSWORD:
+                url = config.getForgotPasswordURL();
+                break;
+            default:
+                throw new SPiDException("Unsupported authorization type: " + authorization);
+        }
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
-        return String.format(AUTHORIZE_URL, config.getForgotPasswordURL(), config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
+        return String.format(AUTHORIZE_URL, url, config.getClientID(), encodedRedirectURL, "authorization_code", "code", "mobile", "1");
     }
 
     /**
