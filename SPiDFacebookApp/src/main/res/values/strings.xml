@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPiDFacebookApp</string>
+    <string name="logout">Logout from SPiD</string>
+    <string name="SPiDLogo">SPiD Logo</string>
+    <string name="facebook_app_id">your-facebook-app-id</string>
+    <string name="termsAgreement">By using this service you are agreeing to the</string>
+    <string name="termsOfUse">Terms of use</string>
+    <string name="welcomeUnknownUser">Welcome Unknown user!</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="loginToSPiD">Login to SPiD</string>
+    <string name="cancel">Cancel</string>
+    <string name="agreementTerms">By using this service you are agreeing the</string>
+    <string name="spidUserMissing">No SPiD user exists for your facebook account, do you want to create a user or attach your facebook to a existing SPiD account?</string>
+    <string name="newAccount">New account</string>
+    <string name="existingAccount">Existing account</string>
+    <string name="done">Done</string>
+
+
+</resources>

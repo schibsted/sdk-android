@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:minWidth="400dp"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/SPiDLogo"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:src="@drawable/spidlogo" />
+
+    <EditText
+        android:id="@+id/dialog_signup_edittext_username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/edit_text_holo_light"
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:textColor="#000000" />
+
+    <EditText
+        android:id="@+id/dialog_signup_edittext_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/edit_text_holo_light"
+        android:hint="@string/password"
+        android:inputType="textPassword"
+        android:textColor="#000000" />
+
+    <LinearLayout
+        android:id="@+id/terms_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="65dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_signup_button_signup"
+            style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/register" />
+
+        <View
+            android:layout_width="1px"
+            android:layout_height="fill_parent"
+            android:layout_margin="5dp"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/dialog_signup_button_existinguser"
+            style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/existingUser" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/dialog_signup_textview_termstext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:text="@string/agreementToTerms"
+        android:textColor="@android:color/darker_gray" />
+
+    <TextView
+        android:id="@+id/dialog_signup_textview_termslink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:enabled="false"
+        android:text="@string/termsOfUse"
+        android:textColor="@android:color/darker_gray"
+        android:textStyle="bold" />
+
+</LinearLayout>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:id="@+id/View" android:background="#ffffff">
+
+    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/SPiDLogo"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/spidlogo"
+            android:adjustViewBounds="true"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:contentDescription="@string/SPiDLogo"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/loginBrowserText"
+            android:id="@+id/LoginBrowserButton"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/SPiDLogo"/>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loginWebViewText"
+            android:id="@+id/LoginWebViewButton"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/LoginBrowserButton"/>
+</RelativeLayout>

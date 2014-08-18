@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPiDNativeApp</string>
+    <string name="logout">Logout from SPiD</string>
+    <string name="SPiDLogo">SPiD Logo</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="done">Done</string>
+    <string name="loginToSpid">Login to SPiD</string>
+    <string name="logoutFromSpid">Logout from SPiD</string>
+    <string name="register">Register</string>
+    <string name="forgotPassword">Forgot password?</string>
+    <string name="existingUser">Existing user?</string>
+    <string name="agreementToTerms">By using this service you are agreeing to the</string>
+    <string name="newUser">New user?</string>
+    <string name="termsOfUse">Terms of use</string>
+</resources>

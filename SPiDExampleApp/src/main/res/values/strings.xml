@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPiDExampleApp</string>
+    <string name="RefreshToken">Refresh token</string>
+    <string name="logout">Logout from SPiD</string>
+    <string name="SPiDLogo">SPiD Logo</string>
+    <string name="getOneTimeCode">Get one time token</string>
+    <string name="loginBrowserText">Login to SPiD with browser</string>
+    <string name="welcomeUnknownUser">Welcome Unknown user!</string>
+    <string name="loginWebViewText">Login to SPiD with WebView</string>
+    <string name="tokenExpires">Token expires at: </string>
+    <string name="oneTimeCode">One time code:</string>
+</resources>
