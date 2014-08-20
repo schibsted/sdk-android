@@ -46,36 +46,34 @@ public class SPiDJwt {
         this.tokenValue = tokenValue;
     }
 
-    /**
-     * Validates the JWT
-     */
-    private boolean validate() {
-        boolean isSuccessful = true;
+     private void validate() {
+        StringBuilder builder = new StringBuilder();
+
         if (TextUtils.isEmpty(issuer)) {
-            SPiDLogger.log("JWT is missing value for issuer");
-            isSuccessful = false;
+            builder.append("JWT is missing value for issuer/n");
         }
         if (TextUtils.isEmpty(sub)) {
-            SPiDLogger.log("JWT is missing value for sub");
-            isSuccessful = false;
+            builder.append("JWT is missing value for sub/n");
         }
         if (TextUtils.isEmpty(audience)) {
-            SPiDLogger.log("JWT is missing value for audience");
-            isSuccessful = false;
+            builder.append("JWT is missing value for audience/n");
         }
         if (expirationDate == null) {
-            SPiDLogger.log("JWT is missing value for expirationDate");
-            isSuccessful = false;
+            builder.append("JWT is missing value for expirationDate/n");
         }
         if (TextUtils.isEmpty(tokenType)) {
-            SPiDLogger.log("JWT is missing value for token type");
-            isSuccessful = false;
+            builder.append("JWT is missing value for token type/n");
         }
         if (TextUtils.isEmpty(tokenValue)) {
-            SPiDLogger.log("JWT is missing value for token value");
-            isSuccessful = false;
+            builder.append("JWT is missing value for token value/n");
         }
-        return isSuccessful;
+        if (SPiDClient.getInstance().getConfig().getSignSecret() == null) {
+            builder.append("No signing secret found, cannot use JWT/n");
+        }
+        if(!TextUtils.isEmpty(builder.toString())) {
+            SPiDLogger.log(builder.toString());
+            throw new SPiDException(builder.toString());
+        }
     }
 
     /**
@@ -84,13 +82,7 @@ public class SPiDJwt {
      * @return Encoded JWT
      */
     public String encodedJwtString() throws SPiDException {
-        if (!validate()) {
-            throw new SPiDException("Invalid JWT");
-        }
-        if (SPiDClient.getInstance().getConfig().getSignSecret() == null) {
-            SPiDLogger.log("No signing secret found, cannot use JWT");
-            throw new SPiDException("Missing sign secret");
-        }
+        validate();
 
         String headerBase64;
         try {
@@ -110,10 +102,10 @@ public class SPiDJwt {
         String claimBase64;
         try {
             JSONObject claimJson = new JSONObject();
-            claimJson.put("issuer", issuer);
+            claimJson.put("iss", issuer);
             claimJson.put("sub", sub);
-            claimJson.put("audience", audience);
-            claimJson.put("expirationDate", date);
+            claimJson.put("aud", audience);
+            claimJson.put("exp", date);
             claimJson.put("token_type", tokenType);
             claimJson.put("token_value", tokenValue);
             claimBase64 = SPiDUtils.encodeBase64(claimJson.toString());
