@@ -1,5 +1,7 @@
 package com.spid.android.sdk.exceptions;
 
+import android.text.TextUtils;
+
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -142,7 +144,7 @@ public class SPiDException extends RuntimeException {
             descriptions.put("error", data.optString("error_description", "Missing error description"));
         }
 
-        if (error.isEmpty() && !type.isEmpty()) {
+        if (TextUtils.isEmpty(error) && !TextUtils.isEmpty(type)) {
             error = type;
         }
 
@@ -157,7 +159,7 @@ public class SPiDException extends RuntimeException {
             errorCode = SPiDException.UNKNOWN_CODE;
         }
 
-        type = type.isEmpty() ? SPID_EXCEPTION : type;
+        type = TextUtils.isEmpty(type) ? SPID_EXCEPTION : type;
 
         if (API_EXCEPTION.equals(type)) {
             return new SPiDApiException(error, descriptions, errorCode, type);

@@ -174,7 +174,7 @@ public class SPiDConfigurationBuilder {
      * @throws IllegalArgumentException
      */
     protected void isEmptyString(String string, String errorMessage) {
-        if (string == null || string.trim().isEmpty()) {
+        if (string == null || TextUtils.isEmpty(string.trim())) {
             throw new IllegalArgumentException(errorMessage);
         }
     }

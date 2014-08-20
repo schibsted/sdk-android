@@ -32,10 +32,10 @@ public class SPiDExampleAppLogin extends Activity {
         super.onCreate(savedInstanceState);
 
         SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
+                .clientID("50c08d124a644e046200000c")
+                .clientSecret("foobar")
+                .appURLScheme("spidmobile")
+                .serverURL("https://stage.spid.se")
                 .context(this)
                 .build();
 
@@ -86,8 +86,8 @@ public class SPiDExampleAppLogin extends Activity {
         }
 
         private void onError(Exception exception) {
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
+            Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
             setupLoginContentView();
         }
 

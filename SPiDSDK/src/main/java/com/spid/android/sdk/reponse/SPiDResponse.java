@@ -1,5 +1,7 @@
 package com.spid.android.sdk.reponse;
 
+import android.text.TextUtils;
+
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
@@ -70,7 +72,7 @@ public class SPiDResponse {
             closeQuietly(reader);
         }
 
-        if (!this.body.isEmpty()) {
+        if (!TextUtils.isEmpty(body)) {
             SPiDLogger.log("Received response: " + this.body);
             try {
                 this.jsonObject = new JSONObject(this.body);

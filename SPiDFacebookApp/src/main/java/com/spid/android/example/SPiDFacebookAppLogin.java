@@ -39,11 +39,11 @@ public class SPiDFacebookAppLogin extends Activity {
         super.onCreate(savedInstanceState);
 
         SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
-                .signSecret("your-secret-sign-key")
+                .clientID("50c08d124a644e046200000c")
+                .clientSecret("foobar")
+                .appURLScheme("spidmobile")
+                .serverURL("https://stage.spid.se")
+                .signSecret("foobar")
                 .context(this)
                 .build();
 

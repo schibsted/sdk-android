@@ -1,11 +1,12 @@
 package com.spid.android.sdk.webview;
 
 import android.net.Uri;
+import android.text.TextUtils;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
-import com.spid.android.sdk.exceptions.SPiDUserAbortedLoginException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDCodeTokenRequest;
@@ -46,6 +47,7 @@ public class SPiDWebViewClient extends WebViewClient {
      * @param url  The url to be loaded.
      * @return True if the host application wants to leave the current WebView and handle the url itself, otherwise return false
      */
+    @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
         Uri uri = Uri.parse(url);
         if (url.startsWith(SPiDClient.getInstance().getConfig().getAppURLScheme())) {
@@ -53,12 +55,10 @@ public class SPiDWebViewClient extends WebViewClient {
                 String code = uri.getQueryParameter("code");
                 if (code == null) {
                     if (listener != null) {
-                        listener.onSPiDException(new SPiDUserAbortedLoginException("User aborted login"));
-                    } else {
                         SPiDLogger.log("User aborted login");
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();
-                } else if (!code.isEmpty()) {
+                } else if (!TextUtils.isEmpty(code)) {
                     SPiDTokenRequest request = new SPiDCodeTokenRequest(code, SPiDClient.getInstance().getAuthorizationListener());
                     request.execute();
                 } else {

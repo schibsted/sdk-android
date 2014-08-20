@@ -3,6 +3,7 @@ package com.spid.android.example.nativeapp;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,11 +45,11 @@ public class SignupDialog extends DialogFragment {
                 EditText passwordEditText = (EditText) dialogView.findViewById(R.id.dialog_signup_edittext_password);
                 String password = passwordEditText.getText().toString();
 
-                if (email.isEmpty() || password.isEmpty()) {
+                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                     SPiDLogger.log("Missing email and/or password");
                     Toast.makeText(getActivity(), "Missing email and/or password", Toast.LENGTH_LONG).show();
                 } else {
-                    SPiDLogger.log("Email: " + email + " password: " + password);
+                    SPiDLogger.log("Email: " + email);
                     SPiDUser.signupWithCredentials(email, password, new SignupListener());
                 }
             }

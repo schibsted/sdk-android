@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class LoginDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog_NoActionBar);
+        setCancelable(false);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class LoginDialog extends DialogFragment {
                 EditText passwordEditText = (EditText) dialogView.findViewById(R.id.dialog_login_edittext_password);
                 String password = passwordEditText.getText().toString();
 
-                if (email.isEmpty() || password.isEmpty()) {
+                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
                     SPiDLogger.log("Missing email and/or password");
                     Toast.makeText(getActivity(), "Both Email and Password are required", Toast.LENGTH_LONG).show();
                 } else {
