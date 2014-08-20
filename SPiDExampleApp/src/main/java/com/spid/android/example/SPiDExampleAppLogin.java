@@ -32,14 +32,15 @@ public class SPiDExampleAppLogin extends Activity {
         super.onCreate(savedInstanceState);
 
         SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("50c08d124a644e046200000c")
-                .clientSecret("foobar")
-                .appURLScheme("spidmobile")
-                .serverURL("https://stage.spid.se")
+                .clientID("your-client-id")
+                .clientSecret("your-client-secret")
+                .appURLScheme("your-app-url-scheme")
+                .serverURL("your-spidserver-url")
                 .context(this)
                 .build();
 
         config.setDebugMode(true);
+
         SPiDClient.getInstance().configure(config);
 
         if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().isClientToken()) {
