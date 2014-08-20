@@ -10,7 +10,8 @@
         android:allowBackup="true">
         <activity
             android:name="com.spid.android.example.SPiDFacebookAppLogin"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -21,7 +22,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="spidfacebookapp" />
+                <data android:scheme="your-app-url-scheme" />
             </intent-filter>
         </activity>
         <activity android:name="com.spid.android.example.SPiDFacebookAppMain"/>
