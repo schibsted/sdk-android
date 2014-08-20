@@ -3,7 +3,6 @@
     <string name="app_name">SPiDFacebookApp</string>
     <string name="logout">Logout from SPiD</string>
     <string name="SPiDLogo">SPiD Logo</string>
-    <string name="facebook_app_id">440493496004340</string>
     <string name="termsAgreement">By using this service you are agreeing to the</string>
     <string name="termsOfUse">Terms of use</string>
     <string name="welcomeUnknownUser">Welcome Unknown user!</string>
