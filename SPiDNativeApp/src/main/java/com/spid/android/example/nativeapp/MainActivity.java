@@ -27,11 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
-
-/**
- * Contains the activity_main window activity
- */
 
 public class MainActivity extends Activity {
 
@@ -192,28 +189,14 @@ public class MainActivity extends Activity {
             this.context = context;
         }
 
+        @Override
         public void onClick(View v) {
-            SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
-                @Override
-                public void onComplete() {
-                    recreate();
-                }
-
-                @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    onError(exception);
-                }
-            });
+            try {
+                SPiDClient.getInstance().browserLogout();
+                finish();
+            } catch (UnsupportedEncodingException e) {
+                // nothing we can do here
+            }
         }
 
         private void onError(Exception exception) {
