@@ -3,6 +3,7 @@ package com.spid.android.example.nativeapp;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
@@ -27,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 public class MainActivity extends Activity {
@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
         Uri data = getIntent().getData();
         if (data != null && (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken())) {
             SPiDLogger.log("Received app redirect");
+            SPiDLogger.log("Redirected to: " + data.getPath());
             SPiDClient.getInstance().handleIntent(data, new LoginListener());
         } else if (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken()) {
             FragmentManager fragmentManager = getFragmentManager();
@@ -154,7 +155,7 @@ public class MainActivity extends Activity {
     protected class LoginListener implements SPiDAuthorizationListener {
 
         private void onError(Exception exception) {
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
             FragmentManager fragmentManager = getFragmentManager();
             LoginDialog termsDialog = new LoginDialog();
             termsDialog.show(fragmentManager, "dialog_login");
@@ -191,12 +192,31 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
-            try {
-                SPiDClient.getInstance().browserLogout();
-                finish();
-            } catch (UnsupportedEncodingException e) {
-                // nothing we can do here
-            }
+            SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
+                @Override
+                public void onComplete() {
+                    Intent intent = new Intent(context, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+
+                @Override
+                public void onSPiDException(SPiDException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onIOException(IOException exception) {
+                    onError(exception);
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    onError(exception);
+                }
+            });
         }
 
         private void onError(Exception exception) {
