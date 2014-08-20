@@ -27,12 +27,4 @@
         android:layout_marginRight="15dp"
         android:background="@android:color/darker_gray" />
 
-    <Button
-        android:id="@+id/dialog_terms_button_dismiss"
-        style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/done" />
-
 </LinearLayout>
