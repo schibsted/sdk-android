@@ -1,8 +1,11 @@
 package com.spid.android.example.nativeapp;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +32,23 @@ public class LoginDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Dialog_NoActionBar);
-        this.setCancelable(false);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    getActivity().finish();
+                    return true;
+                }
+                return false;
+            }
+        });
+        return dialog;
     }
 
     @Override
@@ -51,7 +70,7 @@ public class LoginDialog extends DialogFragment {
                     Toast.makeText(getActivity(), "Both Email and Password are required", Toast.LENGTH_LONG).show();
                 } else {
                     view.setEnabled(false);
-                    SPiDLogger.log("Email: " + email + " password: " + password);
+                    SPiDLogger.log("Email: " + email);
                     SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new LoginListener());
                     tokenRequest.execute();
                 }
