@@ -17,6 +17,7 @@ import com.spid.android.sdk.reponse.SPiDResponse;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Contains the main window activity
@@ -172,6 +173,11 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
+            try {
+                SPiDClient.getInstance().browserLogout();
+            } catch (UnsupportedEncodingException e) {
+                // nothing to do here
+            }
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
