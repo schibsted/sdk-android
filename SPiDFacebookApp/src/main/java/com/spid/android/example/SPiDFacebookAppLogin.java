@@ -236,7 +236,7 @@ public class SPiDFacebookAppLogin extends Activity {
             if (exception instanceof SPiDUnknownUserException) {
                 showNoExistingUserDialog();
             } else {
-                SPiDLogger.log("Error while preforming login: " + exception.getError());
+                SPiDLogger.log("Error while preforming login: " + exception.getError(), exception);
                 Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
                 setupLoginContentView();
             }
