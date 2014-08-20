@@ -3,17 +3,17 @@ package com.spid.android.example;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.view.View;
 import android.view.Window;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.Toast;
+
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDApiGetRequest;
 import com.spid.android.sdk.request.SPiDRequest;
+
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -26,15 +26,6 @@ public class SPiDTermsDialog {
         final Dialog dialog = new Dialog(activity, android.R.style.Theme_Light);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.terms);
-
-        Button doneButton = (Button) dialog.findViewById(R.id.done_button);
-
-        doneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
 
         final ProgressDialog progressDialog = ProgressDialog.show(dialog.getContext(), null, "Loading Terms of use");
 
