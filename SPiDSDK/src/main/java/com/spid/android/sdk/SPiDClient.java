@@ -2,6 +2,7 @@ package com.spid.android.sdk;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
@@ -153,7 +154,7 @@ public class SPiDClient {
                         SPiDLogger.log("User aborted login");
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();
-                } else if (!code.isEmpty()) {
+                } else if (!TextUtils.isEmpty(code)) {
                     SPiDTokenRequest request = new SPiDCodeTokenRequest(code, listener);
                     request.execute();
                     return true;
@@ -197,6 +198,8 @@ public class SPiDClient {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getLogoutURL(token)));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                SPiDClient.getInstance().clearAuthorizationRequest();
+                SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
                 getConfig().getContext().startActivity(intent);
             } else {
                 throw new SPiDAuthorizationAlreadyRunningException("Authorization already running");
@@ -205,7 +208,7 @@ public class SPiDClient {
     }
 
     /**
-     * Logout from SPiD without redirect to Safari, therefor any existing cookie will not be removed
+     * Logout from SPiD without redirect to browser, therefore any existing cookie will not be removed
      *
      * @param listener Listener called on completion or failure, can be <code>null</code>
      */

@@ -5,6 +5,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.text.TextUtils;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.logger.SPiDLogger;
@@ -228,31 +229,31 @@ public class SPiDConfigurationBuilder {
         isEmptyString(serverURL, "ServerURL is missing");
         isNull(context, "Context is missing");
 
-        if (redirectURL == null || redirectURL.trim().isEmpty()) {
+        if (redirectURL == null || TextUtils.isEmpty(redirectURL.trim())) {
             redirectURL = appURLScheme + "://";
         }
 
-        if (authorizationURL == null || authorizationURL.trim().isEmpty()) {
+        if (authorizationURL == null || TextUtils.isEmpty(authorizationURL.trim())) {
             authorizationURL = serverURL + "/auth/login";
         }
 
-        if (tokenURL == null || tokenURL.trim().isEmpty()) {
+        if (tokenURL == null || TextUtils.isEmpty(tokenURL.trim())) {
             tokenURL = serverURL + "/oauth/token";
         }
 
-        if (signupURL == null || signupURL.trim().isEmpty()) {
+        if (signupURL == null || TextUtils.isEmpty(signupURL.trim())) {
             signupURL = serverURL + "/auth/signup";
         }
 
-        if (forgotPasswordURL == null || forgotPasswordURL.trim().isEmpty()) {
+        if (forgotPasswordURL == null || TextUtils.isEmpty(forgotPasswordURL.trim())) {
             forgotPasswordURL = serverURL + "/auth/forgotpassword";
         }
 
-        if (serverClientID == null || serverClientID.trim().isEmpty()) {
+        if (serverClientID == null || TextUtils.isEmpty(serverClientID.trim())) {
             serverClientID = clientID;
         }
 
-        if (serverRedirectUri == null || serverRedirectUri.trim().isEmpty()) {
+        if (serverRedirectUri == null || TextUtils.isEmpty(serverRedirectUri.trim())) {
             serverRedirectUri = redirectURL;
         }
 
