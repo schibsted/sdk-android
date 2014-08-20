@@ -20,7 +20,9 @@ import java.util.Date;
 /**
  * Contains methods to create a new SPiD user
  */
-public class SPiDUser {
+public final class SPiDUser {
+
+    private SPiDUser() {}
 
     /**
      * Creates a SPiD user account with the specified credentials, acquires a client token if needed
@@ -30,8 +32,7 @@ public class SPiDUser {
      * @param authorizationListener Callback listener
      */
     public static void signupWithCredentials(final String email, final String password, final SPiDAuthorizationListener authorizationListener) {
-        SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
-        if (token == null || !token.isClientToken()) {
+        if(!hasClientToken()) {
             SPiDLogger.log("Requesting client token!");
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
                 @Override
@@ -71,8 +72,7 @@ public class SPiDUser {
      * @param authorizationListener Callback listener
      */
     public static void signupWithFacebook(final String appId, final String facebookToken, final Date expirationDate, final SPiDAuthorizationListener authorizationListener) {
-        SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
-        if (token == null || !token.isClientToken()) {
+        if(!hasClientToken()) {
             SPiDLogger.log("Requesting client token!");
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
                 @Override
@@ -125,6 +125,11 @@ public class SPiDUser {
         } else {
             authorizationListener.onSPiDException(new SPiDException("Needs user token!"));
         }
+    }
+
+    private static boolean hasClientToken() {
+        SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
+        return token != null && token.isClientToken();
     }
 
     /**

@@ -46,7 +46,7 @@ public class SPiDKeychain {
             clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
-        editor.apply();
+        editor.commit();
     }
 
     /**
@@ -91,7 +91,7 @@ public class SPiDKeychain {
         editor.remove("expires_at");
         editor.remove("refresh_token");
         editor.remove("user_id");
-        editor.apply();
+        editor.commit();
     }
 
     /**

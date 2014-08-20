@@ -83,7 +83,7 @@ public final class SPiDUrl {
      */
     public static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
+        String requestURL = config.getServerURL() + "/logout";
         String encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", "UTF-8");
         return requestURL + "?redirect_uri=" + encodedRedirectURL + "&oauth_token=" + accessToken.getAccessToken();
     }

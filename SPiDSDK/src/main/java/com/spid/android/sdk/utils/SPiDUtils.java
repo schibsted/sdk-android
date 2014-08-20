@@ -96,7 +96,7 @@ public final class SPiDUtils {
         SharedPreferences secure = getSecurePreferencesFile();
         SharedPreferences.Editor editor = secure.edit();
         editor.putString(DEVICE_ID, id);
-        editor.apply();
+        editor.commit();
         return id;
     }
 
