@@ -33,6 +33,7 @@
         android:layout_gravity="center_horizontal"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
         android:text="@string/done"
+        android:textSize="18sp"
         android:id="@+id/dialog_terms_button_dismiss" />
 
 </LinearLayout>

@@ -20,6 +20,7 @@
     <TextView
             android:id="@+id/userTextView"
             android:text="@string/welcomeUnknownUser"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -31,6 +32,7 @@
     <TextView
             android:id="@+id/tokenExpiresTextView"
             android:text="@string/tokenExpires"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -42,6 +44,7 @@
     <TextView
             android:id="@+id/oneTimeCodeTextView"
             android:text="@string/oneTimeCode"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -60,8 +63,10 @@
             android:layout_below="@+id/oneTimeCodeTextView"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            android:minHeight="2dp"
-            android:maxHeight="2dp"/>
+            android:minWidth="200dp"
+            android:maxWidth="200dp"
+            android:minHeight="40dp"
+            android:maxHeight="40dp"/>
 
     <Button
             android:id="@+id/oneTimeCodeButton"
@@ -72,8 +77,10 @@
             android:layout_below="@+id/refreshTokenButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:minHeight="10dp"
-            android:maxHeight="10dp"/>
+            android:minWidth="200dp"
+            android:maxWidth="200dp"
+            android:minHeight="40dp"
+            android:maxHeight="40dp"/>
 
     <Button
             android:id="@+id/logoutButton"
@@ -85,6 +92,9 @@
             android:layout_below="@+id/oneTimeCodeButton"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:minHeight="10dp"
-            android:maxHeight="10dp"/>
+            android:minWidth="200dp"
+            android:maxWidth="200dp"
+            android:minHeight="40dp"
+            android:maxHeight="40dp"/>
+
 </RelativeLayout>

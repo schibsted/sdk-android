@@ -23,6 +23,8 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
         android:textColor="#000000"
+        android:textSize="18sp"
+        android:paddingTop="10dp"
         android:hint="@string/email"
         android:id="@+id/dialog_login_edittext_username"
         android:inputType="textEmailAddress" />
@@ -33,6 +35,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
         android:textColor="#000000"
+        android:textSize="18sp"
         android:hint="@string/password"
         android:id="@+id/dialog_login_edittext_password"
         android:inputType="textPassword" />
@@ -51,6 +54,7 @@
             android:layout_weight="1"
             style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
             android:text="@string/login"
+            android:textSize="18sp"
             android:id="@+id/dialog_login_button_login" />
 
         <View
@@ -65,6 +69,7 @@
             android:layout_weight="1"
             style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
             android:text="@string/dismiss"
+            android:textSize="18sp"
             android:id="@+id/dialog_login_button_dismiss" />
 
     </LinearLayout>
@@ -75,6 +80,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="40dp"
         android:text="@string/termsAgreement"
+        android:textSize="16sp"
         android:textColor="@android:color/darker_gray" />
 
     <TextView
@@ -83,6 +89,7 @@
         android:layout_gravity="center"
         android:id="@+id/dialog_login_textview_termslink"
         android:text="@string/termsOfUse"
+        android:textSize="16sp"
         android:textColor="@android:color/darker_gray"
         android:textStyle="bold" />
 

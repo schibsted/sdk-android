@@ -9,7 +9,6 @@ import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
-import com.spid.android.sdk.exceptions.SPiDUserAbortedLoginException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
@@ -149,8 +148,6 @@ public class SPiDClient {
                 String code = data.getQueryParameter(RequestType.CODE.toString());
                 if (code == null) {
                     if (listener != null) {
-                        listener.onSPiDException(new SPiDUserAbortedLoginException("User aborted login"));
-                    } else {
                         SPiDLogger.log("User aborted login");
                     }
                     SPiDClient.getInstance().clearAuthorizationRequest();

@@ -24,15 +24,16 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/spid_logo"
-        />
+        android:layout_below="@+id/spid_logo"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:id="@+id/terms_text"
         android:layout_centerHorizontal="true"
         android:text="@string/termsAgreement"
+        android:textSize="14sp"
         android:adjustViewBounds="true"
         android:layout_below="@+id/authButton"/>
 
@@ -42,6 +43,7 @@
         android:id="@+id/terms_link"
         android:layout_centerHorizontal="true"
         android:text="@string/termsOfUse"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:adjustViewBounds="true"
         android:layout_below="@+id/terms_text"/>

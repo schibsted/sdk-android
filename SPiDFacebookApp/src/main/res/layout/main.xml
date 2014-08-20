@@ -25,6 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/spid_logo"
         android:textColor="#000000"
+        android:textSize="16sp"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"/>
 
@@ -38,6 +39,6 @@
         android:layout_below="@+id/user_text_view"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:minHeight="10dp"
-        android:maxHeight="10dp"/>
+        android:minHeight="40dp"
+        android:maxHeight="40dp"/>
 </RelativeLayout>

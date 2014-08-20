@@ -26,7 +26,8 @@
 
             </intent-filter>
         </activity>
-        <activity android:name="com.spid.android.example.SPiDExampleAppMain">
+        <activity android:name="com.spid.android.example.SPiDExampleAppMain"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 </manifest>
