@@ -1,9 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-////        maven {
-////            url "https://oss.sonatype.org/content/repositories/snapshots"
-////        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.12.2'
@@ -20,23 +17,21 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 16
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
     }
 }
 
-//uploadArchives {
-//    repositories {
-//        mavenDeployer {
-//            repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
-//            pom.artifactId = "sdk"
-//        }
-//    }
-//}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
+            pom.artifactId = "sdk"
+        }
+    }
+}
 
 task generateJavadocs(type: Javadoc) {
-//    source = android.sourceSets.main.allJava
-//    classpath = files(android.plugin.runtimeJarList)
 }
 
 task generateJar(type: Copy) {
