@@ -15,6 +15,7 @@ import com.spid.android.sdk.utils.SPiDUrl;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -108,7 +109,86 @@ public final class SPiDUser {
     }
 
     /**
+     * Create user from Google plus token
+     * Note that since google does not return expire date its hardcoded to one hour
+     * This should not be a problem since a fresh token should always be sent in to this function
+     *
+     * @param appId                 Google plus client id
+     * @param googlePlusToken         Google plus token
+     * @param authorizationListener Callback listener
+     */
+    public static void signupWithGooglePlus(final String appId, final String googlePlusToken, final SPiDAuthorizationListener authorizationListener) {
+        SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
+        final Date expirationDate = getOneHourInTheFuture();
+        if (token == null || !token.isClientToken()) {
+            SPiDLogger.log("Requesting client token!");
+            SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
+                @Override
+                public void onComplete() {
+                    SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+                    SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
+                    signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
+                    signupRequest.executeAuthorizedRequest();
+                }
+
+                @Override
+                public void onSPiDException(SPiDException exception) {
+                    authorizationListener.onSPiDException(exception);
+                }
+
+                @Override
+                public void onIOException(IOException exception) {
+                    authorizationListener.onIOException(exception);
+                }
+
+                @Override
+                public void onException(Exception exception) {
+                    authorizationListener.onException(exception);
+                }
+            });
+            clientTokenRequest.execute();
+        } else {
+            SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+            SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
+            signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
+            signupRequest.executeAuthorizedRequest();
+        }
+    }
+
+    /**
      * Attaches a Facebook account to the current user
+     * Note that since google does not return expire date its hardcoded to one hour
+     * This should not be a problem since a fresh token should always be sent in to this function
+     *
+     * @param appId                 Google plus client id
+     * @param googlePlusToken         Google plus token
+     * @param authorizationListener Callback listener
+     */
+    public static void attachGooglePlusAccount(final String appId, final String googlePlusToken, final SPiDAuthorizationListener authorizationListener) {
+        Date expirationDate = getOneHourInTheFuture();
+        SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
+        if (token != null && !token.isClientToken()) { // Check for user token
+            SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+            SPiDRequest signupRequest = new SPiDApiPostRequest("/user/attach_jwt", new AuthorizationRequestListener(authorizationListener));
+            signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
+            signupRequest.executeAuthorizedRequest();
+        } else {
+            authorizationListener.onSPiDException(new SPiDException("Needs user token!"));
+        }
+    }
+
+    /**
+     * @return Date one hour in the future
+     */
+    private static Date getOneHourInTheFuture() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        return cal.getTime();
+    }
+
+    /**
+     * Attaches a Google plus account to the current user
      *
      * @param appId                 Facebook application id
      * @param facebookToken         Facebook token

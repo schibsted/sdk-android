@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 public class MainActivity extends Activity {
@@ -49,14 +50,17 @@ public class MainActivity extends Activity {
         SPiDClient.getInstance().configure(config);
 
         Uri data = getIntent().getData();
-        if (data != null && (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken())) {
-            SPiDLogger.log("Received app redirect");
-            SPiDLogger.log("Redirected to: " + data.getPath());
-            SPiDClient.getInstance().handleIntent(data, new LoginListener());
-        } else if (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken()) {
-            FragmentManager fragmentManager = getFragmentManager();
-            LoginDialog termsDialog = new LoginDialog();
-            termsDialog.show(fragmentManager, "dialog_login");
+        final boolean hasClientToken = !SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken();
+        if(hasClientToken) {
+            if(data == null || data.getPath().equals("/login")) {
+                FragmentManager fragmentManager = getFragmentManager();
+                LoginDialog termsDialog = new LoginDialog();
+                termsDialog.show(fragmentManager, "dialog_login");
+            } else {
+                SPiDLogger.log("Received app redirect");
+                SPiDLogger.log("Redirected to: " + data.getPath());
+                SPiDClient.getInstance().handleIntent(data, new LoginListener());
+            }
         } else {
             setupContentView();
         }
@@ -192,6 +196,13 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
+            try {
+                SPiDClient.getInstance().browserLogout();
+                SPiDLogger.log("Successfully logged out from browser");
+            } catch (UnsupportedEncodingException e) {
+                SPiDLogger.log("Failed to log out");
+                e.printStackTrace();
+            }
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {

@@ -99,6 +99,7 @@ public class SPiDClient {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getAuthorizationURL()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
 
@@ -120,6 +121,7 @@ public class SPiDClient {
      * @throws UnsupportedEncodingException
      */
     public void browserForgotPassword() throws UnsupportedEncodingException {
+        SPiDLogger.log("ForgotPasswordURL = " + SPiDUrl.getForgotPasswordURL());
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getForgotPasswordURL()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -220,14 +222,12 @@ public class SPiDClient {
                 request.setMaxRetryCount(-1);
                 request.execute();
             } else {
-                if (listener != null) {
+                if (listener != null)
                     listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
-                }
             }
         } else {
-            if (listener != null) {
+            if (listener != null)
                 listener.onComplete();
-            }
         }
     }
 
@@ -236,6 +236,7 @@ public class SPiDClient {
      */
     public Date getTokenExpiresAt() {
         if (token != null) {
+            SPiDLogger.log("Token expires: " + token.getExpiresAt());
             return token.getExpiresAt();
         }
         return null;
@@ -245,6 +246,7 @@ public class SPiDClient {
      * @return <code>true</code> if there is a access token otherwise <code>false</code>
      */
     public boolean isAuthorized() {
+        // check if it has expired?
         return token != null;
     }
 
@@ -313,6 +315,11 @@ public class SPiDClient {
         request.addBodyParameter("clientId", config.getServerClientID());
         request.addBodyParameter("type", RequestType.SESSION.toString());
         request.addBodyParameter("redirectUri", config.getServerRedirectUri());
+        request.executeAuthorizedRequest();
+    }
+
+    public void logout(SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDApiPostRequest("/logout", listener);
         request.executeAuthorizedRequest();
     }
 

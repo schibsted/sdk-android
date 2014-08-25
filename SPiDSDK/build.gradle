@@ -38,7 +38,7 @@ task generateJar(type: Copy) {
     from('build/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', "${project.name}-${project.version}.jar")
+    rename('classes.jar', "${project.name}-${project.version}.jar")
 }
 
 task generateSourceJar(type: Jar) {

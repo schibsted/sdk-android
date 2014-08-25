@@ -8,6 +8,7 @@ import com.spid.android.sdk.configuration.SPiDConfiguration;
  * Contains a code access token request to SPiD
  */
 public class SPiDCodeTokenRequest extends SPiDTokenRequest {
+
     /**
      * Constructor for the SPiDUserCredentialTokenRequest
      *

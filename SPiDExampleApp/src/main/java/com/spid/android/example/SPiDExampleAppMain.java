@@ -8,16 +8,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.reponse.SPiDResponse;
+
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Contains the main window activity
@@ -40,7 +41,7 @@ public class SPiDExampleAppMain extends Activity {
         logoutButton.setOnClickListener(new LogoutButtonListener(this));
 
         TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
-        String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
+        String expiresAt = SPiDClient.getInstance().getTokenExpiresAt() != null ? SPiDClient.getInstance().getTokenExpiresAt().toString() : "";
         tokenExpiresTextView.setText("Token expires at: " + expiresAt);
 
         getUserName(this);
@@ -173,11 +174,15 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-            try {
-                SPiDClient.getInstance().browserLogout();
-            } catch (UnsupportedEncodingException e) {
-                // nothing to do here
-            }
+//            try {
+//                SPiDClient.getInstance().browserLogout();
+//            } catch (UnsupportedEncodingException e) {
+//                // nothing to do here
+//            }
+//            try {
+//            } catch (InterruptedException e) {
+//                SPiDLogger.log(("Sleep interrupted!"));
+//            }
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
@@ -185,7 +190,7 @@ public class SPiDExampleAppMain extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-                    finish();
+//                    finish();
                 }
 
                 @Override

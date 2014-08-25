@@ -10,6 +10,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
+
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
@@ -37,6 +38,7 @@ public class SPiDExampleAppLogin extends Activity {
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
                 .context(this)
+                .context(getApplicationContext())
                 .build();
 
         config.setDebugMode(true);
@@ -99,7 +101,7 @@ public class SPiDExampleAppLogin extends Activity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-            finish();
+//            finish();
         }
 
         @Override

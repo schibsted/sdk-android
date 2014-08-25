@@ -68,6 +68,7 @@ public final class SPiDWebView {
      */
     private static WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
         String url = SPiDUrl.getAuthorizationURL().concat("&webview=1");
+        SPiDLogger.log("Webview authorization URL = " + url);
         return getWebView(context, webView, url, webViewClient);
     }
 
