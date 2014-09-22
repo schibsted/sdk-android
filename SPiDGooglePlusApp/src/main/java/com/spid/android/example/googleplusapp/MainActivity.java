@@ -6,9 +6,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,6 +20,7 @@ import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
@@ -41,101 +42,97 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
-/**
- * Contains the activity_main window activity
- */
-
-public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends Activity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
 
     public static final int REQUEST_CODE_RESOLVE_ERR = 9000;
-    public static final String GOOGLE_PLUS_SCOPES = Scopes.PLUS_LOGIN + " " + "email";
+    public static final String GOOGLE_PLUS_SCOPES = Scopes.PLUS_LOGIN + " email";
+    public static final String OAUTH_EXCEPTION = "OAuthException";
 
     private ProgressDialog progressDialog;
-    private GoogleApiClient googleApiClient;
+    private GoogleApiClient googleApiClient = null;
     private boolean intentInProgress;
+
+    private ConnectionResult mConnectionResult;
+
+    SignInButton signInButton;
+    TextView userText;
+    Button logoutButton;
+
+    private boolean signInClicked;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupMainContentView();
 
         // Setup SPiD
-        SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
-                .signSecret("your-secret-sign-key")
-                .context(getApplicationContext())
-                .build();
-        config.setDebugMode(true);
-        SPiDClient.getInstance().configure(config);
-
-        // Check if GooglePlayService is available, if not we could hide the login button
-        int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if (errorCode != ConnectionResult.SUCCESS) {
-            Toast.makeText(this, "Error getting username", Toast.LENGTH_LONG).show();
+        if (SPiDClient.getInstance().getConfig() == null) {
+            SPiDConfiguration config = new SPiDConfigurationBuilder()
+                    .clientID("your-client-id")
+                    .clientSecret("your-client-secret")
+                    .appURLScheme("your-app-url-scheme")
+                    .serverURL("your-spidserver-url")
+                    .signSecret("your-secret-sign-key")
+                    .debugMode(true)
+                    .context(getApplicationContext())
+                    .build();
+            SPiDClient.getInstance().configure(config);
         }
 
         // Setup GooglePlus, the email scope is needed for SPiD login with Google Plus
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Plus.API)
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .addScope(new Scope("email"))
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-        // Handle app redirects
-        Uri data = getIntent().getData();
-        if (data != null && (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken())) {
-            SPiDLogger.log("This app does not have app redirects, this should not happen...");
-            Toast.makeText(this, "This app does not have app redirects, this should not happen...", Toast.LENGTH_LONG).show();
+        if (googleApiClient == null) {
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Plus.API)
+                    .addScope(Plus.SCOPE_PLUS_LOGIN)
+                    .addScope(new Scope("email"))
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        if (!googleApiClient.isConnected() && !googleApiClient.isConnecting()) {
+            SPiDLogger.log("Google client was not connecting, connecting now");
+            googleApiClient.connect();
         }
 
-        // Setup view
-        setupContentView();
+        checkGooglePlusConnection();
     }
 
-    // Layout setup
-    public void setupContentView() {
-        if (!SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken()) {
-            setupEmptyContentView();
-        } else {
-            setupMainContentView();
+    private void checkGooglePlusConnection() {
+        int errorCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
+        if (errorCode != ConnectionResult.SUCCESS) {
+            Toast.makeText(this, getString(R.string.failedGoogleConnect), Toast.LENGTH_LONG).show();
         }
     }
 
     private void setupMainContentView() {
         setContentView(R.layout.activity_main);
 
-        Button logoutButton = (Button) findViewById(R.id.logout_button);
+        signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        userText = (TextView) findViewById(R.id.user_text_view);
+        logoutButton = (Button) findViewById(R.id.logout_button);
+
+        signInButton.setOnClickListener(this);
         logoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logoutFromSPiD();
+                signOutFromGplus();
+                displayLoginScreen(true);
             }
         });
-
-        getUserNameFromSPiD(this);
     }
 
-    private void setupEmptyContentView() {
-        setContentView(R.layout.activity_empty_main);
-
-        FragmentManager fragmentManager = getFragmentManager();
-        GooglePlusLoginDialog googlePlusLoginDialog = new GooglePlusLoginDialog();
-        googlePlusLoginDialog.show(fragmentManager, "dialog_login");
-    }
-
-    // Handle Google Plus connection
     @Override
     public void onConnected(Bundle bundle) {
-        SPiDLogger.log("Successfully connected to Google+");
+        SPiDLogger.log("Connected to Google");
+        signInClicked = false;
         getGooglePlusToken(new GoogleTokenListener() {
             @Override
             public void onComplete(String token) {
-                SPiDLogger.log("Google plus token received:" + token);
-                trySPiDLoginWithGooglePlusToken(token);
+                // attempt to connect to SPiD, if the user is unknown we will give the option to attach the user to
+                // an existing one or create a new one associated with this Google account
+                trySPiDLoginWithGooglePlusToken(token, false);
             }
         });
     }
@@ -144,19 +141,36 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     @Override
     public void onConnectionSuspended(int i) {
         googleApiClient.connect();
+        displayLoginScreen(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     // Handle failed Google Plus connection
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
         if (!intentInProgress && connectionResult.hasResolution()) {
-            try {
+            mConnectionResult = connectionResult;
+            if (signInClicked) {
                 intentInProgress = true;
-                connectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
-
-            } catch (IntentSender.SendIntentException e) {
-                googleApiClient.disconnect();
-                googleApiClient.connect();
+                try {
+                    connectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+                } catch (IntentSender.SendIntentException e) {
+                    SPiDLogger.log("SendIntentException", e);
+                    googleApiClient.reconnect();
+                }
             }
         }
     }
@@ -164,57 +178,73 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     // Handle result if user intervention was required for authentication
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_RESOLVE_ERR) {
+            if (resultCode != RESULT_OK) {
+                signInClicked = false;
+            }
             intentInProgress = false;
-
             if (resultCode == RESULT_OK) {
-                SPiDLogger.log("User approved authorization, continuing with login");
-                if (!googleApiClient.isConnecting()) {
+                if (!googleApiClient.isConnecting() && !googleApiClient.isConnected()) {
+                    SPiDLogger.log("User approved authorization, continue with login");
                     googleApiClient.connect();
                 }
             } else {
-                dismissLoadingDialog();
                 SPiDLogger.log("Authorization denied by user");
-                Toast.makeText(this, "Authorization denied by user", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, getString(R.string.authorizationDeniedUser), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void trySPiDLoginWithGooglePlusToken(String token) {
-        SPiDGooglePlusTokenRequest tokenRequest = new SPiDGooglePlusTokenRequest(getPackageName(), token, new SPiDAuthorizationListener() {
+    private void trySPiDLoginWithGooglePlusToken(final String token, final boolean isRetryAttempted) {
+        final SPiDGooglePlusTokenRequest tokenRequest = new SPiDGooglePlusTokenRequest(getPackageName(), token, new SPiDAuthorizationListener() {
             @Override
             public void onComplete() {
-                SPiDLogger.log("SPiD logging successful, access token received: " + SPiDClient.getInstance().getAccessToken().getAccessToken());
-                dismissLoadingDialog();
-                setupContentView();
+                SPiDLogger.log("SPiD log in successful, access token received: " + SPiDClient.getInstance().getAccessToken().getAccessToken());
+                displayLoginScreen(false);
             }
 
             @Override
             public void onSPiDException(SPiDException exception) {
-                // Handle user does not exist
-                if (exception instanceof SPiDUnknownUserException) {
-                    dismissLoadingDialog();
-                    showNoAccountDialog();
-                } else {
-                    onError("SPiDException when logging in with Google Plus token: " + exception.getMessage());
-                }
+                handleError(exception);
             }
 
             @Override
             public void onIOException(IOException exception) {
-                onError("IOException when logging in with Google Plus token: " + exception.getMessage());
+                handleError(exception);
             }
 
             @Override
             public void onException(Exception exception) {
-                onError("Exception when logging in with Google Plus token: " + exception.getMessage());
+                handleError(exception);
             }
 
-            private void onError(String error) {
-                dismissLoadingDialog();
-                SPiDLogger.log(error);
-                Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
+
+            private void handleError(Exception exception) {
+                // Handle user does not exist
+                if (exception instanceof SPiDUnknownUserException) {
+                    SPiDLogger.log("SPiDUnknownUserException while trying to log in", exception);
+
+                    // either the user didn't exist or the permission was revoked and we're using an old token,
+                    // invalidate token and try one once more before showing no account dialog. This is mostly for
+                    // debugging reasons when revoking permission and using an old token. Should not be used in production code
+                    SPiDUnknownUserException spidUnknownUserException = (SPiDUnknownUserException) exception;
+                    if (spidUnknownUserException.getErrorType().equals(OAUTH_EXCEPTION) && !isRetryAttempted) {
+                        SPiDLogger.log("Permission possibly revoked, invalidating token and trying again");
+                        GoogleAuthUtil.invalidateToken(MainActivity.this, token);
+                        getGooglePlusToken(new GoogleTokenListener() {
+                            @Override
+                            public void onComplete(String token) {
+                                trySPiDLoginWithGooglePlusToken(token, true);
+                            }
+                        });
+                    } else {
+                        showNoAccountDialog();
+                    }
+
+                } else {
+                    SPiDLogger.log("Unexpected exception when logging in: " + exception.getMessage(), exception);
+                    Toast.makeText(MainActivity.this, getString(R.string.loginError), Toast.LENGTH_LONG).show();
+                }
             }
         });
         tokenRequest.execute();
@@ -236,24 +266,28 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 String token = null;
 
                 try {
-                    SPiDLogger.log("Trying token GooglePlus access token");
                     token = GoogleAuthUtil.getToken(activity, Plus.AccountApi.getAccountName(googleApiClient), "oauth2:" + MainActivity.GOOGLE_PLUS_SCOPES);
                 } catch (IOException transientException) {
                     // Network or server error, try later
-                    SPiDLogger.log("IOException when requesting Google Plus token: " + transientException.toString());
+                    SPiDLogger.log("IOException when requesting Google Plus token: " + transientException.toString(), transientException);
                 } catch (UserRecoverableAuthException userRecoverableAuthException) {
                     // This means that the app hasn't been authorized by the user for access to the scope, so we're going to have
                     // to fire off the (provided) Intent to arrange for that, this should only be done once
                     // and should not be a problem since we use the same scope as in plus login
 
-                    SPiDLogger.log("UserRecoverableAuthException received: " + userRecoverableAuthException.toString());
-                    Intent recover = userRecoverableAuthException.getIntent();
-                    startActivityForResult(recover, MainActivity.REQUEST_CODE_RESOLVE_ERR);
+                    SPiDLogger.log("UserRecoverableAuthException received: " + userRecoverableAuthException.toString(),
+                            userRecoverableAuthException);
+                    SPiDLogger.log("Intent in progress: " + intentInProgress);
+                    if (!intentInProgress) {
+                        intentInProgress = true;
+                        Intent recover = userRecoverableAuthException.getIntent();
+                        startActivityForResult(recover, MainActivity.REQUEST_CODE_RESOLVE_ERR);
+                    }
                 } catch (GoogleAuthException authException) {
                     // The call is not ever expected to succeed
                     // assuming you have already verified that
                     // Google Play services is installed.
-                    SPiDLogger.log(authException.toString());
+                    SPiDLogger.log(authException.toString(), authException);
                 }
 
                 return token;
@@ -261,11 +295,11 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
             @Override
             protected void onPostExecute(String token) {
-                if (token != null && token.length() > 0) {
+                if (!TextUtils.isEmpty(token)) {
                     googleTokenListener.onComplete(token);
                 } else {
                     SPiDLogger.log("No token received from Google");
-                    Toast.makeText(MainActivity.this, "No access token received from Google Plus", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.googleAccesTokenError), Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -273,8 +307,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     public void connectToGooglePlus() {
-        showLoadingDialog();
-        googleApiClient.connect();
+        if (!googleApiClient.isConnected() && !googleApiClient.isConnecting()) {
+            googleApiClient.connect();
+        }
     }
 
     public void logoutFromGooglePlus() {
@@ -283,7 +318,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         }
     }
 
-    private void getUserNameFromSPiD(final Context context) {
+    private void updateUsernameFromSPiD(final Context context) {
         SPiDClient.getInstance().getCurrentUser(new SPiDRequestListener() {
             @Override
             public void onComplete(SPiDResponse result) {
@@ -303,7 +338,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 if (exception instanceof SPiDInvalidAccessTokenException) {
                     SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
                     SPiDLogger.log("Token expired or invalid: " + exception.getMessage());
-                    setupContentView();
+                    displayLoginScreen(true);
                 } else {
                     onError("SPiDException when fetching user information: " + exception.getMessage());
                 }
@@ -327,6 +362,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     public void createUserFromGooglePlus() {
+        SPiDLogger.log("Creating user from Google+ account...");
         getGooglePlusToken(new GoogleTokenListener() {
             @Override
             public void onComplete(final String token) {
@@ -336,36 +372,37 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     private void signupWithGooglePlusToken(final String token) {
+        SPiDLogger.log("Signing up with Google+ token...");
         SPiDUser.signupWithGooglePlus(getPackageName(), token, new SPiDAuthorizationListener() {
             @Override
             public void onComplete() {
-                trySPiDLoginWithGooglePlusToken(token);
+                trySPiDLoginWithGooglePlusToken(token, false);
             }
 
             @Override
             public void onSPiDException(SPiDException exception) {
-                onError("SPiDException when creating user from Google Plus token: " + exception.getMessage(), exception);
+                handleError(exception);
             }
 
             @Override
             public void onIOException(IOException exception) {
-                onError("IOException when creating user from Google Plus token: " + exception.getMessage(), exception);
+                handleError(exception);
             }
 
             @Override
             public void onException(Exception exception) {
-                onError("Exception when creating user from Google Plus token: " + exception.getMessage(), exception);
+                handleError(exception);
             }
 
-            private void onError(String error, Exception exception) {
-                dismissLoadingDialog();
-                SPiDLogger.log(error, exception);
-                Toast.makeText(MainActivity.this, error, Toast.LENGTH_LONG).show();
+            private void handleError(Exception exception) {
+                SPiDLogger.log("Exception when attempting to creating user from Google Plus token: " + exception.getMessage(), exception);
+                Toast.makeText(MainActivity.this, getString(R.string.failedCreateUser), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void attachGooglePlusUser() {
+        SPiDLogger.log("Attaching Google+ user...");
         getGooglePlusToken(new GoogleTokenListener() {
             @Override
             public void onComplete(final String token) {
@@ -374,66 +411,99 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         });
     }
 
-    private void attachGooglePlusAccountWithToken(String token) {
+    private void attachGooglePlusAccountWithToken(final String token) {
         SPiDUser.attachGooglePlusAccount(getPackageName(), token, new SPiDAuthorizationListener() {
             @Override
             public void onComplete() {
-                dismissLoadingDialog();
-
-                Toast.makeText(MainActivity.this, "Google Plus account successfully attached", Toast.LENGTH_LONG).show();
-                SPiDLogger.log("Google Plus account successfully attached");
-
-                setupContentView();
+                trySPiDLoginWithGooglePlusToken(token, false);
             }
 
             @Override
             public void onSPiDException(SPiDException exception) {
-                SPiDLogger.log("SPiDException when attaching Google Plus account: " + exception.getMessage());
+                handleError(exception);
             }
 
             @Override
             public void onIOException(IOException exception) {
-                SPiDLogger.log("IOException when attaching Google Plus account: " + exception.getMessage());
+                handleError(exception);
             }
 
             @Override
             public void onException(Exception exception) {
-                SPiDLogger.log("Exception when attaching Google Plus account: " + exception.getMessage());
+                handleError(exception);
+            }
+
+            private void handleError(Exception exception) {
+                SPiDLogger.log("Exception when attaching Google Plus account: " + exception.getMessage(), exception);
+                Toast.makeText(MainActivity.this, getString(R.string.failedAttachGoogle), Toast.LENGTH_LONG).show();
             }
         });
     }
 
-    public interface GoogleTokenListener {
-        public void onComplete(String token);
+    @Override
+    public void onClick(View v) {
+        if (!googleApiClient.isConnecting()) {
+            signInClicked = true;
+            resolveSignInError();
+        } else {
+            SPiDLogger.log("Google + was connecting");
+        }
+    }
+
+    /**
+     * Method to resolve any signin errors
+     * */
+    private void resolveSignInError() {
+        SPiDLogger.log("Connection status: " + googleApiClient.isConnected() + " " + googleApiClient.isConnecting());
+        if (mConnectionResult != null && mConnectionResult.hasResolution()) {
+            try {
+                intentInProgress = true;
+                mConnectionResult.startResolutionForResult(this, REQUEST_CODE_RESOLVE_ERR);
+            } catch (IntentSender.SendIntentException e) {
+                SPiDLogger.log("Exception during startResolutionForResult", e);
+                intentInProgress = false;
+                googleApiClient.connect();
+            }
+        } else {
+            SPiDLogger.log("Google+ has no resolution");
+            googleApiClient.connect();
+        }
+    }
+
+    private void signOutFromGplus() {
+        if (googleApiClient.isConnected()) {
+            Plus.AccountApi.clearDefaultAccount(googleApiClient);
+            googleApiClient.disconnect();
+            googleApiClient.connect();
+        }
     }
 
     public void logoutFromSPiD() {
         SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
             @Override
             public void onComplete() {
-                logoutFromGooglePlus();
-                setupContentView();
+                SPiDLogger.log("Logged out from SPiD");
             }
 
             @Override
             public void onSPiDException(SPiDException exception) {
-                onError("SPiDException when logging out from SPiD: " + exception.getMessage());
+                handleError(exception);
             }
 
             @Override
             public void onIOException(IOException exception) {
-                onError("IOException when logging out from SPiD: " + exception.getMessage());
+                handleError(exception);
             }
 
             @Override
             public void onException(Exception exception) {
-                onError("Exception when logging out from SPiD: " + exception.getMessage());
+                handleError(exception);
             }
 
-            private void onError(String exception) {
+            private void handleError(Exception exception) {
                 SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
-                SPiDLogger.log(exception);
-                Toast.makeText(MainActivity.this, exception, Toast.LENGTH_LONG).show();
+                SPiDLogger.log("Exception when logging out from SPiD: " + exception.getMessage(), exception);
+                Toast.makeText(MainActivity.this, getString(R.string.logoutError), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -442,7 +512,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
-            progressDialog.setMessage("Loading...");
+            progressDialog.setMessage(getString(R.string.loading));
         }
         progressDialog.show();
     }
@@ -451,5 +521,25 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+    }
+
+    public void displayLoginScreen(boolean displayLogin) {
+        if (displayLogin) {
+            userText.setText(getString(R.string.welcomeUnknown));
+            signInButton.setVisibility(View.VISIBLE);
+            userText.setVisibility(View.GONE);
+            logoutButton.setVisibility(View.GONE);
+        } else {
+            if (SPiDClient.getInstance().getAccessToken() != null) {
+                updateUsernameFromSPiD(this);
+            }
+            signInButton.setVisibility(View.GONE);
+            userText.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public interface GoogleTokenListener {
+        public void onComplete(String token);
     }
 }

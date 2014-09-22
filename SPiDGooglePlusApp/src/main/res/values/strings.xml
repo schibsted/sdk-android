@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SPiDGooglePlusApp</string>
-    <string name="logout">Logout from SPiD</string>
+    <string name="logout">Log out from SPiD</string>
     <string name="SPiDLogo">SPiD Logo</string>
+    <string name="termsErrorMessage">Error loading terms of use</string>
+    <string name="missingEmailOrPassword">Missing email and/or password</string>
+    <string name="failedCreateUser">Failed to create user</string>
+    <string name="googleAccountAttached">Google Plus account successfully attached</string>
+    <string name="loginError">Error during login</string>
+    <string name="userFetchFailed">Failed to retrieve user information</string>
+    <string name="logoutError">Error during log out</string>
+    <string name="loading">Logging in…</string>
+    <string name="welcome">Welcome\u0020</string>
+    <string name="getUsernameError">Error getting username</string>
+    <string name="googleAccesTokenError">No access token received from Google Plus</string>
+    <string name="authorizationDeniedUser">Authorization denied by user</string>
+    <string name="noRedirectsFound">This app does not have app redirects, this should not happen…</string>
+    <string name="welcomeUnknown">Welcome Unknown user!</string>
+    <string name="byUsingAgree">By using this service you are agreeing the</string>
+    <string name="termsOfUse">Terms of use</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="loginToSpid">Login to SPiD</string>
+    <string name="back">Back</string>
+    <string name="noSpidForGoogleAccount">No SPiD user exists for your google account, do you want to create a user or attach your google account to an existing SPiD account?</string>
+    <string name="newAccount">New account</string>
+    <string name="existingAccount">Existing account</string>
+    <string name="cancel">Cancel</string>
+    <string name="failedGoogleConnect">Could not connect to Google</string>
+    <string name="failedAttachGoogle">Failed to attach Google+ account to SPiD user</string>
 </resources>

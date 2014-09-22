@@ -52,7 +52,7 @@ public class NoAccountDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 mainActivity.logoutFromGooglePlus();
-                mainActivity.setupContentView();
+                mainActivity.displayLoginScreen(true);
                 dismiss();
             }
         });
