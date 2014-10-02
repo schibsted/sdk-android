@@ -187,6 +187,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 if (!googleApiClient.isConnecting() && !googleApiClient.isConnected()) {
                     SPiDLogger.log("User approved authorization, continue with login");
                     googleApiClient.connect();
+                    signInButton.setEnabled(false);
                 }
             } else {
                 SPiDLogger.log("Authorization denied by user");
@@ -526,6 +527,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void displayLoginScreen(boolean displayLogin) {
         if (displayLogin) {
             userText.setText(getString(R.string.welcomeUnknown));
+            signInButton.setEnabled(true);
             signInButton.setVisibility(View.VISIBLE);
             userText.setVisibility(View.GONE);
             logoutButton.setVisibility(View.GONE);
