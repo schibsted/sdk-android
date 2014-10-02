@@ -1,9 +1,9 @@
 SPiD SDK for Android
 ================
 
-Supported Android version is 2.2 (API level 8) or greater. The SDK is currently using buildtools version 18.1.1.
+Supported Android version is 2.3 (API level 9) or greater. The SDK is currently using buildtools version 19.1.0.
 
-The SDK can be build using the gradle wrapper included by running the following command(assuming that the android-sdk is installed):
+The SDK can be built using the gradle wrapper included by running the following command(assuming that the android-sdk is installed):
 ```
 ./gradlew -p SPiDSDK build
 ```
