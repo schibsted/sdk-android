@@ -7,15 +7,12 @@ buildscript {
         classpath 'com.github.dcendents:android-maven-plugin:1.1'
     }
 }
-
 apply plugin: 'com.android.library'
 apply plugin: 'android-maven'
-
 project.version = '1.3.1'
-
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.1.0'
+    buildToolsVersion '21.1.0'
 
     defaultConfig {
         minSdkVersion 9
@@ -36,7 +33,6 @@ android {
         }
     }
 }
-
 uploadArchives {
     repositories {
         mavenDeployer {
@@ -46,11 +42,9 @@ uploadArchives {
         }
     }
 }
-
 task generateJavadocs(type: Javadoc) {
     source = android.sourceSets.main.java
 }
-
 android.libraryVariants.all { variant ->
 
     task("generate${variant.name}Javadoc", type: Javadoc) {
@@ -65,29 +59,27 @@ android.libraryVariants.all { variant ->
         exclude '**/R.java'
     }
 }
-
 task generateJar(type: Copy) {
     from('build/bundles/release/')
     into('build/libs/')
     include('classes.jar')
     rename('classes.jar', "${project.name}-${project.version}.jar")
 }
-
 task generateSourceJar(type: Jar) {
     classifier = 'sources'
     from android.sourceSets.main.java.srcDirs
 }
-
 task generateJavadocsJar(dependsOn: generateJavadocs, type: Jar) {
     classifier = 'javadoc'
     from generateJavadocs.destinationDir
 }
-
 artifacts {
     archives generateSourceJar
     archives generateJavadocsJar
 }
-
 assemble.dependsOn(generateJar)
 assemble.dependsOn(generateSourceJar)
 assemble.dependsOn(generateJavadocsJar)
+
+dependencies {
+}
