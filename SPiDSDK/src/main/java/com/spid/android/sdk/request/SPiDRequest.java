@@ -1,5 +1,6 @@
 package com.spid.android.sdk.request;
 
+import android.net.http.AndroidHttpClient;
 import android.os.AsyncTask;
 
 import com.spid.android.sdk.SPiDClient;
@@ -18,7 +19,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.HttpClientParams;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 
