@@ -14,6 +14,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,13 +53,16 @@ public class SPiDResponse {
         this.headers = new HashMap<String, String>();
         this.exception = null;
         BufferedReader reader = null;
+        InputStreamReader inputStreamReader = null;
 
         for (Header header : httpResponse.getAllHeaders()) {
             this.headers.put(header.getName(), header.getValue());
         }
 
         try {
-            reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+            inputStreamReader = new InputStreamReader(httpResponse.getEntity().getContent());
+            reader = new BufferedReader(inputStreamReader);
+
             StringBuilder builder = new StringBuilder();
             String line = reader.readLine();
             while (line != null) {
@@ -69,6 +73,7 @@ public class SPiDResponse {
         } catch (IOException exception) {
             this.exception = exception;
         } finally {
+            closeQuietly(inputStreamReader);
             closeQuietly(reader);
         }
 
@@ -92,7 +97,7 @@ public class SPiDResponse {
         }
     }
 
-    private void closeQuietly(BufferedReader reader) {
+    private void closeQuietly(Reader reader) {
         if(reader != null) {
             try {
                 reader.close();
