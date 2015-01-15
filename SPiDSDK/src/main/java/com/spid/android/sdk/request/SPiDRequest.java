@@ -220,7 +220,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
             HttpClientParams.setRedirecting(httpRequest.getParams(), false);
 
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClient httpClient = AndroidHttpClient.newInstance(SPiDClient.getInstance().getConfig().getUserAgent());
             HttpResponse httpResponse = httpClient.execute(httpRequest);
 
             return new SPiDResponse(httpResponse);
