@@ -13,7 +13,6 @@ import com.spid.android.sdk.reponse.SPiDResponse;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -192,6 +191,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      */
     @Override
     protected SPiDResponse doInBackground(Void... voids) {
+        AndroidHttpClient httpClient = null;
         try {
             HttpRequestBase httpRequest;
             if (POST.equalsIgnoreCase(method)) {
@@ -220,7 +220,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
             HttpClientParams.setRedirecting(httpRequest.getParams(), false);
 
-            HttpClient httpClient = AndroidHttpClient.newInstance(SPiDClient.getInstance().getConfig().getUserAgent());
+            httpClient = AndroidHttpClient.newInstance(SPiDClient.getInstance().getConfig().getUserAgent());
             HttpResponse httpResponse = httpClient.execute(httpRequest);
 
             return new SPiDResponse(httpResponse);
@@ -228,6 +228,10 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             return new SPiDResponse(e);
         } catch (Exception e) {
             return new SPiDResponse(e);
+        } finally {
+            if (httpClient != null) {
+                httpClient.close();
+            }
         }
     }
 
