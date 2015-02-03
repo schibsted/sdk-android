@@ -1,4 +1,4 @@
-SPiD SDK for Android
+SPiD SDK for Android [![Build Status](https://travis-ci.org/schibsted/sdk-android.svg?branch=master)](https://travis-ci.org/schibsted/sdk-android)
 ================
 
 Supported Android version is 2.3 (API level 9) or greater. The SDK is currently using buildtools version 19.1.0.
