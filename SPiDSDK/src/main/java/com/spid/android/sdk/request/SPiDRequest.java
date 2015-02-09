@@ -112,7 +112,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     /**
      * @return The complete URL with the query
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException The unsupported encoding
      */
     public String getCompleteURL() throws UnsupportedEncodingException {
         return url + getQueryAsString();
@@ -134,7 +134,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      * Generates the query string
      *
      * @return The query
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException The unsupported encoding
      */
     private String getQueryAsString() throws UnsupportedEncodingException {
         StringBuilder builder = new StringBuilder();

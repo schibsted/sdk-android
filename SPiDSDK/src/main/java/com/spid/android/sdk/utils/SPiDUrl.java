@@ -26,9 +26,8 @@ public final class SPiDUrl {
     /**
      * Generates URL for authorization in SPiD
      *
-     * @return URL for authorization
-     * @throws java.io.UnsupportedEncodingException
-     *
+     * @return String for authorization
+     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
     public static String getAuthorizationURL() throws UnsupportedEncodingException {
         return getEncodedUrl(Authorization.AUTHORIZATION);
@@ -38,7 +37,7 @@ public final class SPiDUrl {
      * Generates URL for signup in SPiD
      *
      * @return URL for signup
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
     public static String getSignupURL() throws UnsupportedEncodingException {
         return getEncodedUrl(Authorization.SIGNUP);
@@ -48,7 +47,7 @@ public final class SPiDUrl {
      * Generates URL for lost password in SPiD
      *
      * @return URL for lost password
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
     public static String getForgotPasswordURL() throws UnsupportedEncodingException {
         return getEncodedUrl(Authorization.FORGOT_PASSWORD);
@@ -79,7 +78,7 @@ public final class SPiDUrl {
      *
      * @param accessToken Access token to logout
      * @return URL for logout
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
     public static String getLogoutURL(SPiDAccessToken accessToken) throws UnsupportedEncodingException {
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();

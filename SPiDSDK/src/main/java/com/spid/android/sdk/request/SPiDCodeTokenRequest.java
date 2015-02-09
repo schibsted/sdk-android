@@ -12,7 +12,7 @@ public class SPiDCodeTokenRequest extends SPiDTokenRequest {
     /**
      * Constructor for the SPiDUserCredentialTokenRequest
      *
-     * @param code
+     * @param code The code
      * @param authorizationListener Called on completion or error, can be <code>null</code>
      */
     public SPiDCodeTokenRequest(String code, SPiDAuthorizationListener authorizationListener) {

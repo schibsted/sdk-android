@@ -171,7 +171,6 @@ public class SPiDConfigurationBuilder {
      *
      * @param string       The string to check
      * @param errorMessage Error message for the exception
-     * @throws IllegalArgumentException
      */
     protected void isEmptyString(String string, String errorMessage) {
         if (string == null || TextUtils.isEmpty(string.trim())) {
@@ -184,7 +183,7 @@ public class SPiDConfigurationBuilder {
      *
      * @param object       The object to check
      * @param errorMessage Error message for the exception
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException Thrown if object is null
      */
     protected void isNull(Object object, String errorMessage) {
         if (object == null) {

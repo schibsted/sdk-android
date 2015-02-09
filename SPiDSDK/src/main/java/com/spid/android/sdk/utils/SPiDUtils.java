@@ -39,8 +39,8 @@ public final class SPiDUtils {
      * Encodes a string with Base64
      *
      * @param input String to be encoded
+     * @throws UnsupportedEncodingException The unsupported encoding exception
      * @return Base64 encoded input
-     * @throws UnsupportedEncodingException
      */
     public static String encodeBase64(String input) throws UnsupportedEncodingException {
         byte[] data = input.getBytes("UTF-8");
@@ -66,8 +66,8 @@ public final class SPiDUtils {
      *
      * @param key    Key used for hash generation
      * @param input  String to be hashed
+     * @throws Exception The exception thrown if any
      * @return Hashed string
-     * @throws Exception
      */
     public static String getHmacSHA256(String key, String input) throws Exception {
         Mac mac = Mac.getInstance(HMAC_SHA_2561);

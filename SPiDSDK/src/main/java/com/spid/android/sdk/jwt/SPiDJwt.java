@@ -31,7 +31,7 @@ public class SPiDJwt {
      * Constructs a new SPiDUserAbortedLoginException with the specified detail message.
      *
      * @param issuer            Issuer
-     * @param sub
+     * @param sub               Subject
      * @param audience          Audience
      * @param expirationDate    Expiration time
      * @param tokenType         Token type(currently only facebook)

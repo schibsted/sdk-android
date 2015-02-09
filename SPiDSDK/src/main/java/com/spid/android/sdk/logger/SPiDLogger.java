@@ -22,6 +22,7 @@ public class SPiDLogger {
      * Prints to log if debugMode is set including an exception
      *
      * @param message Message to log in the Android log
+     * @param exception The exception to log
      */
     public static void log(String message, Exception exception) {
         Boolean debug = SPiDClient.getInstance().getDebug();

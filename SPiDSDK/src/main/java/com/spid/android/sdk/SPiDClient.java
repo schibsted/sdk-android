@@ -93,7 +93,7 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException Unsupported encoding
      */
     public void browserAuthorization() throws UnsupportedEncodingException {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getAuthorizationURL()));
@@ -106,7 +106,7 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException Unsupported encoding
      */
     public void browserSignup() throws UnsupportedEncodingException {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getSignupURL()));
@@ -118,7 +118,7 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException Unsupported encoding
      */
     public void browserForgotPassword() throws UnsupportedEncodingException {
         SPiDLogger.log("ForgotPasswordURL = " + SPiDUrl.getForgotPasswordURL());
@@ -142,6 +142,7 @@ public class SPiDClient {
      * Handles incoming Intent if it is sent from SPiD
      *
      * @param data Intent data
+     * @param listener The SPiDAuthorizationListener to handle the callback
      * @return <code>true</code> if <code>Intent</code> was handled otherwise <code>false</code>
      */
     public boolean handleIntent(Uri data, SPiDAuthorizationListener listener) {
@@ -189,7 +190,7 @@ public class SPiDClient {
     /**
      * Redirects to browser for logout
      *
-     * @throws UnsupportedEncodingException
+     * @throws UnsupportedEncodingException Unsupported encoding
      */
     public void browserLogout() throws UnsupportedEncodingException {
         if (token != null) {

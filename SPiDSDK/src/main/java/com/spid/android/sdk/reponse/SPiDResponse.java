@@ -103,7 +103,7 @@ public class SPiDResponse {
     }
 
     /**
-     * @return If request was successful, i.e. 200 >= http code < 400
+     * @return If request was successful, i.e. http code between 200 and 400
      */
     public boolean isSuccessful() {
         return getCode() >= HttpURLConnection.HTTP_OK && getCode() < HttpURLConnection.HTTP_BAD_REQUEST;

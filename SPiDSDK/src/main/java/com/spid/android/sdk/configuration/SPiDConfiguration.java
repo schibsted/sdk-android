@@ -31,6 +31,7 @@ public class SPiDConfiguration {
      *
      * @param clientID          SPiD client id
      * @param clientSecret      SPiD client secret
+     * @param signSecret        SPiD sign secret
      * @param appURLScheme      Android app url scheme
      * @param serverURL         SPiD server url
      * @param redirectURL       SPiD redirect url
@@ -42,6 +43,7 @@ public class SPiDConfiguration {
      * @param serverRedirectUri SPiD redirect uri for server
      * @param useMobileWeb      Use mobile flag
      * @param apiVersion        SPiD API version
+     * @param debugMode         Whether to run in debug mode
      * @param userAgent         SPiD custom User-Agent
      * @param context           Android application context
      */
