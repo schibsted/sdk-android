@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 
 import com.spid.android.sdk.SPiDClient;
+import com.spid.android.sdk.logger.SPiDLogger;
 
 import java.io.UnsupportedEncodingException;
 import java.util.UUID;
@@ -39,11 +40,17 @@ public final class SPiDUtils {
      * Encodes a string with Base64
      *
      * @param input String to be encoded
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      * @return Base64 encoded input
      */
-    public static String encodeBase64(String input) throws UnsupportedEncodingException {
-        byte[] data = input.getBytes("UTF-8");
+    public static String encodeBase64(String input) {
+        byte[] data;
+        try {
+            data = input.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // UTF-8 is always present in Android, should never occur
+            SPiDLogger.log("Failed to getBytes for UTF-8", e);
+            return "";
+        }
         return Base64.encodeToString(data, Base64.DEFAULT);
     }
 

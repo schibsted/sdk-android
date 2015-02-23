@@ -28,7 +28,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 public class MainActivity extends Activity {
@@ -196,13 +195,8 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
-            try {
-                SPiDClient.getInstance().browserLogout();
-                SPiDLogger.log("Successfully logged out from browser");
-            } catch (UnsupportedEncodingException e) {
-                SPiDLogger.log("Failed to log out");
-                e.printStackTrace();
-            }
+            SPiDClient.getInstance().browserLogout();
+            SPiDLogger.log("Successfully logged out from browser");
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {

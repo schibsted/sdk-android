@@ -23,7 +23,6 @@ import com.spid.android.sdk.request.SPiDTokenRequest;
 import com.spid.android.sdk.utils.SPiDUrl;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -93,9 +92,8 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException Unsupported encoding
      */
-    public void browserAuthorization() throws UnsupportedEncodingException {
+    public void browserAuthorization() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getAuthorizationURL()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -106,9 +104,8 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException Unsupported encoding
      */
-    public void browserSignup() throws UnsupportedEncodingException {
+    public void browserSignup() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getSignupURL()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -118,9 +115,8 @@ public class SPiDClient {
     /**
      * Redirects to browser for authorization using a Intent
      *
-     * @throws UnsupportedEncodingException Unsupported encoding
      */
-    public void browserForgotPassword() throws UnsupportedEncodingException {
+    public void browserForgotPassword() {
         SPiDLogger.log("ForgotPasswordURL = " + SPiDUrl.getForgotPasswordURL());
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getForgotPasswordURL()));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -190,9 +186,8 @@ public class SPiDClient {
     /**
      * Redirects to browser for logout
      *
-     * @throws UnsupportedEncodingException Unsupported encoding
      */
-    public void browserLogout() throws UnsupportedEncodingException {
+    public void browserLogout() {
         if (token != null) {
             if (authorizationListener == null) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getLogoutURL(token)));

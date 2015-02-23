@@ -10,7 +10,6 @@ import com.spid.android.sdk.utils.SPiDUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -90,9 +89,7 @@ public class SPiDJwt {
             headerJson.put("alg", "HS256");
             headerJson.put("typ", "JWT");
             headerBase64 = SPiDUtils.encodeBase64(headerJson.toString());
-        } catch (UnsupportedEncodingException e1) {
-            throw new SPiDException("Error encoding JWT header");
-        } catch (JSONException e2) {
+        } catch (JSONException e) {
             throw new SPiDException("Error encoding JWT header");
         }
 
@@ -109,9 +106,7 @@ public class SPiDJwt {
             claimJson.put("token_type", tokenType);
             claimJson.put("token_value", tokenValue);
             claimBase64 = SPiDUtils.encodeBase64(claimJson.toString());
-        } catch (UnsupportedEncodingException e1) {
-            throw new SPiDException("Error encoding JWT claim");
-        } catch (JSONException e2) {
+        } catch (JSONException e) {
             throw new SPiDException("Error encoding JWT header");
         }
 

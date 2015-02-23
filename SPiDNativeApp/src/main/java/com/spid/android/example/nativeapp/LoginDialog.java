@@ -22,7 +22,6 @@ import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDUserCredentialTokenRequest;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 public class LoginDialog extends DialogFragment {
 
@@ -83,12 +82,7 @@ public class LoginDialog extends DialogFragment {
         forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    SPiDClient.getInstance().browserForgotPassword();
-                } catch (UnsupportedEncodingException e) {
-                    SPiDLogger.log("Error loading webbrowser: " + e.getMessage());
-                    Toast.makeText(getActivity(), "Error loading webbrowser", Toast.LENGTH_LONG).show();
-                }
+                SPiDClient.getInstance().browserForgotPassword();
             }
         });
 

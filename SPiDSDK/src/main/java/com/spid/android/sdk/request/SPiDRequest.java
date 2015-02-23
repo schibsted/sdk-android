@@ -112,9 +112,8 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
 
     /**
      * @return The complete URL with the query
-     * @throws UnsupportedEncodingException The unsupported encoding
      */
-    public String getCompleteURL() throws UnsupportedEncodingException {
+    public String getCompleteURL() {
         return url + getQueryAsString();
     }
 
@@ -124,19 +123,21 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
      * @param key   The key to be encoded
      * @param value The value to be encoded
      * @return The encoded string
-     * @throws UnsupportedEncodingException
      */
-    private String encodeURLParameter(String key, String value) throws UnsupportedEncodingException {
-        return String.format("%s=%s", URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+    private String encodeURLParameter(String key, String value) {
+        try {
+            return String.format("%s=%s", URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            return String.format("%s=%s", key, value);
+        }
     }
 
     /**
      * Generates the query string
      *
      * @return The query
-     * @throws UnsupportedEncodingException The unsupported encoding
      */
-    private String getQueryAsString() throws UnsupportedEncodingException {
+    private String getQueryAsString() {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : query.entrySet()) {
             if (builder.length() > 0)

@@ -13,8 +13,6 @@ import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.utils.SPiDUrl;
 
-import java.io.UnsupportedEncodingException;
-
 /**
  * Helper methods to create various webviews
  */
@@ -30,10 +28,9 @@ public final class SPiDWebView {
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @param listener      Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws java.io.UnsupportedEncodingException The unsupported encoding exception
      *
      */
-    public static WebView webViewAuthorization(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewAuthorization(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) {
         SPiDAuthorizationListener authorizationListener = SPiDClient.getInstance().getAuthorizationListener();
         if (authorizationListener == null) {
             SPiDClient.getInstance().setAuthorizationListener(listener);
@@ -51,9 +48,8 @@ public final class SPiDWebView {
      * @param webView  WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
      * @param listener Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    public static WebView webViewAuthorization(Context context, WebView webView, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewAuthorization(Context context, WebView webView, SPiDAuthorizationListener listener) {
         return webViewAuthorization(context, webView, null, listener);
     }
 
@@ -64,9 +60,8 @@ public final class SPiDWebView {
      * @param webView       WebView that should be instantiated to SPiD authorization, creates a new WebView if <code>null</code>
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    private static WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    private static WebView getAuthorizationWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) {
         String url = SPiDUrl.getAuthorizationURL().concat("&webview=1");
         SPiDLogger.log("Webview authorization URL = " + url);
         return getWebView(context, webView, url, webViewClient);
@@ -80,9 +75,8 @@ public final class SPiDWebView {
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @param listener      Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    public static WebView webViewSignup(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewSignup(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) {
         SPiDAuthorizationListener authorizationListener = SPiDClient.getInstance().getAuthorizationListener();
         if (authorizationListener == null) {
             SPiDClient.getInstance().setAuthorizationListener(listener);
@@ -100,9 +94,8 @@ public final class SPiDWebView {
      * @param webView  WebView that should be instantiated to SPiD signup, creates a new WebView if <code>null</code>
      * @param listener Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    public static WebView webViewSignup(Context context, WebView webView, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewSignup(Context context, WebView webView, SPiDAuthorizationListener listener) {
         return webViewSignup(context, webView, null, listener);
     }
 
@@ -114,9 +107,8 @@ public final class SPiDWebView {
      * @param webView       WebView that should be instantiated to SPiD signup, creates a new WebView if <code>null</code>
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    private static WebView getSignupWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    private static WebView getSignupWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) {
         String url = SPiDUrl.getSignupURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
     }
@@ -129,9 +121,8 @@ public final class SPiDWebView {
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @param listener      Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    public static WebView webViewForgotPassword(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewForgotPassword(Context context, WebView webView, SPiDWebViewClient webViewClient, SPiDAuthorizationListener listener) {
         SPiDAuthorizationListener authorizationListener = SPiDClient.getInstance().getAuthorizationListener();
         if (authorizationListener == null) {
             SPiDClient.getInstance().setAuthorizationListener(listener);
@@ -148,9 +139,8 @@ public final class SPiDWebView {
      * @param webView  WebView that should be instantiated to SPiD lost password, creates a new WebView if <code>null</code>
      * @param listener Listener called on completion or failure, can be <code>null</code>
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    public static WebView webViewForgotPassword(Context context, WebView webView, SPiDAuthorizationListener listener) throws UnsupportedEncodingException {
+    public static WebView webViewForgotPassword(Context context, WebView webView, SPiDAuthorizationListener listener) {
         return webViewForgotPassword(context, webView, null, listener);
     }
 
@@ -161,9 +151,8 @@ public final class SPiDWebView {
      * @param webView       WebView that should be instantiated to SPiD lost password, creates a new WebView if <code>null</code>
      * @param webViewClient SPiDWebViewClient to be used with WebView, mainly for onPageStarted and onPageFinished
      * @return The WebView
-     * @throws UnsupportedEncodingException The unsupported encoding exception
      */
-    private static WebView getForgotPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) throws UnsupportedEncodingException {
+    private static WebView getForgotPasswordWebView(Context context, WebView webView, SPiDWebViewClient webViewClient) {
         String url = SPiDUrl.getForgotPasswordURL().concat("&webview=1");
         return getWebView(context, webView, url, webViewClient);
     }

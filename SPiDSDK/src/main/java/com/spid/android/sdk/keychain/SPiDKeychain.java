@@ -42,9 +42,6 @@ public class SPiDKeychain {
         } catch (GeneralSecurityException e) {
             clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("GeneralSecurityException", e);
-        } catch (UnsupportedEncodingException e) {
-            clearAccessTokenFromSharedPreferences();
-            throw new SPiDKeychainException("UnsupportedEncodingException", e);
         }
         editor.commit();
     }
@@ -67,9 +64,6 @@ public class SPiDKeychain {
             } catch (GeneralSecurityException e) {
                 clearAccessTokenFromSharedPreferences();
                 throw new SPiDKeychainException("GeneralSecurityException", e);
-            } catch (UnsupportedEncodingException e) {
-                clearAccessTokenFromSharedPreferences();
-                throw new SPiDKeychainException("UnsupportedEncodingException", e);
             }
         } else {
             return null;
@@ -101,17 +95,21 @@ public class SPiDKeychain {
      * @param value         String to be encrypted
      * @return Encrypted string
      * @throws GeneralSecurityException
-     * @throws UnsupportedEncodingException
      */
-    private static String encryptString(String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
-        final byte[] bytes = value != null ? value.getBytes(UTF8) : new byte[0];
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
-        SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
-        Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
-        //TODO:
-        //pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
-        pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
-        return new String(Base64.encode(pbeCipher.doFinal(bytes), Base64.NO_WRAP), UTF8);
+    private static String encryptString(String encryptionKey, String value) throws GeneralSecurityException {
+        try {
+            final byte[] bytes = value != null ? value.getBytes(UTF8) : new byte[0];
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
+            SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
+            Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
+            //TODO:
+            //pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
+            pbeCipher.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
+            return new String(Base64.encode(pbeCipher.doFinal(bytes), Base64.NO_WRAP), UTF8);
+        } catch(UnsupportedEncodingException e) {
+            // Shouldn't be possible using UTF-8...
+            throw new GeneralSecurityException("Could not encode using encoding " + UTF8, e);
+        }
     }
 
     /**
@@ -121,14 +119,18 @@ public class SPiDKeychain {
      * @param value         String to be decrypted
      * @return Decrypted string
      * @throws GeneralSecurityException
-     * @throws UnsupportedEncodingException
      */
-    private static String decryptString(String encryptionKey, String value) throws GeneralSecurityException, UnsupportedEncodingException {
+    private static String decryptString(String encryptionKey, String value) throws GeneralSecurityException {
         final byte[] bytes = value != null ? Base64.decode(value, Base64.DEFAULT) : new byte[0];
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
         SecretKey key = keyFactory.generateSecret(new PBEKeySpec(encryptionKey.toCharArray()));
         Cipher pbeCipher = Cipher.getInstance("PBEWithMD5AndDES");
-        pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
-        return new String(pbeCipher.doFinal(bytes), UTF8);
+        try {
+            pbeCipher.init(Cipher.DECRYPT_MODE, key, new PBEParameterSpec(Settings.Secure.ANDROID_ID.getBytes(UTF8), 20));
+            return new String(pbeCipher.doFinal(bytes), UTF8);
+        } catch (UnsupportedEncodingException e) {
+            // Shouldn't be possible using UTF-8...
+            throw new GeneralSecurityException("Could not decrypt string using " + UTF8, e);
+        }
     }
 }
