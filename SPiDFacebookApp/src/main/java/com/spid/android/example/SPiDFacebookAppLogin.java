@@ -44,7 +44,8 @@ public class SPiDFacebookAppLogin extends Activity {
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
                 .signSecret("your-secret-sign-key")
-                .context(this)
+                .debugMode(true)
+                .context(getApplicationContext())
                 .build();
 
         config.setDebugMode(true);

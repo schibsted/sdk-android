@@ -37,7 +37,7 @@ public class SPiDExampleAppLogin extends Activity {
                 .clientSecret("your-client-secret")
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
-                .context(this)
+                .debugMode(true)
                 .context(getApplicationContext())
                 .build();
 
