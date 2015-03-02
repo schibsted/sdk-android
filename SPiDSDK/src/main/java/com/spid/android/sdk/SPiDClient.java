@@ -239,11 +239,11 @@ public class SPiDClient {
     }
 
     /**
-     * @return <code>true</code> if there is a access token otherwise <code>false</code>
+     * @return <code>true</code> if there is an access token that has not expired, otherwise <code>false</code>
      */
     public boolean isAuthorized() {
-        // check if it has expired?
-        return token != null;
+        Date currentMoment = new Date();
+        return token != null && currentMoment.before(token.getExpiresAt());
     }
 
     /**
@@ -369,6 +369,14 @@ public class SPiDClient {
      */
     public void addWaitingRequest(SPiDRequest request) {
         waitingRequests.add(request);
+    }
+
+    /**
+     *
+     * @return the number of requests waiting to be executed
+     */
+    public int getWaitingRequestsQueueSize() {
+        return waitingRequests.size();
     }
 
     /**

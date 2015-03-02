@@ -1,132 +1,119 @@
-package com.spid.android.sdk;
+package test.com.spid.android.sdk;
 
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.exceptions.SPiDAccessTokenException;
-import org.robolectric.Robolectric;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.junit.Test;
 
-import java.util.Calendar;
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertTrue;
-
-@RunWith(RobolectricGradleTestRunner.class)
 public class SPiDAccessTokenTest {
 
-    private static String TestAccessToken = "test-access-token";
-    private static Long TestExpiresIn = Long.valueOf(60);
-    private static String TestRefreshTokenString = "test-refresh-token";
-    private static String TestUserIdString = "test-user-id";
+    private final String testAccessToken = "test-access-token";
+    private final Long testExpiresIn = Long.valueOf(60);
+    private final String testRefreshTokenString = "test-refresh-token";
+    private final String testUserIdString = "test-user-id";
 
-    private JSONObject jsonObject;
+    private JSONObject jsonAccessToken;
 
     @Before
     public void setUp() throws Exception {
-        jsonObject = new JSONObject()
-                .put(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY, TestAccessToken)
-                .put(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN, TestExpiresIn)
-                .put(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY, TestRefreshTokenString)
-                .put(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, TestUserIdString);
+        jsonAccessToken = mock(JSONObject.class);
+        when(jsonAccessToken.getString(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY)).thenReturn(testAccessToken);
+        when(jsonAccessToken.getInt(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN)).thenReturn(testExpiresIn.intValue());
+        when(jsonAccessToken.optString(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY, null)).thenReturn(testRefreshTokenString);
+        when(jsonAccessToken.optString(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, null)).thenReturn(testUserIdString);
     }
 
-    @org.junit.Test
-    public void testJSONObjectConstructor() throws Exception {
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
+    @Test
+    public void SPiDAccessToken_fromCorrectJSON_createsAccessToken() throws Exception {
+        SPiDAccessToken accessToken = new SPiDAccessToken(jsonAccessToken);
 
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        cal.add(Calendar.SECOND, jsonObject.getInt(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN));
-        Date expiresAt = cal.getTime();
-
-        assertNotNull(accessToken);
-        assertEquals(TestAccessToken, accessToken.getAccessToken());
-        assertEquals(TestRefreshTokenString, accessToken.getRefreshToken());
-        assertEquals(TestUserIdString, accessToken.getUserID());
-        assertTrue(Math.abs(expiresAt.getTime() - accessToken.getExpiresAt().getTime()) < 1000);
+        verifyValidToken(accessToken);
+        assertEquals(testUserIdString, accessToken.getUserID());
+        assertEquals(testRefreshTokenString, accessToken.getRefreshToken());
     }
 
-    @org.junit.Test(expected = SPiDAccessTokenException.class)
-    public void testJSONObjectConstructorWithMissingAccessToken() throws Exception {
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY);
-        new SPiDAccessToken(jsonObject);
+    @Test
+    public void SPiDAccessToken_fromCorrectParams_createsAccessToken() throws Exception {
+        SPiDAccessToken accessToken = new SPiDAccessToken(testAccessToken, testExpiresIn, testRefreshTokenString, testUserIdString);
+
+        verifyValidToken(accessToken);
+        assertEquals(testUserIdString, accessToken.getUserID());
+        assertEquals(testRefreshTokenString, accessToken.getRefreshToken());
     }
 
-    @org.junit.Test(expected = SPiDAccessTokenException.class)
-    public void testJSONObjectConstructorWithMissingExpiresIn() throws Exception {
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN);
-        new SPiDAccessToken(jsonObject);
+    @Test
+    public void SPiDAccessToken_missingOptionalUserIdAndRefreshToken_createsAccessToken() throws Exception {
+        SPiDAccessToken accessToken = new SPiDAccessToken(testAccessToken, testExpiresIn, null, null);
+
+        verifyValidToken(accessToken);
     }
 
-    @org.junit.Test
-    public void testDataConstructor() throws Exception {
-        Long expiresAt = new Date().getTime();
-        SPiDAccessToken accessToken = new SPiDAccessToken(TestAccessToken, expiresAt, TestUserIdString, TestRefreshTokenString);
-        assertNotNull(accessToken);
+    private void verifyValidToken(SPiDAccessToken accessToken) {
+        assertEquals(testAccessToken, accessToken.getAccessToken());
+        assertNotNull(accessToken.getExpiresAt());
     }
 
-    @org.junit.Test(expected = SPiDAccessTokenException.class)
-    public void testDataConstructorWithMissingAccessToken() throws Exception {
-        Long expiresAt = new Date().getTime();
-        new SPiDAccessToken(null, expiresAt, TestUserIdString, TestRefreshTokenString);
+    @Test(expected = SPiDAccessTokenException.class)
+    public void SPiDAccessToken_missingAccessToken_throwsSPiDAccessTokenException() throws Exception {
+        when(jsonAccessToken.getString(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY)).
+                thenThrow(new JSONException(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY + " not present"));
+
+        new SPiDAccessToken(jsonAccessToken);
     }
 
-    @org.junit.Test(expected = SPiDAccessTokenException.class)
-    public void testDataConstructorWithMissingExpiresIn() throws Exception {
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN);
-        new SPiDAccessToken(TestAccessToken, null, TestUserIdString, TestRefreshTokenString);
+    @Test(expected = SPiDAccessTokenException.class)
+    public void SPiDAccessToken_missingExpiresIn_throwsSPiDAccessTokenException() throws Exception {
+        when(jsonAccessToken.getInt(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN)).
+                thenThrow(new JSONException(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY_EXPIRES_IN + " not present"));
+
+        new SPiDAccessToken(jsonAccessToken);
     }
 
-    @org.junit.Test
-    public void testGetAccessToken() throws Exception {
-        String accessTokenString = "test-access-token-string";
-        jsonObject.put(SPiDAccessToken.SPID_ACCESS_TOKEN_KEY, accessTokenString);
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
-        assertEquals(accessTokenString, accessToken.getAccessToken());
+
+    @Test(expected = SPiDAccessTokenException.class)
+    public void SPiDAccessToken_missingAccessTokenParam_throwsSPiDAccessTokenException() throws Exception {
+        new SPiDAccessToken(null, testExpiresIn, testUserIdString, testRefreshTokenString);
     }
 
-    @org.junit.Test
-    public void testGetExpiresAt() throws Exception {
-        Date date = new Date();
-        SPiDAccessToken accessToken = new SPiDAccessToken(TestAccessToken, date.getTime(), TestUserIdString, TestRefreshTokenString);
-        assertEquals(date.getTime(), accessToken.getExpiresAt().getTime());
+    @Test(expected = SPiDAccessTokenException.class)
+    public void SPiDAccessToken_missingExpiresParam_throwsSPiDAccessTokenException() throws Exception {
+        new SPiDAccessToken(testAccessToken, null, testUserIdString, testRefreshTokenString);
     }
 
-    @org.junit.Test
-    public void testGetRefreshToken() throws Exception {
-        String refreshTokenString = "test-refresh-token-string";
-        jsonObject.put(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY, refreshTokenString);
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID);
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
-        assertEquals(refreshTokenString, accessToken.getRefreshToken());
+    @Test
+    public void isClientToken_userIdNull_returnsTrue() throws Exception {
+        when(jsonAccessToken.optString(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, null)).thenReturn(null);
+
+        SPiDAccessToken accessToken = new SPiDAccessToken(jsonAccessToken);
+
+        assertTrue(accessToken.isClientToken());
     }
 
-    @org.junit.Test
-    public void testGetRefreshTokenWithEmptyRefreshToken() throws Exception {
-        jsonObject.remove(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY);
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID);
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
-        assertNull(accessToken.getRefreshToken());
+    @Test
+    public void isClientToken_userIdZero_returnsTrue() throws Exception {
+        when(jsonAccessToken.optString(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, null)).thenReturn("0");
+
+        SPiDAccessToken accessToken = new SPiDAccessToken(jsonAccessToken);
+
+        assertTrue(accessToken.isClientToken());
     }
 
-    @org.junit.Test
-    public void testGetUserID() throws Exception {
-        String userIdString = "test-user-id-string";
-        jsonObject.put(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, userIdString);
-        jsonObject.remove(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY);
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
-        assertEquals(userIdString, accessToken.getUserID());
-    }
+    @Test
+    public void isClientToken_userIdSet_returnsFalse() throws Exception {
+        when(jsonAccessToken.optString(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID, null)).thenReturn(testUserIdString);
 
-    @org.junit.Test
-    public void testGetUserIDWithEmptyUserID() throws Exception {
-        jsonObject.remove(SPiDAccessToken.REFRESH_SPID_ACCESS_TOKEN_KEY);
-        jsonObject.remove(SPiDAccessToken.SPID_ACCESS_TOKEN_USER_ID);
-        SPiDAccessToken accessToken = new SPiDAccessToken(jsonObject);
-        assertNull(accessToken.getUserID());
+        SPiDAccessToken accessToken = new SPiDAccessToken(jsonAccessToken);
+
+        assertFalse(accessToken.isClientToken());
     }
 }
