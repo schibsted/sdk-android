@@ -153,7 +153,7 @@ public class SPiDConfiguration {
     }
 
     /**
-     * @return SPiD authorization url, default value: <code>getServerURL() + "/auth/login";</code>
+     * @return SPiD authorization url, default value: <code>getServerURL() + "/flow/login";</code>
      */
     public String getAuthorizationURL() {
         return authorizationURL;

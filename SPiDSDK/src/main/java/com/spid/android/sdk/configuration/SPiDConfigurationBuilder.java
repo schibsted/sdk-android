@@ -233,7 +233,7 @@ public class SPiDConfigurationBuilder {
         }
 
         if (authorizationURL == null || TextUtils.isEmpty(authorizationURL.trim())) {
-            authorizationURL = serverURL + "/auth/login";
+            authorizationURL = serverURL + "/flow/login";
         }
 
         if (tokenURL == null || TextUtils.isEmpty(tokenURL.trim())) {
@@ -241,7 +241,7 @@ public class SPiDConfigurationBuilder {
         }
 
         if (signupURL == null || TextUtils.isEmpty(signupURL.trim())) {
-            signupURL = serverURL + "/auth/signup";
+            signupURL = serverURL + "/flow/signup";
         }
 
         if (forgotPasswordURL == null || TextUtils.isEmpty(forgotPasswordURL.trim())) {
