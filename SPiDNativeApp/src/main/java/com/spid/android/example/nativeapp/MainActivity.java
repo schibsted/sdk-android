@@ -196,8 +196,6 @@ public class MainActivity extends Activity {
 
         @Override
         public void onClick(View v) {
-            SPiDClient.getInstance().browserLogout();
-            SPiDLogger.log("Successfully logged out from browser");
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
