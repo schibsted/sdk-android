@@ -35,6 +35,6 @@ android {
 
 dependencies {
     compile project(':SPiDSDK')
-    compile project(':facebook')
+    compile 'com.facebook.android:facebook-android-sdk:3.23.0'
 }
 
