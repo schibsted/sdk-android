@@ -31,7 +31,7 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
-    private static final String REDIRECT_URL = "spidmobile://spid/login";
+    private static final String REDIRECT_URL = "your-app-url-scheme://spid/login"; // for example spid-123://spid/login
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
