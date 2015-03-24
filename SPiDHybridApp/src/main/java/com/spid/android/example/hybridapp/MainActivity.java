@@ -31,6 +31,8 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
+    private static final String REDIRECT_URL = "spidmobile://spid/login";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class MainActivity extends Activity {
                 .clientSecret("your-client-secret")
                 .appURLScheme("your-app-url-scheme")
                 .serverURL("your-spidserver-url")
-                .signSecret("your-secret-sign-key")
+                .redirectURL(REDIRECT_URL)
                 .debugMode(true)
                 .context(getApplicationContext())
                 .build();
@@ -112,7 +114,6 @@ public class MainActivity extends Activity {
             public void onComplete(SPiDResponse result) {
                 try {
                     String code = result.getJsonObject().getJSONObject("data").getString("code");
-                    SPiDLogger.log("Received session code: " + code);
 
                     invalidateOptionsMenu();
 
@@ -186,10 +187,8 @@ public class MainActivity extends Activity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             String serverUrl = SPiDClient.getInstance().getConfig().getServerURL();
-            String serverLoginUrl = serverUrl + "/auth/login";
+            String serverLoginUrl = serverUrl + "/flow/login";
             String serverLogoutUrl = serverUrl + "/logout";
-            String serverAccountSummaryUrl = serverUrl + "/account/summary";
-
 
             SPiDLogger.log("Loading: " + url);
             if (url.startsWith(serverLoginUrl)) {
@@ -202,10 +201,11 @@ public class MainActivity extends Activity {
                 SPiDLogger.log("Intercepted SPiD logout page");
                 logout();
                 return true;
-            } else if (url.startsWith(serverAccountSummaryUrl)) {
+            } else if (url.startsWith(REDIRECT_URL)) {
+                // redirect user to where you want
+                view.loadUrl(serverUrl + "/account/summary");
                 WebView webView = (WebView) findViewById(R.id.activity_main_webview);
                 webView.setVisibility(View.VISIBLE);
-
                 ProgressBar progressBar = (ProgressBar) findViewById(R.id.activity_main_progressbar);
                 progressBar.setVisibility(View.GONE);
             }

@@ -24,5 +24,6 @@ public class SPiDUserCredentialTokenRequest extends SPiDTokenRequest {
         this.addBodyParameter("client_secret", config.getClientSecret());
         this.addBodyParameter("username", username);
         this.addBodyParameter("password", password);
+        this.addBodyParameter("redirect_uri", config.getRedirectURL());
     }
 }
