@@ -95,8 +95,6 @@ public class SPiDClient {
      */
     public void browserAuthorization() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getAuthorizationURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
@@ -107,8 +105,7 @@ public class SPiDClient {
      */
     public void browserSignup() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getSignupURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
 
@@ -119,8 +116,7 @@ public class SPiDClient {
     public void browserForgotPassword() {
         SPiDLogger.log("ForgotPasswordURL = " + SPiDUrl.getForgotPasswordURL());
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getForgotPasswordURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
 
