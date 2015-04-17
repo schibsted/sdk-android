@@ -29,4 +29,12 @@
     <string name="cancel">Cancel</string>
     <string name="failedGoogleConnect">Could not connect to Google</string>
     <string name="failedAttachGoogle">Failed to attach Google+ account to SPiD user</string>
+    <string name="non_existing_spid_user">No SPiD user exists for your google account, do you want to create a user or attach your google account to an existing SPiD account?</string>
+    <string name="spid_logo">SPiDLogo</string>
+    <string name="done">Done</string>
+    <string name="new_account">New account</string>
+    <string name="login_to_spid">Login to SPiD</string>
+    <string name="existing_account">Existing account</string>
+    <string name="use_this_service_agreement">By using this service you are agreeing the</string>
+    <string name="terms_of_use">Terms of use</string>
 </resources>

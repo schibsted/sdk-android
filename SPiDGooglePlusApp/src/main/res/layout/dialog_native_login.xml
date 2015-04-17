@@ -15,7 +15,7 @@
         android:adjustViewBounds="true"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:contentDescription="SPiDLogo" />
+        android:contentDescription="@string/spid_logo" />
 
     <EditText
         android:layout_width="fill_parent"
@@ -23,7 +23,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
         android:textColor="#000000"
-        android:hint="Email"
+        android:hint="@string/email"
         android:id="@+id/dialog_login_edittext_username"
         android:inputType="textEmailAddress" />
 
@@ -33,7 +33,7 @@
         android:layout_gravity="center_horizontal"
         android:background="@drawable/edit_text_holo_light"
         android:textColor="#000000"
-        android:hint="Password"
+        android:hint="@string/password"
         android:id="@+id/dialog_login_edittext_password"
         android:inputType="textPassword" />
 
@@ -43,7 +43,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
-        android:text="Login to SPiD"
+        android:text="@string/login_to_spid"
         android:id="@+id/dialog_login_button_login" />
 
     <View
@@ -56,7 +56,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="Back"
+        android:text="@string/back"
         android:id="@+id/dialog_login_back_button"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
 
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="By using this service you are agreeing the"
+        android:text="@string/use_this_service_agreement"
         android:textColor="@android:color/darker_gray" />
 
     <TextView
@@ -73,7 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:id="@+id/dialog_login_textview_termslink"
-        android:text="Terms of use"
+        android:text="@string/terms_of_use"
         android:textColor="@android:color/darker_gray"
         android:textStyle="bold" />
 

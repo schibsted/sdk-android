@@ -14,14 +14,14 @@
         android:gravity="center_horizontal"
         android:width="200dp"
         android:textColor="#000000"
-        android:text="No SPiD user exists for your google account, do you want to create a user or attach your google account to an existing SPiD account?" />
+        android:text="@string/non_existing_spid_user" />
 
     <Button
         android:id="@+id/createNewUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="New account"
+        android:text="@string/new_account"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
 
     <View
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="Existing account"
+        android:text="@string/existing_account"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
 
     <View
@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:width="200dp"
-        android:text="Cancel"
+        android:text="@string/cancel"
         style="@android:style/Widget.Holo.Light.Button.Borderless.Small" />
 
 </LinearLayout>

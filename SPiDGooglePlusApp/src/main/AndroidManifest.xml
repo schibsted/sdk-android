@@ -15,6 +15,7 @@
 
     <application
         android:icon="@drawable/icon"
+        android:allowBackup="false"
         android:label="@string/app_name">
         <activity
             android:name=".googleplusapp.MainActivity"

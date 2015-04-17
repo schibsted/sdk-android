@@ -7,7 +7,7 @@
     <application
         android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:allowBackup="true">
+        android:allowBackup="false">
         <activity
             android:name="com.spid.android.example.SPiDExampleAppLogin"
             android:label="@string/app_name"
