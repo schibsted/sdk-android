@@ -6,7 +6,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.1.0'
     }
 }
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 repositories {
     mavenCentral()
@@ -23,7 +23,7 @@ android {
 }
 
 dependencies {
-    compile 'com.google.android.gms:play-services:4.2.42'
+    compile 'com.google.android.gms:play-services:6.5.87'
     compile project(':SPiDSDK')
 }
 
