@@ -1,8 +1,7 @@
-package com.spid.android.sdk.reponse;
+package com.spid.android.sdk.response;
 
 import android.text.TextUtils;
 
-import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
 
@@ -36,10 +35,10 @@ public class SPiDResponse {
      * @param exception exception
      */
     public SPiDResponse(Exception exception) {
-        this.code = SPiDException.UNKNOWN_CODE;
-        this.body = "";
-        this.headers = new HashMap<String, String>();
-        this.exception = exception;
+        code = SPiDException.UNKNOWN_CODE;
+        body = "";
+        headers = new HashMap<String, String>();
+        exception = exception;
     }
 
     /**
@@ -48,13 +47,13 @@ public class SPiDResponse {
      * @param httpResponse The response from SPiD
      */
     public SPiDResponse(HttpResponse httpResponse) {
-        this.code = httpResponse.getStatusLine().getStatusCode();
-        this.headers = new HashMap<String, String>();
-        this.exception = null;
+        code = httpResponse.getStatusLine().getStatusCode();
+        headers = new HashMap<String, String>();
+        exception = null;
         BufferedReader reader = null;
 
         for (Header header : httpResponse.getAllHeaders()) {
-            this.headers.put(header.getName(), header.getValue());
+            headers.put(header.getName(), header.getValue());
         }
 
         try {
@@ -66,29 +65,28 @@ public class SPiDResponse {
                 line = reader.readLine();
             }
             body = builder.toString();
-        } catch (IOException exception) {
-            this.exception = exception;
+        } catch (IOException ioe) {
+            exception = ioe;
         } finally {
             closeQuietly(reader);
         }
 
         if (!TextUtils.isEmpty(body)) {
-            SPiDLogger.log("Received response: " + this.body);
             try {
                 this.jsonObject = new JSONObject(this.body);
-                if (this.jsonObject.has("error") && !("null".equals(this.jsonObject.getString("error")))) {
-                    this.exception = SPiDException.create(this.jsonObject);
+                if (jsonObject.has("error") && !("null".equals(jsonObject.getString("error")))) {
+                    exception = SPiDException.create(jsonObject);
                 }
             } catch (JSONException e) {
-                this.jsonObject = new JSONObject();
-                this.exception = new SPiDInvalidResponseException("Invalid response from SPiD: " + body);
+                jsonObject = new JSONObject();
+                exception = new SPiDInvalidResponseException("Invalid response from SPiD: " + body);
             }
         } else {
-            this.jsonObject = new JSONObject();
+            jsonObject = new JSONObject();
         }
 
         if (!isSuccessful()) {
-            this.exception = SPiDException.create(this.jsonObject);
+            exception = SPiDException.create(jsonObject);
         }
     }
 

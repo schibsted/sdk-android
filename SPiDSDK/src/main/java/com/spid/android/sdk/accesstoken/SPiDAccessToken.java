@@ -66,6 +66,14 @@ public class SPiDAccessToken {
     }
 
     /**
+     * @return <code>true</code> if the access token that has not expired
+     */
+    public boolean isAuthorized() {
+        Date currentMoment = new Date();
+        return currentMoment.before(getExpiresAt());
+    }
+
+    /**
      * @return Access token used to make requests to SPiD
      */
     public String getAccessToken() {

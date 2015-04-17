@@ -8,17 +8,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.Session;
 import com.spid.android.sdk.SPiDClient;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidAccessTokenException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
-import org.json.JSONException;
+import com.spid.android.sdk.response.SPiDResponse;
 
-import java.io.IOException;
+import org.json.JSONException;
 
 /**
  * Contains the main window activity
@@ -54,7 +53,7 @@ public class SPiDFacebookAppMain extends Activity {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
+            public void onError(Exception exception) {
                 if (exception instanceof SPiDInvalidAccessTokenException) {
                     SPiDLogger.log("Token expired or invalid: " + exception.getMessage());
                     Intent intent = new Intent(SPiDClient.getInstance().getConfig().getContext(), SPiDFacebookAppLogin.class);
@@ -66,18 +65,6 @@ public class SPiDFacebookAppMain extends Activity {
                     SPiDLogger.log("Error getting username: " + exception.getMessage());
                     Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
                 }
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                SPiDLogger.log("Error getting username: " + exception.getMessage());
-                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                SPiDLogger.log("Error getting username: " + exception.getMessage());
-                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -104,25 +91,11 @@ public class SPiDFacebookAppMain extends Activity {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    onError(exception);
+                public void onError(Exception exception) {
+                    SPiDLogger.log("Error logging out: " + exception.getMessage());
+                    Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
                 }
             });
-        }
-
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error logging out: " + exception.getMessage());
-            Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
         }
     }
 }

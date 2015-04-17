@@ -10,15 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spid.android.sdk.SPiDClient;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONException;
-
-import java.io.IOException;
 
 /**
  * Contains the main window activity
@@ -41,7 +38,7 @@ public class SPiDExampleAppMain extends Activity {
         logoutButton.setOnClickListener(new LogoutButtonListener(this));
 
         TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
-        String expiresAt = SPiDClient.getInstance().getTokenExpiresAt() != null ? SPiDClient.getInstance().getTokenExpiresAt().toString() : "";
+        String expiresAt = SPiDClient.getInstance().getAccessToken().getExpiresAt() != null ? SPiDClient.getInstance().getAccessToken().getExpiresAt().toString() : "";
         tokenExpiresTextView.setText("Token expires at: " + expiresAt);
 
         getUserName(this);
@@ -63,19 +60,7 @@ public class SPiDExampleAppMain extends Activity {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                SPiDLogger.log("Error getting username: " + exception.getMessage());
-                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                SPiDLogger.log("Error getting username: " + exception.getMessage());
-                Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onException(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Error getting username: " + exception.getMessage());
                 Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
             }
@@ -94,22 +79,12 @@ public class SPiDExampleAppMain extends Activity {
                 @Override
                 public void onComplete() {
                     TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
-                    String expiresAt = SPiDClient.getInstance().getTokenExpiresAt().toString();
+                    String expiresAt = SPiDClient.getInstance().getAccessToken().getExpiresAt().toString();
                     tokenExpiresTextView.setText("Token expires at: " + expiresAt);
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
+                public void onError(Exception exception) {
                     onError(exception);
                 }
             });
@@ -144,17 +119,7 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
+                public void onError(Exception exception) {
                     onError(exception);
                 }
             });
@@ -194,25 +159,11 @@ public class SPiDExampleAppMain extends Activity {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    onError(exception);
+                public void onError(Exception exception) {
+                    SPiDLogger.log("Error while trying to log out: " + exception.getMessage());
+                    Toast.makeText(context, "Error while trying to log out:", Toast.LENGTH_LONG).show();
                 }
             });
-        }
-
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error logging out: " + exception.getMessage());
-            Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
         }
     }
 }

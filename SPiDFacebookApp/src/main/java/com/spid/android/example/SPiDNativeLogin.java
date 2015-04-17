@@ -10,14 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.Session;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDUserCredentialTokenRequest;
 import com.spid.android.sdk.user.SPiDUser;
-
-import java.io.IOException;
 
 /**
  * Contains the login activity
@@ -70,7 +68,6 @@ public class SPiDNativeLogin extends Activity {
 
         @Override
         public void onComplete() {
-            SPiDLogger.log("Successful login");
             Session session = Session.getActiveSession();
             SPiDUser.attachFacebookAccount(session.getApplicationId(), session.getAccessToken(), session.getExpirationDate(), new SPiDAuthorizationListener() {
                 @Override
@@ -84,52 +81,20 @@ public class SPiDNativeLogin extends Activity {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
+                public void onError(Exception exception) {
                     dismissLoadingDialog();
-                    SPiDLogger.log("Error while preforming login: " + exception.getError());
-                    Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-                    setupLoginContentView();
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    dismissLoadingDialog();
-                    SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-                    Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-                    setupLoginContentView();
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    dismissLoadingDialog();
-                    SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-                    Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+                    SPiDLogger.log("Error while performing login: " + exception.getMessage());
+                    Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
                     setupLoginContentView();
                 }
             });
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
+        public void onError(Exception exception) {
             dismissLoadingDialog();
-            SPiDLogger.log("Error while preforming login: " + exception.getError());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-            setupLoginContentView();
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            dismissLoadingDialog();
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
-            setupLoginContentView();
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            dismissLoadingDialog();
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(context, "Error while preforming login", Toast.LENGTH_LONG).show();
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
+            Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
             setupLoginContentView();
         }
     }
@@ -149,7 +114,6 @@ public class SPiDNativeLogin extends Activity {
             EditText passwordEditText = (EditText) findViewById(R.id.password_edit_text);
             String password = passwordEditText.getText().toString();
 
-            SPiDLogger.log("Email: " + email + " password: " + password);
             SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new LoginListener(context));
             tokenRequest.execute();
         }

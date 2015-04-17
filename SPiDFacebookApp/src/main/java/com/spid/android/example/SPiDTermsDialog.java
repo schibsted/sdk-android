@@ -7,16 +7,13 @@ import android.view.Window;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDApiGetRequest;
 import com.spid.android.sdk.request.SPiDRequest;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONException;
-
-import java.io.IOException;
 
 /**
  * Contains method for showing a SPiD Terms of use dialog
@@ -64,19 +61,7 @@ public class SPiDTermsDialog {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                SPiDLogger.log("Error loading terms of use: " + exception.getMessage());
-                Toast.makeText(activity, "Error loading terms of use", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                SPiDLogger.log("Error loading terms of use: " + exception.getMessage());
-                Toast.makeText(activity, "Error loading terms of use", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onException(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Error loading terms of use: " + exception.getMessage());
                 Toast.makeText(activity, "Error loading terms of use", Toast.LENGTH_LONG).show();
             }

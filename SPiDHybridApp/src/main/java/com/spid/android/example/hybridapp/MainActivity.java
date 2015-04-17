@@ -15,15 +15,12 @@ import android.widget.Toast;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONException;
-
-import java.io.IOException;
 
 /**
  * Contains the activity_main window activity
@@ -31,28 +28,26 @@ import java.io.IOException;
 
 public class MainActivity extends Activity {
 
-    private static final String REDIRECT_URL = "your-app-url-scheme://spid/login"; // for example spid-123://spid/login
+    // this redirect must be a registered redirect url in your client configuration
+    private static final String REDIRECT_URL = "spidmobile://spid/login"; // for example spid-123://spid/login
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
-                .redirectURL(REDIRECT_URL)
+
+        SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
+                null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
+                "your-client-id", "your-client-secret", "your-app-url-scheme")
                 .debugMode(true)
-                .context(getApplicationContext())
+                .redirectURL(REDIRECT_URL)
                 .build();
 
-        config.setDebugMode(true);
         SPiDClient.getInstance().configure(config);
 
         setupContentView();
 
-        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().isClientToken()) {
+        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().getAccessToken().isClientToken()) {
             loginWebView();
         }
     }
@@ -66,7 +61,7 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().isClientToken()) {
+        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().getAccessToken().isClientToken()) {
             MenuItem loginItem = menu.findItem(R.id.menu_item_login);
             loginItem.setVisible(false);
 
@@ -126,21 +121,7 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                onError(exception);
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                onError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                onError(exception);
-            }
-
-            private void onError(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Error logging in to webview: " + exception.getMessage());
                 Toast.makeText(getApplicationContext(), "Error logging in to webview", Toast.LENGTH_LONG);
                 logout();
@@ -151,34 +132,21 @@ public class MainActivity extends Activity {
 
     private void logout() {
         SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
+
             @Override
             public void onComplete() {
                 SPiDLogger.log("Successful logout");
-                logout();
-            }
-
-            @Override
-            public void onSPiDException(SPiDException exception) {
-                SPiDLogger.log("Error logging out: " + exception.getMessage());
-                logout();
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                SPiDLogger.log("Error logging out: " + exception.getMessage());
-                logout();
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                SPiDLogger.log("Error logging out: " + exception.getMessage());
-                logout();
-            }
-
-            private void logout() {
                 setupContentView();
                 invalidateOptionsMenu();
             }
+
+            @Override
+            public void onError(Exception exception) {
+                SPiDLogger.log("Error logging out: " + exception.getMessage());
+                setupContentView();
+                invalidateOptionsMenu();
+            }
+
         });
     }
 

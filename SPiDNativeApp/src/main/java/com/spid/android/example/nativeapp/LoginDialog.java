@@ -16,12 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spid.android.sdk.SPiDClient;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDUserCredentialTokenRequest;
-
-import java.io.IOException;
 
 public class LoginDialog extends DialogFragment {
 
@@ -112,14 +109,6 @@ public class LoginDialog extends DialogFragment {
 
     private class LoginListener implements SPiDAuthorizationListener {
 
-        private void onError(Exception exception) {
-            Button loginButton = (Button) getView().findViewById(R.id.dialog_login_button_login);
-            loginButton.setEnabled(true);
-
-            SPiDLogger.log("Error while preforming login: " + exception.getMessage());
-            Toast.makeText(getActivity(), "Error while preforming login", Toast.LENGTH_LONG).show();
-        }
-
         @Override
         public void onComplete() {
             MainActivity parent = (MainActivity) getActivity();
@@ -128,18 +117,12 @@ public class LoginDialog extends DialogFragment {
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
-            onError(exception);
-        }
+        public void onError(Exception exception) {
+            Button loginButton = (Button) getView().findViewById(R.id.dialog_login_button_login);
+            loginButton.setEnabled(true);
 
-        @Override
-        public void onIOException(IOException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            onError(exception);
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
+            Toast.makeText(getActivity(), "Error while performing login", Toast.LENGTH_LONG).show();
         }
     }
 }

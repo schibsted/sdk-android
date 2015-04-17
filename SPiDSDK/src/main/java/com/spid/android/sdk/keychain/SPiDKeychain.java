@@ -6,7 +6,6 @@ import android.util.Base64;
 
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.exceptions.SPiDKeychainException;
-import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.utils.SPiDUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -22,6 +21,7 @@ import javax.crypto.spec.PBEParameterSpec;
  * Helper class used to securely encrypt/decrypt access token to SharedPreferences
  */
 public class SPiDKeychain {
+
     protected static final String UTF8 = "utf-8";
 
     /**
@@ -31,7 +31,6 @@ public class SPiDKeychain {
      * @param accessToken   Access token to be saved
      */
     public static void encryptAccessTokenToSharedPreferences(String encryptionKey, SPiDAccessToken accessToken) {
-        SPiDLogger.log("Saving: " + accessToken.getAccessToken() + ", " + Long.toString(accessToken.getExpiresAt().getTime()) + ", " + accessToken.getRefreshToken() + ", " + accessToken.getUserID());
         SharedPreferences secure = SPiDUtils.getSecurePreferencesFile();
         SharedPreferences.Editor editor = secure.edit();
         try {
@@ -43,7 +42,7 @@ public class SPiDKeychain {
             clearAccessTokenFromSharedPreferences();
             throw new SPiDKeychainException("GeneralSecurityException", e);
         }
-        editor.commit();
+        editor.apply();
     }
 
     /**

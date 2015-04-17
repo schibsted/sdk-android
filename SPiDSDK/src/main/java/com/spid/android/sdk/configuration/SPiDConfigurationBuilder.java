@@ -14,11 +14,15 @@ import com.spid.android.sdk.logger.SPiDLogger;
  * Builder class for SPiDConfiguration
  */
 public class SPiDConfigurationBuilder {
+
+    private Context context;
+    private SPiDEnvironment spidEnvironment;
+    private Boolean debugMode = Boolean.FALSE;
+
     private String clientID;
     private String clientSecret;
     private String signSecret;
     private String appURLScheme;
-    private String serverURL;
     private String redirectURL;
     private String authorizationURL;
     private String signupURL;
@@ -26,27 +30,14 @@ public class SPiDConfigurationBuilder {
     private String tokenURL;
     private String serverClientID;
     private String serverRedirectUri;
-    private Boolean useMobileWeb = Boolean.TRUE;
     private String apiVersion = "2";
-    private Boolean debugMode = Boolean.FALSE;
-    private Context context;
 
-    /**
-     * @param clientID SPiD client id
-     * @return The SPiDConfigurationBuilder
-     */
-    public SPiDConfigurationBuilder clientID(String clientID) {
+    public SPiDConfigurationBuilder(Context context, SPiDEnvironment spidEnvironment, String clientID, String clientSecret, String appURLScheme) {
+        this.context = context;
+        this.spidEnvironment = spidEnvironment;
         this.clientID = clientID;
-        return this;
-    }
-
-    /**
-     * @param clientSecret SPiD client secret
-     * @return The SPiDConfigurationBuilder
-     */
-    public SPiDConfigurationBuilder clientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
-        return this;
+        this.appURLScheme = appURLScheme;
     }
 
     /**
@@ -64,15 +55,6 @@ public class SPiDConfigurationBuilder {
      */
     public SPiDConfigurationBuilder appURLScheme(String appURLScheme) {
         this.appURLScheme = appURLScheme;
-        return this;
-    }
-
-    /**
-     * @param serverURL SPiD server url
-     * @return The SPiDConfigurationBuilder
-     */
-    public SPiDConfigurationBuilder serverURL(String serverURL) {
-        this.serverURL = serverURL;
         return this;
     }
 
@@ -149,20 +131,11 @@ public class SPiDConfigurationBuilder {
     }
 
     /**
-     * @param debugMode Use debug mode
+     * @param debugMode Use debug mode, default is <code>false</code>
      * @return The SPiDConfigurationBuilder
      */
     public SPiDConfigurationBuilder debugMode(Boolean debugMode) {
         this.debugMode = debugMode;
-        return this;
-    }
-
-    /**
-     * @param context Android application context
-     * @return The SPiDConfigurationBuilder
-     */
-    public SPiDConfigurationBuilder context(Context context) {
-        this.context = context;
         return this;
     }
 
@@ -225,7 +198,9 @@ public class SPiDConfigurationBuilder {
         isEmptyString(clientID, "ClientID is missing");
         isEmptyString(clientSecret, "ClientSecret is missing");
         isEmptyString(appURLScheme, "AppURLScheme is missing");
-        isEmptyString(serverURL, "ServerURL is missing");
+        if (spidEnvironment == null) {
+            throw new IllegalStateException("SPiDEnvironment not set");
+        }
         isNull(context, "Context is missing");
 
         if (redirectURL == null || TextUtils.isEmpty(redirectURL.trim())) {
@@ -233,19 +208,19 @@ public class SPiDConfigurationBuilder {
         }
 
         if (authorizationURL == null || TextUtils.isEmpty(authorizationURL.trim())) {
-            authorizationURL = serverURL + "/flow/login";
+            authorizationURL = spidEnvironment.toString() + "/flow/login";
         }
 
         if (tokenURL == null || TextUtils.isEmpty(tokenURL.trim())) {
-            tokenURL = serverURL + "/oauth/token";
+            tokenURL = spidEnvironment.toString() + "/oauth/token";
         }
 
         if (signupURL == null || TextUtils.isEmpty(signupURL.trim())) {
-            signupURL = serverURL + "/flow/signup";
+            signupURL = spidEnvironment.toString() + "/flow/signup";
         }
 
         if (forgotPasswordURL == null || TextUtils.isEmpty(forgotPasswordURL.trim())) {
-            forgotPasswordURL = serverURL + "/auth/forgotpassword";
+            forgotPasswordURL = spidEnvironment.toString() + "/auth/forgotpassword";
         }
 
         if (serverClientID == null || TextUtils.isEmpty(serverClientID.trim())) {
@@ -263,7 +238,7 @@ public class SPiDConfigurationBuilder {
                 clientSecret,
                 signSecret,
                 appURLScheme,
-                serverURL,
+                spidEnvironment,
                 redirectURL,
                 authorizationURL,
                 signupURL,
@@ -271,7 +246,6 @@ public class SPiDConfigurationBuilder {
                 tokenURL,
                 serverClientID,
                 serverRedirectUri,
-                useMobileWeb,
                 apiVersion,
                 debugMode,
                 userAgent,

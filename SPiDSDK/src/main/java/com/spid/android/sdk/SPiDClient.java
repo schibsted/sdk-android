@@ -7,22 +7,20 @@ import android.text.TextUtils;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDApiGetRequest;
 import com.spid.android.sdk.request.SPiDApiPostRequest;
 import com.spid.android.sdk.request.SPiDCodeTokenRequest;
 import com.spid.android.sdk.request.SPiDRefreshTokenRequest;
 import com.spid.android.sdk.request.SPiDRequest;
 import com.spid.android.sdk.request.SPiDTokenRequest;
+import com.spid.android.sdk.response.SPiDResponse;
 import com.spid.android.sdk.utils.SPiDUrl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,8 +93,6 @@ public class SPiDClient {
      */
     public void browserAuthorization() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getAuthorizationURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
@@ -107,8 +103,7 @@ public class SPiDClient {
      */
     public void browserSignup() {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getSignupURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
 
@@ -117,10 +112,8 @@ public class SPiDClient {
      *
      */
     public void browserForgotPassword() {
-        SPiDLogger.log("ForgotPasswordURL = " + SPiDUrl.getForgotPasswordURL());
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getForgotPasswordURL()));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getConfig().getContext().startActivity(intent);
     }
 
@@ -156,7 +149,7 @@ public class SPiDClient {
                     return true;
                 } else {
                     if (listener != null) {
-                        listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                        listener.onError(new SPiDInvalidResponseException("Received invalid code"));
                     } else {
                         SPiDLogger.log("Received invalid code");
                     }
@@ -179,7 +172,7 @@ public class SPiDClient {
             request.execute();
         } else {
             if (listener != null)
-                listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+                listener.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
         }
     }
 
@@ -191,8 +184,7 @@ public class SPiDClient {
         if (token != null) {
             if (authorizationListener == null) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(SPiDUrl.getLogoutURL(token)));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 SPiDClient.getInstance().clearAuthorizationRequest();
                 SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
                 getConfig().getContext().startActivity(intent);
@@ -219,7 +211,7 @@ public class SPiDClient {
                 request.execute();
             } else {
                 if (listener != null)
-                    listener.onSPiDException(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
+                    listener.onError(new SPiDAuthorizationAlreadyRunningException("Authorization already running"));
             }
         } else {
             if (listener != null)
@@ -228,29 +220,11 @@ public class SPiDClient {
     }
 
     /**
-     * @return Access token expiry date of <code>null</code> if there is no access token
-     */
-    public Date getTokenExpiresAt() {
-        if (token != null) {
-            SPiDLogger.log("Token expires: " + token.getExpiresAt());
-            return token.getExpiresAt();
-        }
-        return null;
-    }
-
-    /**
      * @return <code>true</code> if there is an access token that has not expired, otherwise <code>false</code>
      */
     public boolean isAuthorized() {
         Date currentMoment = new Date();
         return token != null && currentMoment.before(token.getExpiresAt());
-    }
-
-    /**
-     * @return <code>true</code> if the access token is a client token <code>false</code>
-     */
-    public boolean isClientToken() {
-        return token != null && token.isClientToken();
     }
 
     /**
@@ -386,8 +360,8 @@ public class SPiDClient {
         authorizationListener = null;
     }
 
-    public boolean getDebug() {
-        return config.getDebugMode();
+    public boolean isDebug() {
+        return config.isDebugMode();
     }
 
     /**
@@ -414,24 +388,10 @@ public class SPiDClient {
                 listener.onComplete();
         }
 
-        @Override
-        public void onSPiDException(SPiDException exception) {
+        public void onError(Exception exception) {
             SPiDClient.getInstance().clearAuthorizationRequest();
             if (listener != null)
-                listener.onSPiDException(exception);
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            SPiDClient.getInstance().clearAuthorizationRequest();
-            if (listener != null)
-                listener.onIOException(exception);
-        }
-
-        public void onException(Exception exception) {
-            SPiDClient.getInstance().clearAuthorizationRequest();
-            if (listener != null)
-                listener.onException(exception);
+                listener.onError(exception);
         }
     }
 }

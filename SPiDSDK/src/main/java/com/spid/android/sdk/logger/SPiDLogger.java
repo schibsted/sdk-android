@@ -25,7 +25,7 @@ public class SPiDLogger {
      * @param exception The exception to log
      */
     public static void log(String message, Exception exception) {
-        Boolean debug = SPiDClient.getInstance().getDebug();
+        Boolean debug = SPiDClient.getInstance().isDebug();
         if (debug) {
             int calleeStackIndex = exception == null ? 4 : 3;
             String fullClassName = Thread.currentThread().getStackTrace()[calleeStackIndex].getClassName();

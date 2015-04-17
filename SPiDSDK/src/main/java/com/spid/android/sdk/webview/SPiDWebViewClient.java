@@ -37,7 +37,7 @@ public class SPiDWebViewClient extends WebViewClient {
     public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
         super.onReceivedError(view, errorCode, description, failingUrl);
         if (listener != null)
-            listener.onSPiDException(new SPiDInvalidResponseException("Received invalid response with code: " + errorCode + " and description" + description));
+            listener.onError(new SPiDInvalidResponseException("Received invalid response with code: " + errorCode + " and description" + description));
     }
 
     /**
@@ -63,7 +63,7 @@ public class SPiDWebViewClient extends WebViewClient {
                     request.execute();
                 } else {
                     if (listener != null) {
-                        listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                        listener.onError(new SPiDInvalidResponseException("Received invalid code"));
                     } else {
                         SPiDLogger.log("Received invalid code");
                     }
@@ -72,7 +72,7 @@ public class SPiDWebViewClient extends WebViewClient {
                 return true;
             } else if (uri.getPath().endsWith("failure")) {
                 if (listener != null) {
-                    listener.onSPiDException(new SPiDInvalidResponseException("Received invalid code"));
+                    listener.onError(new SPiDInvalidResponseException("Received invalid code"));
                 } else {
                     SPiDLogger.log("Received invalid code");
                 }

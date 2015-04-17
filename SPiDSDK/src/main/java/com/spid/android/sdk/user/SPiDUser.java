@@ -2,18 +2,20 @@ package com.spid.android.sdk.user;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
+import com.spid.android.sdk.configuration.TokenType;
 import com.spid.android.sdk.exceptions.SPiDException;
+import com.spid.android.sdk.jwt.Audience;
 import com.spid.android.sdk.jwt.SPiDJwt;
+import com.spid.android.sdk.jwt.SubjectClaim;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDApiPostRequest;
 import com.spid.android.sdk.request.SPiDClientTokenRequest;
 import com.spid.android.sdk.request.SPiDRequest;
+import com.spid.android.sdk.response.SPiDResponse;
 import com.spid.android.sdk.utils.SPiDUrl;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,8 +35,8 @@ public final class SPiDUser {
      */
     public static void signupWithCredentials(final String email, final String password, final SPiDAuthorizationListener authorizationListener) {
         if(!hasClientToken()) {
-            SPiDLogger.log("Requesting client token!");
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
+
                 @Override
                 public void onComplete() {
                     SPiDRequest signupRequest = createSignupRequest(email, password, authorizationListener);
@@ -42,18 +44,8 @@ public final class SPiDUser {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    authorizationListener.onSPiDException(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    authorizationListener.onIOException(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    authorizationListener.onException(exception);
+                public void onError(Exception exception) {
+                    authorizationListener.onError(exception);
                 }
             });
             clientTokenRequest.execute();
@@ -77,30 +69,20 @@ public final class SPiDUser {
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
-                    SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "facebook", facebookToken);
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
                     SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
                     signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
                     signupRequest.executeAuthorizedRequest();
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    authorizationListener.onSPiDException(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    authorizationListener.onIOException(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    authorizationListener.onException(exception);
+                public void onError(Exception exception) {
+                    authorizationListener.onError(exception);
                 }
             });
             clientTokenRequest.execute();
         } else {
-            SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "facebook", facebookToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
@@ -120,34 +102,24 @@ public final class SPiDUser {
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
         final Date expirationDate = getOneHourInTheFuture();
         if (token == null || !token.isClientToken()) {
-            SPiDLogger.log("Requesting client token!");
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
+
                 @Override
                 public void onComplete() {
-                    SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
                     SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
                     signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
                     signupRequest.executeAuthorizedRequest();
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    authorizationListener.onSPiDException(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    authorizationListener.onIOException(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    authorizationListener.onException(exception);
+                public void onError(Exception exception) {
+                    authorizationListener.onError(exception);
                 }
             });
             clientTokenRequest.execute();
         } else {
-            SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
@@ -167,12 +139,12 @@ public final class SPiDUser {
         Date expirationDate = getOneHourInTheFuture();
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
         if (token != null && !token.isClientToken()) { // Check for user token
-            SPiDJwt jwt = new SPiDJwt(appId, "registration", "http://spp.dev/api/2/signup_jwt", expirationDate, "googleplus", googlePlusToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/user/attach_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
         } else {
-            authorizationListener.onSPiDException(new SPiDException("Needs user token!"));
+            authorizationListener.onError(new SPiDException("User token needed to attach Google plus account"));
         }
     }
 
@@ -196,13 +168,13 @@ public final class SPiDUser {
      */
     public static void attachFacebookAccount(final String appId, final String facebookToken, final Date expirationDate, final SPiDAuthorizationListener authorizationListener) {
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
-        if (token != null && !token.isClientToken()) { // Check for user token
-            SPiDJwt jwt = new SPiDJwt(appId, "attach", "http://spp.dev/api/2/user/attach_jwt", expirationDate, "facebook", facebookToken);
+        if (token != null && !token.isClientToken()) { // Check for user  token
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.ATTACH, Audience.ATTACH.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/user/attach_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
         } else {
-            authorizationListener.onSPiDException(new SPiDException("Needs user token!"));
+            authorizationListener.onError(new SPiDException("User token needed to attach Facebook account"));
         }
     }
 
@@ -235,27 +207,17 @@ public final class SPiDUser {
         final SPiDAuthorizationListener listener;
 
         private AuthorizationRequestListener(SPiDAuthorizationListener authorizationListener) {
-            this.listener = authorizationListener;
+            listener = authorizationListener;
         }
 
         @Override
         public void onComplete(SPiDResponse result) {
-            this.listener.onComplete();
+            listener.onComplete();
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
-            this.listener.onSPiDException(exception);
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            this.listener.onIOException(exception);
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            this.listener.onException(exception);
+        public void onError(Exception exception) {
+            listener.onError(exception);
         }
     }
 }

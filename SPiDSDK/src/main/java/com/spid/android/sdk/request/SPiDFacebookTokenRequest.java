@@ -2,8 +2,10 @@ package com.spid.android.sdk.request;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
+import com.spid.android.sdk.configuration.TokenType;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.jwt.SPiDJwt;
+import com.spid.android.sdk.jwt.SubjectClaim;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 
 import java.util.Date;
@@ -25,7 +27,7 @@ public class SPiDFacebookTokenRequest extends SPiDTokenRequest {
         super(authorizationListener);
 
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDJwt jwt = new SPiDJwt(appId, "authorization", config.getTokenURL(), expiration, "facebook", facebookToken);
+        SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.AUTHORIZATION, config.getTokenURL(), expiration, TokenType.FACEBOOK, facebookToken);
         this.addBodyParameter("client_id", config.getClientID());
         this.addBodyParameter("client_secret", config.getClientSecret());
         this.addBodyParameter("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer");

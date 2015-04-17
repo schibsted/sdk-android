@@ -29,13 +29,12 @@ import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
 import com.spid.android.sdk.exceptions.SPiDException;
-import com.spid.android.sdk.exceptions.SPiDInvalidAccessTokenException;
 import com.spid.android.sdk.exceptions.SPiDUnknownUserException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDGooglePlusTokenRequest;
+import com.spid.android.sdk.response.SPiDResponse;
 import com.spid.android.sdk.user.SPiDUser;
 
 import org.json.JSONException;
@@ -66,16 +65,12 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         super.onCreate(savedInstanceState);
         setupMainContentView();
 
-        // Setup SPiD
         if (SPiDClient.getInstance().getConfig() == null) {
-            SPiDConfiguration config = new SPiDConfigurationBuilder()
-                    .clientID("your-client-id")
-                    .clientSecret("your-client-secret")
-                    .appURLScheme("your-app-url-scheme")
-                    .serverURL("your-spidserver-url")
+            SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
+                    null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
+                    "your-client-id", "your-client-secret", "your-app-url-scheme")
                     .signSecret("your-secret-sign-key")
                     .debugMode(true)
-                    .context(getApplicationContext())
                     .build();
             SPiDClient.getInstance().configure(config);
         }
@@ -197,58 +192,49 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     private void trySPiDLoginWithGooglePlusToken(final String token, final boolean isRetryAttempted) {
-        final SPiDGooglePlusTokenRequest tokenRequest = new SPiDGooglePlusTokenRequest(getPackageName(), token, new SPiDAuthorizationListener() {
-            @Override
-            public void onComplete() {
-                SPiDLogger.log("SPiD log in successful, access token received: " + SPiDClient.getInstance().getAccessToken().getAccessToken());
-                displayLoginScreen(false);
-            }
+        try {
+            final SPiDGooglePlusTokenRequest tokenRequest = new SPiDGooglePlusTokenRequest(getPackageName(), token, new SPiDAuthorizationListener() {
 
-            @Override
-            public void onSPiDException(SPiDException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                handleError(exception);
-            }
-
-
-            private void handleError(Exception exception) {
-                // Handle user does not exist
-                if (exception instanceof SPiDUnknownUserException) {
-                    SPiDLogger.log("SPiDUnknownUserException while trying to log in", exception);
-
-                    // either the user didn't exist or the permission was revoked and we're using an old token,
-                    // invalidate token and try one once more before showing no account dialog. This is mostly for
-                    // debugging reasons when revoking permission and using an old token. Should not be used in production code
-                    SPiDUnknownUserException spidUnknownUserException = (SPiDUnknownUserException) exception;
-                    if (spidUnknownUserException.getErrorType().equals(OAUTH_EXCEPTION) && !isRetryAttempted) {
-                        SPiDLogger.log("Permission possibly revoked, invalidating token and trying again");
-                        GoogleAuthUtil.invalidateToken(MainActivity.this, token);
-                        getGooglePlusToken(new GoogleTokenListener() {
-                            @Override
-                            public void onComplete(String token) {
-                                trySPiDLoginWithGooglePlusToken(token, true);
-                            }
-                        });
-                    } else {
-                        showNoAccountDialog();
-                    }
-
-                } else {
-                    SPiDLogger.log("Unexpected exception when logging in: " + exception.getMessage(), exception);
-                    Toast.makeText(MainActivity.this, getString(R.string.loginError), Toast.LENGTH_LONG).show();
+                @Override
+                public void onComplete() {
+                    SPiDLogger.log("SPiD log in successful, access token received: " + SPiDClient.getInstance().getAccessToken().getAccessToken());
+                    displayLoginScreen(false);
                 }
-            }
-        });
-        tokenRequest.execute();
+
+                @Override
+                public void onError(Exception exception) {
+                    // Handle user does not exist
+                    if (exception instanceof SPiDUnknownUserException) {
+                        SPiDLogger.log("SPiDUnknownUserException while trying to log in", exception);
+
+                        // either the user didn't exist or the permission was revoked and we're using an old token,
+                        // invalidate token and try one once more before showing no account dialog. This is mostly for
+                        // debugging reasons when revoking permission and using an old token. Should not be used in production code
+                        SPiDUnknownUserException spidUnknownUserException = (SPiDUnknownUserException) exception;
+                        if (spidUnknownUserException.getErrorType().equals(OAUTH_EXCEPTION) && !isRetryAttempted) {
+                            SPiDLogger.log("Permission possibly revoked, invalidating token and trying again");
+                            GoogleAuthUtil.invalidateToken(MainActivity.this, token);
+                            getGooglePlusToken(new GoogleTokenListener() {
+                                @Override
+                                public void onComplete(String token) {
+                                    trySPiDLoginWithGooglePlusToken(token, true);
+                                }
+                            });
+                        } else {
+                            showNoAccountDialog();
+                        }
+
+                    } else {
+                        SPiDLogger.log("Unexpected exception when logging in: " + exception.getMessage(), exception);
+                        Toast.makeText(MainActivity.this, getString(R.string.loginError), Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+            tokenRequest.execute();
+        } catch(SPiDException spidException) {
+            SPiDLogger.log("Unexpected exception when logging in: " + spidException.getMessage(), spidException);
+            Toast.makeText(MainActivity.this, getString(R.string.loginError), Toast.LENGTH_LONG).show();
+        }
     }
 
     // Prompt user if they want to create a new user or attach to a existing one
@@ -335,29 +321,9 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                if (exception instanceof SPiDInvalidAccessTokenException) {
-                    SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
-                    SPiDLogger.log("Token expired or invalid: " + exception.getMessage());
-                    displayLoginScreen(true);
-                } else {
-                    onError("SPiDException when fetching user information: " + exception.getMessage());
-                }
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                onError("IOException when fetching user information: " + exception.getMessage());
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                onError("Exception when fetching user information: " + exception.getMessage());
-            }
-
-            private void onError(String error) {
-                SPiDLogger.log(error);
-                Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            public void onError(Exception exception) {
+                SPiDLogger.log(exception.getMessage());
+                Toast.makeText(context, exception.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -375,27 +341,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private void signupWithGooglePlusToken(final String token) {
         SPiDLogger.log("Signing up with Google+ token...");
         SPiDUser.signupWithGooglePlus(getPackageName(), token, new SPiDAuthorizationListener() {
+
             @Override
             public void onComplete() {
                 trySPiDLoginWithGooglePlusToken(token, false);
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                handleError(exception);
-            }
-
-            private void handleError(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Exception when attempting to creating user from Google Plus token: " + exception.getMessage(), exception);
                 Toast.makeText(MainActivity.this, getString(R.string.failedCreateUser), Toast.LENGTH_LONG).show();
             }
@@ -414,27 +367,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     private void attachGooglePlusAccountWithToken(final String token) {
         SPiDUser.attachGooglePlusAccount(getPackageName(), token, new SPiDAuthorizationListener() {
+
             @Override
             public void onComplete() {
                 trySPiDLoginWithGooglePlusToken(token, false);
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                handleError(exception);
-            }
-
-            private void handleError(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Exception when attaching Google Plus account: " + exception.getMessage(), exception);
                 Toast.makeText(MainActivity.this, getString(R.string.failedAttachGoogle), Toast.LENGTH_LONG).show();
             }
@@ -481,27 +421,14 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
 
     public void logoutFromSPiD() {
         SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
+
             @Override
             public void onComplete() {
                 SPiDLogger.log("Logged out from SPiD");
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                handleError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                handleError(exception);
-            }
-
-            private void handleError(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDClient.getInstance().clearAccessTokenAndWaitingRequests();
                 SPiDLogger.log("Exception when logging out from SPiD: " + exception.getMessage(), exception);
                 Toast.makeText(MainActivity.this, getString(R.string.logoutError), Toast.LENGTH_LONG).show();

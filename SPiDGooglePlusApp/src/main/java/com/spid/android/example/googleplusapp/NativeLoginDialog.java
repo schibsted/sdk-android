@@ -12,12 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spid.android.example.R;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDUserCredentialTokenRequest;
-
-import java.io.IOException;
 
 /**
  * Contains the login activity
@@ -76,6 +73,7 @@ public class NativeLoginDialog extends DialogFragment {
             final MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.showLoadingDialog();
             SPiDUserCredentialTokenRequest tokenRequest = new SPiDUserCredentialTokenRequest(email, password, new SPiDAuthorizationListener() {
+
                 @Override
                 public void onComplete() {
                     MainActivity mainActivity = (MainActivity) getActivity();
@@ -84,28 +82,10 @@ public class NativeLoginDialog extends DialogFragment {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    String error = exception.getError();
-                    if (error.equals("invalid_user_credentials")) {
-                        error = "Invalid email/password";
-                    }
-                    onError(error);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception.getMessage());
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    onError(exception.getMessage());
-                }
-
-                private void onError(String error) {
+                public void onError(Exception exception) {
                     mainActivity.dismissLoadingDialog();
-                    SPiDLogger.log("Received error: " + error);
-                    Toast.makeText(getActivity(), "Received error: " + error, Toast.LENGTH_LONG).show();
+                    SPiDLogger.log("Received error: " + exception.getMessage());
+                    Toast.makeText(getActivity(), "Received error: " + exception.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
             tokenRequest.execute();

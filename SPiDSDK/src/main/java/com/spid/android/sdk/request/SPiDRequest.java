@@ -8,7 +8,7 @@ import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -256,7 +256,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         Exception exception = response.getException();
         if (exception != null) {
             if (exception instanceof IOException) {
-                listener.onIOException((IOException) exception);
+                listener.onError(exception);
             } else if (exception instanceof SPiDException) {
                 String error = ((SPiDException) exception).getError();
                 if (SPiDException.EXPIRED_TOKEN.equals(error) || SPiDException.INVALID_TOKEN.equals(error)) {
@@ -268,13 +268,13 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
                         SPiDLogger.log("Retrying attempt: " + request.retryCount + " for request: " + request.url);
                     } else {
                         SPiDClient.getInstance().clearAccessToken();
-                        listener.onSPiDException((SPiDException) exception);
+                        listener.onError(exception);
                     }
                 } else {
-                    listener.onSPiDException((SPiDException) exception);
+                    listener.onError(exception);
                 }
             } else {
-                listener.onException(exception);
+                listener.onError(exception);
             }
         } else {
             listener.onComplete(response);

@@ -9,11 +9,14 @@ public class SPiDConfiguration {
 
     private final String userAgent;
 
+    private Context context;
+    private SPiDEnvironment spidEnvironment;
+    private Boolean isDebugMode;
+
     private String clientID;
     private String clientSecret;
     private String signSecret;
     private String appURLScheme;
-    private String serverURL;
     private String authorizationURL;
     private String signupURL;
     private String forgotPasswordURL;
@@ -21,10 +24,7 @@ public class SPiDConfiguration {
     private String redirectURL;
     private String serverClientID;
     private String serverRedirectUri;
-    private Boolean useMobileWeb;
     private String apiVersion;
-    private Boolean debugMode;
-    private Context context;
 
     /**
      * Constructor for SPiDConfiguration object.
@@ -33,7 +33,7 @@ public class SPiDConfiguration {
      * @param clientSecret      SPiD client secret
      * @param signSecret        SPiD sign secret
      * @param appURLScheme      Android app url scheme
-     * @param serverURL         SPiD server url
+     * @param spidEnvironment   SPiD server url
      * @param redirectURL       SPiD redirect url
      * @param authorizationURL  SPiD authorization url
      * @param registrationURL   SPiD registration url
@@ -41,18 +41,17 @@ public class SPiDConfiguration {
      * @param tokenURL          SPiD token url
      * @param serverClientID    SPiD client id for server
      * @param serverRedirectUri SPiD redirect uri for server
-     * @param useMobileWeb      Use mobile flag
      * @param apiVersion        SPiD API version
      * @param debugMode         Whether to run in debug mode
      * @param userAgent         SPiD custom User-Agent
      * @param context           Android application context
      */
-    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, String serverURL, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, String serverRedirectUri, Boolean useMobileWeb, String apiVersion, Boolean debugMode, String userAgent, Context context) {
+    protected SPiDConfiguration(String clientID, String clientSecret, String signSecret, String appURLScheme, SPiDEnvironment spidEnvironment, String redirectURL, String authorizationURL, String registrationURL, String forgotPasswordURL, String tokenURL, String serverClientID, String serverRedirectUri, String apiVersion, Boolean debugMode, String userAgent, Context context) {
         this.clientID = clientID;
         this.clientSecret = clientSecret;
         this.signSecret = signSecret;
         this.appURLScheme = appURLScheme;
-        this.serverURL = serverURL;
+        this.spidEnvironment = spidEnvironment;
         this.redirectURL = redirectURL;
         this.authorizationURL = authorizationURL;
         this.signupURL = registrationURL;
@@ -60,9 +59,8 @@ public class SPiDConfiguration {
         this.tokenURL = tokenURL;
         this.serverClientID = serverClientID;
         this.serverRedirectUri = serverRedirectUri;
-        this.useMobileWeb = useMobileWeb;
         this.apiVersion = apiVersion;
-        this.debugMode = debugMode;
+        this.isDebugMode = debugMode;
         this.userAgent = userAgent;
         this.context = context;
     }
@@ -128,14 +126,7 @@ public class SPiDConfiguration {
      * @return SPiD server url
      */
     public String getServerURL() {
-        return serverURL;
-    }
-
-    /**
-     * @param serverURL SPiD server url
-     */
-    public void setServerURL(String serverURL) {
-        this.serverURL = serverURL;
+        return spidEnvironment.toString();
     }
 
     /**
@@ -251,31 +242,17 @@ public class SPiDConfiguration {
     }
 
     /**
-     * @return If use mobile flag should be set, default value: <code>true</code>
-     */
-    public Boolean getUseMobileWeb() {
-        return useMobileWeb;
-    }
-
-    /**
-     * @param useMobileWeb Use mobile flag
-     */
-    public void setUseMobileWeb(Boolean useMobileWeb) {
-        this.useMobileWeb = useMobileWeb;
-    }
-
-    /**
      * @return Use debug mode, default value: <code>false</code>
      */
-    public boolean getDebugMode() {
-        return debugMode;
+    public boolean isDebugMode() {
+        return isDebugMode;
     }
 
     /**
-     * @param debugMode Use debug mode
+     * @param isDebugMode Use debug mode
      */
-    public void setDebugMode(Boolean debugMode) {
-        this.debugMode = debugMode;
+    public void setDebugMode(Boolean isDebugMode) {
+        this.isDebugMode = isDebugMode;
     }
 
     /**

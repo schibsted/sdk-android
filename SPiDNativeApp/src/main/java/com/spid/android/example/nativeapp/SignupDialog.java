@@ -17,7 +17,7 @@ import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.user.SPiDUser;
 
-import java.io.IOException;
+import java.util.Map;
 
 public class SignupDialog extends DialogFragment {
 
@@ -83,11 +83,6 @@ public class SignupDialog extends DialogFragment {
 
     private class SignupListener implements SPiDAuthorizationListener {
 
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error while preforming signup: " + exception.getMessage());
-            Toast.makeText(getActivity(), "Error while preforming signup", Toast.LENGTH_LONG).show();
-        }
-
         @Override
         public void onComplete() {
             Toast.makeText(getActivity(), "User created, please check your email for verification", Toast.LENGTH_LONG).show();
@@ -98,36 +93,33 @@ public class SignupDialog extends DialogFragment {
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
-            if (exception.getDescriptions().containsKey("blocked")) {
-                String message = exception.getDescriptions().get("blocked");
-                SPiDLogger.log("Error while preforming signup: " + message);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-            } else if (exception.getDescriptions().containsKey("exists")) {
-                String message = exception.getDescriptions().get("exists");
-                SPiDLogger.log("Error while preforming signup: " + message);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-            } else if (exception.getDescriptions().containsKey("email")) {
-                String message = exception.getDescriptions().get("email");
-                SPiDLogger.log("Error while preforming signup: " + message);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-            } else if (exception.getDescriptions().containsKey("password")) {
-                String message = exception.getDescriptions().get("password");
-                SPiDLogger.log("Error while preforming signup: " + message);
-                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+        public void onError(Exception exception) {
+            if(exception instanceof  SPiDException) {
+                final Map<String, String> descriptions = ((SPiDException) exception).getDescriptions();
+                if (descriptions.containsKey("blocked")) {
+                    String message = descriptions.get("blocked");
+                    SPiDLogger.log("Error while performing signup: " + message);
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                } else if (descriptions.containsKey("exists")) {
+                    String message = descriptions.get("exists");
+                    SPiDLogger.log("Error while performing signup: " + message);
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                } else if (descriptions.containsKey("email")) {
+                    String message = descriptions.get("email");
+                    SPiDLogger.log("Error while performing signup: " + message);
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                } else if (descriptions.containsKey("password")) {
+                    String message = descriptions.get("password");
+                    SPiDLogger.log("Error while performing signup: " + message);
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                } else {
+                    SPiDLogger.log("Error while performing signup: " + exception.getMessage());
+                    Toast.makeText(getActivity(), "Error while performing signup", Toast.LENGTH_LONG).show();
+                }
             } else {
-                onError(exception);
+                SPiDLogger.log("Error while performing signup: " + exception.getMessage());
+                Toast.makeText(getActivity(), "Error while performing signup", Toast.LENGTH_LONG).show();
             }
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            onError(exception);
         }
     }
 }

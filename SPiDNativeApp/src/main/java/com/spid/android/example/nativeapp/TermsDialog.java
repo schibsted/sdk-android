@@ -12,16 +12,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.spid.android.sdk.SPiDClient;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
 import com.spid.android.sdk.request.SPiDApiGetRequest;
 import com.spid.android.sdk.request.SPiDRequest;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONException;
-
-import java.io.IOException;
 
 /**
  * Contains method for showing a SPiD Terms of use dialog
@@ -90,19 +87,7 @@ public class TermsDialog extends DialogFragment {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                SPiDLogger.log("Error loading dialog_terms of use: " + exception.getMessage());
-                Toast.makeText(getActivity(), "Error loading dialog_terms of use", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                SPiDLogger.log("Error loading dialog_terms of use: " + exception.getMessage());
-                Toast.makeText(getActivity(), "Error loading dialog_terms of use", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onException(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Error loading dialog_terms of use: " + exception.getMessage());
                 Toast.makeText(getActivity(), "Error loading dialog_terms of use", Toast.LENGTH_LONG).show();
             }

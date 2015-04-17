@@ -14,13 +14,10 @@ import android.widget.Toast;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.webview.SPiDWebView;
 import com.spid.android.sdk.webview.SPiDWebViewClient;
-
-import java.io.IOException;
 
 /**
  * Contains the login activity
@@ -32,20 +29,16 @@ public class SPiDExampleAppLogin extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
+        SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
+                null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
+                "your-client-id", "your-client-secret", "your-app-url-scheme")
+                .signSecret("your-secret-sign-key")
                 .debugMode(true)
-                .context(getApplicationContext())
                 .build();
-
-        config.setDebugMode(true);
 
         SPiDClient.getInstance().configure(config);
 
-        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().isClientToken()) {
+        if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().getAccessToken().isClientToken()) {
             SPiDLogger.log("Found access token in SharedPreferences");
             Intent intent = new Intent(this, SPiDExampleAppMain.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -88,15 +81,8 @@ public class SPiDExampleAppLogin extends Activity {
             this.context = context;
         }
 
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error while performing login: " + exception.getMessage());
-            Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
-            setupLoginContentView();
-        }
-
         @Override
         public void onComplete() {
-            SPiDLogger.log("Successful login");
             Intent intent = new Intent(context, SPiDExampleAppMain.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -105,18 +91,10 @@ public class SPiDExampleAppLogin extends Activity {
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            onError(exception);
+        public void onError(Exception exception) {
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
+            Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
+            setupLoginContentView();
         }
     }
 

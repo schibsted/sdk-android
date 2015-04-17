@@ -16,18 +16,15 @@ import android.widget.Toast;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
-import com.spid.android.sdk.exceptions.SPiDException;
-import com.spid.android.sdk.exceptions.SPiDInvalidAccessTokenException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.listener.SPiDRequestListener;
 import com.spid.android.sdk.logger.SPiDLogger;
-import com.spid.android.sdk.reponse.SPiDResponse;
+import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 public class MainActivity extends Activity {
@@ -36,28 +33,21 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SPiDConfiguration config = new SPiDConfigurationBuilder()
-                .clientID("your-client-id")
-                .clientSecret("your-client-secret")
-                .appURLScheme("your-app-url-scheme")
-                .serverURL("your-spidserver-url")
-                .signSecret("your-secret-sign-key")
+        SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
+                null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
+                "your-client-id", "your-client-secret", "your-app-url-scheme")
                 .debugMode(true)
-                .context(getApplicationContext())
                 .build();
-
-        config.setDebugMode(true);
         SPiDClient.getInstance().configure(config);
 
         Uri data = getIntent().getData();
-        final boolean hasClientToken = !SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().isClientToken();
+        final boolean hasClientToken = !SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().getAccessToken().isClientToken();
         if(hasClientToken) {
             if(data == null || data.getPath().equals("/login")) {
                 FragmentManager fragmentManager = getFragmentManager();
                 LoginDialog termsDialog = new LoginDialog();
                 termsDialog.show(fragmentManager, "dialog_login");
             } else {
-                SPiDLogger.log("Received app redirect");
                 SPiDLogger.log("Redirected to: " + data.getPath());
                 SPiDClient.getInstance().handleIntent(data, new LoginListener());
             }
@@ -89,27 +79,7 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onSPiDException(SPiDException exception) {
-                if (exception instanceof SPiDInvalidAccessTokenException) {
-                    SPiDClient.getInstance().clearAccessToken();
-                    Toast.makeText(getApplicationContext(), "Session expired, please login again", Toast.LENGTH_LONG).show();
-                    recreate();
-                } else {
-                    onError(exception);
-                }
-            }
-
-            @Override
-            public void onIOException(IOException exception) {
-                onError(exception);
-            }
-
-            @Override
-            public void onException(Exception exception) {
-                onError(exception);
-            }
-
-            private void onError(Exception exception) {
+            public void onError(Exception exception) {
                 SPiDLogger.log("Error getting username: " + exception.getMessage());
                 setUserInfo("Error fetching user information");
             }
@@ -158,13 +128,6 @@ public class MainActivity extends Activity {
 
     protected class LoginListener implements SPiDAuthorizationListener {
 
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error while performing login: " + exception.getMessage());
-            FragmentManager fragmentManager = getFragmentManager();
-            LoginDialog termsDialog = new LoginDialog();
-            termsDialog.show(fragmentManager, "dialog_login");
-        }
-
         @Override
         public void onComplete() {
             SPiDLogger.log("Successful login");
@@ -172,18 +135,11 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public void onSPiDException(SPiDException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onIOException(IOException exception) {
-            onError(exception);
-        }
-
-        @Override
-        public void onException(Exception exception) {
-            onError(exception);
+        public void onError(Exception exception) {
+            SPiDLogger.log("Error while performing login: " + exception.getMessage());
+            FragmentManager fragmentManager = getFragmentManager();
+            LoginDialog termsDialog = new LoginDialog();
+            termsDialog.show(fragmentManager, "dialog_login");
         }
     }
 
@@ -197,6 +153,7 @@ public class MainActivity extends Activity {
         @Override
         public void onClick(View v) {
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
+
                 @Override
                 public void onComplete() {
                     Intent intent = new Intent(context, MainActivity.class);
@@ -207,26 +164,12 @@ public class MainActivity extends Activity {
                 }
 
                 @Override
-                public void onSPiDException(SPiDException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onIOException(IOException exception) {
-                    onError(exception);
-                }
-
-                @Override
-                public void onException(Exception exception) {
-                    onError(exception);
+                public void onError(Exception exception) {
+                    SPiDLogger.log("Error logging out: " + exception.getMessage());
+                    Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
+                    recreate();
                 }
             });
-        }
-
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error logging out: " + exception.getMessage());
-            Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
-            recreate();
         }
     }
 }

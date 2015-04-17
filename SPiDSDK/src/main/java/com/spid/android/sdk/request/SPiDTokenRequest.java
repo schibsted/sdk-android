@@ -2,12 +2,9 @@ package com.spid.android.sdk.request;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
-import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
-import com.spid.android.sdk.reponse.SPiDResponse;
-
-import java.io.IOException;
+import com.spid.android.sdk.response.SPiDResponse;
 
 /**
  * Contains a access token request to SPiD
@@ -36,15 +33,10 @@ public class SPiDTokenRequest extends SPiDRequest {
         SPiDClient.getInstance().clearAuthorizationRequest();
         Exception exception = response.getException();
         if (exception != null) {
-            if (exception instanceof IOException) {
-                if (authorizationListener != null)
-                    authorizationListener.onIOException((IOException) exception);
-            } else if (exception instanceof SPiDException) {
-                if (authorizationListener != null)
-                    authorizationListener.onSPiDException((SPiDException) exception);
+            if(authorizationListener != null) {
+                authorizationListener.onError(exception);
             } else {
-                if (authorizationListener != null)
-                    authorizationListener.onException(exception);
+                // no listener registered, do nothing
             }
         } else {
             SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
