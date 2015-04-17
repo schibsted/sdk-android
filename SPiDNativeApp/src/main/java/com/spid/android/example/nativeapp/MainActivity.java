@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
                 LoginDialog termsDialog = new LoginDialog();
                 termsDialog.show(fragmentManager, "dialog_login");
             } else {
-                SPiDLogger.log("Redirected to: " + data.getPath());
+                SPiDLogger.log("Received app redirect to: " + data.getPath());
                 SPiDClient.getInstance().handleIntent(data, new LoginListener());
             }
         } else {
