@@ -29,20 +29,18 @@ import org.json.JSONException;
 public class MainActivity extends Activity {
 
     // this redirect must be a registered redirect url in your client configuration
-    private static final String REDIRECT_URL = "spidmobile://spid/login"; // for example spid-123://spid/login
+    private static final String REDIRECT_URL = "your-app-url-scheme://spid/login"; // for example spid-123://spid/login
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
                 null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
                 "your-client-id", "your-client-secret", "your-app-url-scheme")
-                .debugMode(true)
                 .redirectURL(REDIRECT_URL)
+                .debugMode(true)
                 .build();
-
         SPiDClient.getInstance().configure(config);
 
         setupContentView();

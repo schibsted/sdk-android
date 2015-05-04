@@ -32,7 +32,7 @@ public class SPiDExampleAppLogin extends Activity {
         SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
                 null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
                 "your-client-id", "your-client-secret", "your-app-url-scheme")
-                .signSecret("your-secret-sign-key")
+                .signSecret("your-sign-secret")
                 .debugMode(true)
                 .build();
 
@@ -87,7 +87,6 @@ public class SPiDExampleAppLogin extends Activity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
-//            finish();
         }
 
         @Override

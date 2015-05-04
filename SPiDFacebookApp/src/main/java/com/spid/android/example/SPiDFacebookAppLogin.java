@@ -41,7 +41,7 @@ public class SPiDFacebookAppLogin extends Activity {
         SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
                 null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
                 "your-client-id", "your-client-secret", "your-app-url-scheme")
-                .signSecret("your-secret-sign-key")
+                .signSecret("your-sign-secret")
                 .debugMode(true)
                 .build();
         SPiDClient.getInstance().configure(config);

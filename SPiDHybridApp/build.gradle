@@ -25,6 +25,11 @@ android {
 }
 
 dependencies {
-    compile project(':SPiDSDK')
+    compile(name:'SPiD-Android-1.3.2', ext:'aar')
 }
 
+repositories {
+    flatDir {
+        dirs 'lib'
+    }
+}

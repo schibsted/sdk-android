@@ -139,15 +139,6 @@ public class SPiDExampleAppMain extends Activity {
         }
 
         public void onClick(View v) {
-//            try {
-//                SPiDClient.getInstance().browserLogout();
-//            } catch (UnsupportedEncodingException e) {
-//                // nothing to do here
-//            }
-//            try {
-//            } catch (InterruptedException e) {
-//                SPiDLogger.log(("Sleep interrupted!"));
-//            }
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
@@ -155,7 +146,6 @@ public class SPiDExampleAppMain extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
-//                    finish();
                 }
 
                 @Override
