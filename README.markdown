@@ -12,7 +12,7 @@ The compiled library will be located in SPiDSDK/build/libs/
 
 The SDK can also be installed to your local maven repository with the following command:
 ```
-./gradlew -p SPiDSDK install
+./gradlew -p SPiDSDK uploadArchives
 ```
 
 For information and the development guides see our [Documentation](http://schibsted.github.com/sdk-android "Documentation").
