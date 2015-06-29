@@ -289,7 +289,7 @@ public class SPiDClient {
     }
 
     public void logout(SPiDRequestListener listener) {
-        SPiDRequest request = new SPiDApiPostRequest("/logout", listener);
+        SPiDRequest request = new SPiDRequest("/logout", listener);
         request.executeAuthorizedRequest();
     }
 
