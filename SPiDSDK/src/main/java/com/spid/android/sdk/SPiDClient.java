@@ -289,7 +289,8 @@ public class SPiDClient {
     }
 
     public void logout(SPiDRequestListener listener) {
-        SPiDRequest request = new SPiDApiPostRequest("/logout", listener);
+        SPiDRequest request = new SPiDRequest(SPiDClient.getInstance().getConfig().getServerURL() + "/logout", listener);
+        clearAccessToken();
         request.executeAuthorizedRequest();
     }
 
