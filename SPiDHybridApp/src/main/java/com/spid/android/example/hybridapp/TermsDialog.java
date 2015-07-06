@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -94,6 +95,11 @@ public class TermsDialog extends DialogFragment {
                 WebView webView = (WebView) getView().findViewById(R.id.dialog_terms_webview);
                 webView.loadDataWithBaseURL(null, termsHtml.toString(), "text/html", "utf-8", null);
                 webView.setVisibility(View.VISIBLE);
+                // Enable pinch to zoom support without displaying the +/- buttons
+                WebSettings wvSettings = webView.getSettings();
+                wvSettings.setSupportZoom(true);
+                wvSettings.setBuiltInZoomControls(true);
+                wvSettings.setDisplayZoomControls(false);
             }
 
             @Override
