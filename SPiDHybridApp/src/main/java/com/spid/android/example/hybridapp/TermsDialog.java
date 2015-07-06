@@ -67,7 +67,9 @@ public class TermsDialog extends DialogFragment {
                     return;
                 }
 
-                StringBuilder termsHtml = new StringBuilder("<html><head><style>\n");
+                StringBuilder termsHtml = new StringBuilder("<html><head>");
+                termsHtml.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.5\">");
+                termsHtml.append("<style>\n");
                 termsHtml.append("body { text-align: left; color: #666; font-family: Helvetica, Arial, sans-serif; font-size: 13px; }\n");
                 termsHtml.append("h2 { counter-reset:section; margin: 20px 0 10px 0; font-size: 14px; }\n");
                 termsHtml.append("h3 { margin: 15px 0; font-size: 13px; }\n");
