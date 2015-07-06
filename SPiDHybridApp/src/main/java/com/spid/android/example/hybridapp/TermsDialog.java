@@ -93,7 +93,7 @@ public class TermsDialog extends DialogFragment {
                 progressBar.setVisibility(View.GONE);
 
                 WebView webView = (WebView) getView().findViewById(R.id.dialog_terms_webview);
-                webView.loadDataWithBaseURL(null, termsHtml.toString(), "text/html", "utf-8", null);
+                webView.loadDataWithBaseURL("/", termsHtml.toString(), "text/html", "utf-8", null);
                 webView.setVisibility(View.VISIBLE);
                 // Enable pinch to zoom support without displaying the +/- buttons
                 WebSettings wvSettings = webView.getSettings();
