@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -59,7 +60,9 @@ public class TermsDialog extends DialogFragment {
                     return;
                 }
 
-                StringBuilder termsHtml = new StringBuilder("<html><head><style>\n");
+                StringBuilder termsHtml = new StringBuilder("<html><head>");
+                termsHtml.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.5\">");
+                termsHtml.append("<style>\n");
                 termsHtml.append("body { text-align: left; color: #666; font-family: Helvetica, Arial, sans-serif; font-size: 13px; }\n");
                 termsHtml.append("h2 { counter-reset:section; margin: 20px 0 10px 0; font-size: 14px; }\n");
                 termsHtml.append("h3 { margin: 15px 0; font-size: 13px; }\n");
@@ -82,8 +85,13 @@ public class TermsDialog extends DialogFragment {
                 progressBar.setVisibility(View.GONE);
 
                 WebView webView = (WebView) getView().findViewById(R.id.dialog_terms_webview);
-                webView.loadDataWithBaseURL(null, termsHtml.toString(), "text/html", "utf-8", null);
+                webView.loadDataWithBaseURL("/", termsHtml.toString(), "text/html", "utf-8", null);
                 webView.setVisibility(View.VISIBLE);
+                // Enable pinch to zoom support without displaying the +/- buttons
+                WebSettings wvSettings = webView.getSettings();
+                wvSettings.setSupportZoom(true);
+                wvSettings.setBuiltInZoomControls(true);
+                wvSettings.setDisplayZoomControls(false);
             }
 
             @Override

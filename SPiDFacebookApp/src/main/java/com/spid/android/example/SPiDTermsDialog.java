@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.view.Window;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -39,7 +40,9 @@ public class SPiDTermsDialog {
                     return;
                 }
 
-                StringBuilder termsHtml = new StringBuilder("<html><head><style>\n");
+                StringBuilder termsHtml = new StringBuilder("<html><head>");
+                termsHtml.append("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.5\">");
+                termsHtml.append("<style>\n");
                 termsHtml.append("body { text-align: left; color: #666; }\n");
                 termsHtml.append("h2 { counter-reset:section; margin: 20px 0 10px 0; font-size: 14px; }\n");
                 termsHtml.append("h3 { margin: 15px 0; font-size: 13px; }\n");
@@ -56,7 +59,14 @@ public class SPiDTermsDialog {
                 termsHtml.append("</body></html>\n");
 
                 WebView webView = (WebView) dialog.findViewById(R.id.terms_webview);
-                webView.loadDataWithBaseURL(null, termsHtml.toString(), "text/html", "utf-8", null);
+                webView.loadDataWithBaseURL("/", termsHtml.toString(), "text/html", "utf-8", null);
+
+                // Enable pinch to zoom support without displaying the +/- buttons
+                WebSettings wvSettings = webView.getSettings();
+                wvSettings.setSupportZoom(true);
+                wvSettings.setBuiltInZoomControls(true);
+                wvSettings.setDisplayZoomControls(false);
+
                 dialog.show();
             }
 
