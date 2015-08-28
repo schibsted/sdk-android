@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
         Uri data = getIntent().getData();
         final boolean hasClientToken = !SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().getAccessToken().isClientToken();
         if(hasClientToken) {
-            if(data == null || data.getPath().equals("/login")) {
+            if(data == null || data.getPath() == null || data.getPath().trim().isEmpty() || data.getPath().equals("/login")) {
                 FragmentManager fragmentManager = getFragmentManager();
                 LoginDialog termsDialog = new LoginDialog();
                 termsDialog.show(fragmentManager, "dialog_login");
