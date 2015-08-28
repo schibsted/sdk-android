@@ -172,7 +172,7 @@ public class SPiDConfiguration {
     }
 
     /**
-     * @return SPiD lost password url, default value: <code>getServerURL() + "/auth/forgotpassword";</code>
+     * @return SPiD lost password url, default value: <code>getServerURL() + "/flow/forgotpassword";</code>
      */
     public String getForgotPasswordURL() {
         return forgotPasswordURL;

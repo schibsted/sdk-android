@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -220,7 +221,14 @@ public class SPiDConfigurationBuilder {
         }
 
         if (forgotPasswordURL == null || TextUtils.isEmpty(forgotPasswordURL.trim())) {
-            forgotPasswordURL = spidEnvironment.toString() + "/auth/forgotpassword";
+            String forgotPasswordBaseUrl = spidEnvironment.toString() + "/flow/password?client_id=&redirect_uri=";
+
+            Uri forgotPasswordUri = Uri.parse(forgotPasswordBaseUrl)
+                    .buildUpon()
+                    .appendQueryParameter("client_id", clientID)
+                    .appendQueryParameter("redirect_uri", redirectURL)
+                    .build();
+            forgotPasswordURL = forgotPasswordUri.toString();
         }
 
         if (serverClientID == null || TextUtils.isEmpty(serverClientID.trim())) {
