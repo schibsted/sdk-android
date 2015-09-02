@@ -16,14 +16,3 @@ The SDK can also be installed to your local maven repository with the following 
 ```
 
 For information and the development guides see our [Documentation](http://schibsted.github.com/sdk-android "Documentation").
-
-
-
-Why fork ?
-
-Since guys from SPID have have a big problem to provide this SDK through [repository](https://github.com/schibsted/sdk-android/issues/7) I decided to fork SPID repository and do this for them.
-
-
-How can I use it ?
-
-...

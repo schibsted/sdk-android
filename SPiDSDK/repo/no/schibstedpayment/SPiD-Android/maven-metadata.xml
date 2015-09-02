@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>no.schibstedpayment</groupId>
+  <artifactId>SPiD-Android</artifactId>
+  <version>1.3.4</version>
+  <versioning>
+    <versions>
+      <version>1.3.4</version>
+    </versions>
+    <lastUpdated>20150902131556</lastUpdated>
+  </versioning>
+</metadata>
