@@ -15,4 +15,17 @@ The SDK can also be installed to your local maven repository with the following 
 ./gradlew -p SPiDSDK uploadArchives
 ```
 
+If you would like to use external repository you have to modify your application build.gradle file
+
+```
+repositories {
+    maven { url "https://raw.github.com/vgno/spid-sdk-android/master/SPiDSDK/repo/" }
+}
+
+dependencies {
+    compile 'no.schibstedpayment:SPiD-Android:1.3.4@aar'
+}
+```
+
+
 For information and the development guides see our [Documentation](http://schibsted.github.com/sdk-android "Documentation").
