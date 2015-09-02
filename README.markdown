@@ -19,7 +19,7 @@ If you would like to use external repository you have to modify your application
 
 ```
 repositories {
-    maven { url 'https://raw.github.com/vgno/spid-sdk-android/master/SPiDSDK/repo/' }
+    maven { url 'https://raw.github.com/schibsted/sdk-android/master/SPiDSDK/repo/' }
 }
 
 dependencies {
