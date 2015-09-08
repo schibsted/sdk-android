@@ -221,7 +221,7 @@ public class SPiDConfigurationBuilder {
         }
 
         if (forgotPasswordURL == null || TextUtils.isEmpty(forgotPasswordURL.trim())) {
-            String forgotPasswordBaseUrl = spidEnvironment.toString() + "/flow/password?client_id=&redirect_uri=";
+            String forgotPasswordBaseUrl = spidEnvironment.toString() + "/flow/password";
 
             Uri forgotPasswordUri = Uri.parse(forgotPasswordBaseUrl)
                     .buildUpon()
