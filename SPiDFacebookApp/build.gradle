@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 16
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile 'com.facebook.android:facebook-android-sdk:3.23.0'
-    compile(name:'SPiD-Android-1.3.4', ext:'aar')
+    compile(name:'SPiD-Android-1.3.5', ext:'aar')
 }
 
 repositories {
