@@ -5,9 +5,11 @@ package com.spid.android.sdk.configuration;
  */
 public enum SPiDEnvironment {
 
-    NORWEGIAN_STAGE("https://stage.payment.schibsted.no"),
+    STAGE("https://identity-pre.schibsted.com"),
+    PRODUCTION("https://login.schibsted.com"),
+    NORWEGIAN_STAGE("https://identity-pre.schibsted.com"),
     NORWEGIAN_PRODUCTION("https://payment.schibsted.no"),
-    SWEDISH_STAGE("https://stage.payment.schibsted.se"),
+    SWEDISH_STAGE("https://identity-pre.schibsted.com"),
     SWEDISH_PRODUCTION("https://payment.schibsted.se");
 
     private final String url;
