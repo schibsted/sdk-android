@@ -2,6 +2,7 @@ package com.spid.android.sdk.request;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
+import com.spid.android.sdk.exceptions.SPiDAccessTokenException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.response.SPiDResponse;
@@ -39,12 +40,19 @@ public class SPiDTokenRequest extends SPiDRequest {
                 // no listener registered, do nothing
             }
         } else {
-            SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
-            SPiDClient.getInstance().setAccessToken(token);
-            SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getClientSecret(), token);
-            SPiDClient.getInstance().runWaitingRequests();
-            if (authorizationListener != null)
-                authorizationListener.onComplete();
+            try {
+                SPiDAccessToken token = new SPiDAccessToken(response.getJsonObject());
+                SPiDClient.getInstance().setAccessToken(token);
+                SPiDKeychain.encryptAccessTokenToSharedPreferences(SPiDClient.getInstance().getConfig().getClientSecret(), token);
+                SPiDClient.getInstance().runWaitingRequests();
+                if (authorizationListener != null)
+                    authorizationListener.onComplete();
+            }
+            catch (Exception ex) {
+                if(authorizationListener != null) {
+                    authorizationListener.onError(ex);
+                }
+            }
         }
     }
 }

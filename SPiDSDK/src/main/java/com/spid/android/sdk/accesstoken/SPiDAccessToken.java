@@ -41,7 +41,7 @@ public class SPiDAccessToken {
             // Optional values
             this.refreshToken = jsonObject.optString(REFRESH_SPID_ACCESS_TOKEN_KEY, null);
             this.userID = jsonObject.optString(SPID_ACCESS_TOKEN_USER_ID, null);
-        } catch (JSONException e) {
+        } catch (Exception e) { // Could be NullPointerException, JsonException (and more?)
             throw new SPiDAccessTokenException("Received invalid access token data");
         }
     }
