@@ -2,7 +2,6 @@ package com.spid.android.sdk.request;
 
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
-import com.spid.android.sdk.exceptions.SPiDAccessTokenException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.response.SPiDResponse;
