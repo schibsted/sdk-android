@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
+import com.facebook.login.LoginManager;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.exceptions.SPiDInvalidAccessTokenException;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
@@ -18,10 +18,6 @@ import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.response.SPiDResponse;
 
 import org.json.JSONException;
-
-/**
- * Contains the main window activity
- */
 
 public class SPiDFacebookAppMain extends Activity {
 
@@ -80,9 +76,8 @@ public class SPiDFacebookAppMain extends Activity {
             SPiDClient.getInstance().apiLogout(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
-                    if (Session.getActiveSession() != null) {
-                        Session.getActiveSession().closeAndClearTokenInformation();
-                    }
+                    SPiDClient.getInstance().clearAccessToken();
+                    LoginManager.getInstance().logOut();
                     Intent intent = new Intent(context, SPiDFacebookAppLogin.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

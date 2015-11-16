@@ -11,11 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
 import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDUserCredentialTokenRequest;
-import com.spid.android.sdk.user.SPiDUser;
 
 /**
  * Contains the login activity
@@ -68,26 +66,7 @@ public class SPiDNativeLogin extends Activity {
 
         @Override
         public void onComplete() {
-            Session session = Session.getActiveSession();
-            SPiDUser.attachFacebookAccount(session.getApplicationId(), session.getAccessToken(), session.getExpirationDate(), new SPiDAuthorizationListener() {
-                @Override
-                public void onComplete() {
-                    dismissLoadingDialog();
-                    Intent intent = new Intent(context, SPiDFacebookAppMain.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }
 
-                @Override
-                public void onError(Exception exception) {
-                    dismissLoadingDialog();
-                    SPiDLogger.log("Error while performing login: " + exception.getMessage());
-                    Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
-                    setupLoginContentView();
-                }
-            });
         }
 
         @Override
@@ -128,9 +107,6 @@ public class SPiDNativeLogin extends Activity {
 
         @Override
         public void onClick(View view) {
-            if (Session.getActiveSession() != null) {
-                Session.getActiveSession().closeAndClearTokenInformation();
-            }
             Intent intent = new Intent(context, SPiDFacebookAppLogin.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);

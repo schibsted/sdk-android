@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.widget.LoginButton;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
@@ -25,19 +28,24 @@ import com.spid.android.sdk.logger.SPiDLogger;
 import com.spid.android.sdk.request.SPiDFacebookTokenRequest;
 import com.spid.android.sdk.user.SPiDUser;
 
-import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Contains the login activity
  */
 public class SPiDFacebookAppLogin extends Activity {
 
+    private static final String TAG = SPiDFacebookAppLogin.class.getSimpleName();
     private ProgressDialog progressDialog;
+
+    private CallbackManager callbackManager;
+
+    private LoginResult loginResult;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
                 null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
                 "your-client-id", "your-client-secret", "your-app-url-scheme")
@@ -45,6 +53,9 @@ public class SPiDFacebookAppLogin extends Activity {
                 .debugMode(true)
                 .build();
         SPiDClient.getInstance().configure(config);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
 
         if (SPiDClient.getInstance().isAuthorized()) {
             SPiDLogger.log("Found access token in SharedPreferences");
@@ -58,27 +69,45 @@ public class SPiDFacebookAppLogin extends Activity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * @return Date one hour in the future
+     */
+    private static Date getOneHourInTheFuture() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, 1);
+        return cal.getTime();
     }
 
     private void setupLoginContentView() {
         setContentView(R.layout.facebook_login);
 
-        LoginButton authButton = (LoginButton) findViewById(R.id.authButton);
-        authButton.setReadPermissions(Arrays.asList("email"));
-        authButton.setSessionStatusCallback(new Session.StatusCallback() {
+        LoginButton loginButton = (LoginButton) findViewById(R.id.authButton);
+        loginButton.setReadPermissions("email");
+
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                SPiDFacebookAppLogin.this.loginResult = loginResult;
+                SPiDLogger.log("User granted access [" + (loginResult.getAccessToken() != null ? loginResult.getAccessToken() : "null") + "]");
+
+                loginWithFacebookAccount();
+            }
 
             @Override
-            public void call(Session session, SessionState state, Exception exception) {
-                if (exception != null) {
-                    SPiDLogger.log("Exception: " + exception.getMessage());
-                }
-                if (session.isOpened()) {
-                    SPiDLogger.log("Facebook opened");
-                    loginWithFacebookAccount();
-                }
+            public void onCancel() {
+                SPiDLogger.log("User cancelled login attempt");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Toast.makeText(getBaseContext(), "Could not connect to your Facebook account", Toast.LENGTH_LONG).show();
+                SPiDLogger.log("An error occurred while trying to get connect to Facebook: " + exception.getMessage());
             }
         });
 
@@ -103,25 +132,22 @@ public class SPiDFacebookAppLogin extends Activity {
 
     private void loginWithFacebookAccount() {
         showLoadingDialog();
-        Session session = Session.getActiveSession();
         SPiDConfiguration config = SPiDClient.getInstance().getConfig();
-        SPiDFacebookTokenRequest tokenRequest;
         try {
-            tokenRequest = new SPiDFacebookTokenRequest(session.getApplicationId(), session.getAccessToken(), session.getExpirationDate(), new LoginListener());
+            SPiDFacebookTokenRequest tokenRequest = new SPiDFacebookTokenRequest(getString(R.string.facebook_app_id), loginResult.getAccessToken().getToken(), getOneHourInTheFuture(), new LoginListener());
             tokenRequest.execute();
         } catch (SPiDException e) {
-            dismissLoadingDialog();
             Toast.makeText(config.getContext(), "Error creating login request", Toast.LENGTH_LONG).show();
+        } finally {
+            dismissLoadingDialog();
         }
     }
 
     private void showNoExistingUserDialog() {
-        Context context = SPiDClient.getInstance().getConfig().getContext();
-
         LayoutInflater inflater = getLayoutInflater();
         View view = inflater.inflate(R.layout.no_account_dialog, null);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(SPiDFacebookAppLogin.this);
         alertDialogBuilder.setTitle("User does not exist");
         alertDialogBuilder.setView(view);
 
@@ -149,9 +175,6 @@ public class SPiDFacebookAppLogin extends Activity {
         cancelDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Session.getActiveSession() != null) {
-                    Session.getActiveSession().closeAndClearTokenInformation();
-                }
                 alertDialog.dismiss();
             }
         });
@@ -172,24 +195,27 @@ public class SPiDFacebookAppLogin extends Activity {
     private void createSPiDUserFromFacebookAccount() {
         SPiDLogger.log("Trying to create new SPiD account from Facebook account");
         final Context context = SPiDClient.getInstance().getConfig().getContext();
-        Session facebookSession = Session.getActiveSession();
-        SPiDUser.signupWithFacebook(facebookSession.getApplicationId(), facebookSession.getAccessToken(), facebookSession.getExpirationDate(), new SPiDAuthorizationListener() {
 
-            @Override
-            public void onComplete() {
-                dismissLoadingDialog();
-                SPiDLogger.log("New SPiD account successfully created, trying to login");
-                loginWithFacebookAccount();
-            }
+        String facebookToken = loginResult != null ? loginResult.getAccessToken().getToken() : null;
+        if (facebookToken != null) {
+            SPiDUser.signupWithFacebook(getString(R.string.facebook_app_id), facebookToken, getOneHourInTheFuture(), new SPiDAuthorizationListener() {
 
-            @Override
-            public void onError(Exception exception) {
-                dismissLoadingDialog();
-                SPiDLogger.log("Error while performing login: " + exception.getMessage());
-                Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
-                setupLoginContentView();
-            }
-        });
+                @Override
+                public void onComplete() {
+                    dismissLoadingDialog();
+                    SPiDLogger.log("New SPiD account successfully created, trying to login");
+                    loginWithFacebookAccount();
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    dismissLoadingDialog();
+                    SPiDLogger.log("Error while performing login: " + exception.getMessage());
+                    Toast.makeText(context, "Error while performing login", Toast.LENGTH_LONG).show();
+                    setupLoginContentView();
+                }
+            });
+        }
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {
@@ -212,6 +238,7 @@ public class SPiDFacebookAppLogin extends Activity {
 
         @Override
         public void onError(Exception exception) {
+            SPiDLogger.log("Error while logging in...");
             if (exception instanceof SPiDUnknownUserException) {
                 showNoExistingUserDialog();
             } else {
