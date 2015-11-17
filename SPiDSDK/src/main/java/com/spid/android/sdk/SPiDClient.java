@@ -281,6 +281,9 @@ public class SPiDClient {
      * @param listener Listener called on completion or failure, can be <code>null</code>
      */
     public void getSessionCode(SPiDRequestListener listener) {
+        if (TextUtils.isEmpty(config.getRedirectURL())) {
+            SPiDLogger.log("Redirect URL is necessary and not set, did you forget to set it?");
+        }
         SPiDRequest request = new SPiDApiPostRequest("/oauth/exchange", listener);
         request.addBodyParameter("clientId", config.getServerClientID());
         request.addBodyParameter("type", RequestType.SESSION.toString());
