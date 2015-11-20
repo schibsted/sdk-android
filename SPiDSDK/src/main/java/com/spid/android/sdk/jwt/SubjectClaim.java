@@ -1,8 +1,5 @@
 package com.spid.android.sdk.jwt;
 
-/**
- * Created by oskarh on 01/04/15.
- */
 public enum SubjectClaim {
 
     ATTACH("attach"),
@@ -11,7 +8,7 @@ public enum SubjectClaim {
 
     private final String claim;
 
-    private SubjectClaim(final String claim) {
+    SubjectClaim(final String claim) {
         this.claim = claim;
     }
 

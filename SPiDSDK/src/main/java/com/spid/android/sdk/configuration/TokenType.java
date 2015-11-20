@@ -1,8 +1,5 @@
 package com.spid.android.sdk.configuration;
 
-/**
- * Created by oskarh on 31/03/15.
- */
 public enum TokenType {
 
     FACEBOOK("facebook"),
@@ -10,7 +7,7 @@ public enum TokenType {
 
     private final String tokenTypeString;
 
-    private TokenType(final String tokenTypeString) {
+    TokenType(final String tokenTypeString) {
         this.tokenTypeString = tokenTypeString;
     }
 

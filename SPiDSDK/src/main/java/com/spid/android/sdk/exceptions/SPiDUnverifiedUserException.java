@@ -2,9 +2,6 @@ package com.spid.android.sdk.exceptions;
 
 import java.util.Map;
 
-/**
- * Created by oskarh on 27/10/15.
- */
 public class SPiDUnverifiedUserException extends SPiDOAuthException {
 
     /**

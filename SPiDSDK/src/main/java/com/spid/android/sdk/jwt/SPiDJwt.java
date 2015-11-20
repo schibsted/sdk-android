@@ -51,22 +51,22 @@ public class SPiDJwt {
         StringBuilder builder = new StringBuilder();
 
         if (TextUtils.isEmpty(issuer)) {
-            builder.append("JWT is missing value for issuer" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for issuer").append(System.getProperty("line.separator"));
         }
         if (sub == null) {
-            builder.append("JWT is missing value for sub" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for sub").append(System.getProperty("line.separator"));
         }
         if (TextUtils.isEmpty(audience)) {
-            builder.append("JWT is missing value for audience" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for audience").append(System.getProperty("line.separator"));
         }
         if (expirationDate == null) {
-            builder.append("JWT is missing value for expirationDate" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for expirationDate").append(System.getProperty("line.separator"));
         }
         if (tokenType == null) {
-            builder.append("JWT is missing value for token type" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for token type").append(System.getProperty("line.separator"));
         }
         if (TextUtils.isEmpty(tokenValue)) {
-            builder.append("JWT is missing value for token value" + System.getProperty("line.separator"));
+            builder.append("JWT is missing value for token value").append(System.getProperty("line.separator"));
         }
         if (SPiDClient.getInstance().getConfig().getSignSecret() == null) {
             builder.append("No signing secret found, cannot use JWT");

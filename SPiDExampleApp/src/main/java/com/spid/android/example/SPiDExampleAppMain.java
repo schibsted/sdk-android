@@ -85,14 +85,10 @@ public class SPiDExampleAppMain extends Activity {
 
                 @Override
                 public void onError(Exception exception) {
-                    onError(exception);
+                    SPiDLogger.log("Error while refreshing access token: " + exception.getMessage());
+                    Toast.makeText(context, "Error while refreshing access token", Toast.LENGTH_LONG).show();
                 }
             });
-        }
-
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error while refreshing access token: " + exception.getMessage());
-            Toast.makeText(context, "Error while refreshing access token", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -120,14 +116,10 @@ public class SPiDExampleAppMain extends Activity {
 
                 @Override
                 public void onError(Exception exception) {
-                    onError(exception);
+                    SPiDLogger.log("Error getting one time code: " + exception.getMessage());
+                    Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                 }
             });
-        }
-
-        private void onError(Exception exception) {
-            SPiDLogger.log("Error getting one time code: " + exception.getMessage());
-            Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
         }
     }
 

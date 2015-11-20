@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
             @Override
             public void onError(Exception exception) {
                 SPiDLogger.log("Error logging in to webview: " + exception.getMessage());
-                Toast.makeText(getApplicationContext(), "Error logging in to webview", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "Error logging in to webview", Toast.LENGTH_LONG).show();
                 logout();
             }
         });

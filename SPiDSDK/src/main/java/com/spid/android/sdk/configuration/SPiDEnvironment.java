@@ -14,7 +14,7 @@ public enum SPiDEnvironment {
 
     private final String url;
 
-    private SPiDEnvironment(final String url) {
+    SPiDEnvironment(final String url) {
         this.url = url;
     }
 
