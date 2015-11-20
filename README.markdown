@@ -23,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compile 'no.schibstedpayment:SPiD-Android:1.3.7@aar'
+    compile 'no.schibstedpayment:SPiD-Android:1.3.8@aar'
 }
 ```
 
