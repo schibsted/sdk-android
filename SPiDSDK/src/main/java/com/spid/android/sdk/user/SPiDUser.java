@@ -69,7 +69,7 @@ public final class SPiDUser {
             SPiDClientTokenRequest clientTokenRequest = new SPiDClientTokenRequest(new SPiDAuthorizationListener() {
                 @Override
                 public void onComplete() {
-                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, SPiDClient.getInstance().getConfig().getServerURL() + Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
                     SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
                     signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
                     signupRequest.executeAuthorizedRequest();
@@ -82,7 +82,7 @@ public final class SPiDUser {
             });
             clientTokenRequest.execute();
         } else {
-            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, SPiDClient.getInstance().getConfig().getServerURL() + Audience.SIGN_UP.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
@@ -106,7 +106,7 @@ public final class SPiDUser {
 
                 @Override
                 public void onComplete() {
-                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, SPiDClient.getInstance().getConfig().getServerURL() + Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
                     SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
                     signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
                     signupRequest.executeAuthorizedRequest();
@@ -119,7 +119,7 @@ public final class SPiDUser {
             });
             clientTokenRequest.execute();
         } else {
-            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, SPiDClient.getInstance().getConfig().getServerURL() + Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/signup_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
@@ -139,7 +139,7 @@ public final class SPiDUser {
         Date expirationDate = getOneHourInTheFuture();
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
         if (token != null && !token.isClientToken()) { // Check for user token
-            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
+            SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.REGISTRATION, SPiDClient.getInstance().getConfig().getServerURL() + Audience.SIGN_UP.toString(), expirationDate, TokenType.GOOGLE_PLUS, googlePlusToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/user/attach_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();
@@ -169,7 +169,7 @@ public final class SPiDUser {
     public static void attachFacebookAccount(final String appId, final String facebookToken, final Date expirationDate, final SPiDAuthorizationListener authorizationListener) {
         SPiDAccessToken token = SPiDClient.getInstance().getAccessToken();
         if (token != null && !token.isClientToken()) { // Check for user  token
-                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.ATTACH, Audience.ATTACH.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
+                    SPiDJwt jwt = new SPiDJwt(appId, SubjectClaim.ATTACH, SPiDClient.getInstance().getConfig().getServerURL() + Audience.ATTACH.toString(), expirationDate, TokenType.FACEBOOK, facebookToken);
             SPiDRequest signupRequest = new SPiDApiPostRequest("/user/attach_jwt", new AuthorizationRequestListener(authorizationListener));
             signupRequest.addBodyParameter("jwt", jwt.encodedJwtString());
             signupRequest.executeAuthorizedRequest();

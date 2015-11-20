@@ -2,8 +2,8 @@ package com.spid.android.sdk.jwt;
 
 public enum Audience {
 
-    SIGN_UP("http://spp.dev/api/2/signup_jwt"),
-    ATTACH("http://spp.dev/api/2/user/attach_jwt");
+    SIGN_UP("/api/2/signup_jwt"),
+    ATTACH("/api/2/user/attach_jwt");
 
     private final String audience;
 

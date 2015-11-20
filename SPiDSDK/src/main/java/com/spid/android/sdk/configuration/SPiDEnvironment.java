@@ -7,8 +7,16 @@ public enum SPiDEnvironment {
 
     STAGE("https://identity-pre.schibsted.com"),
     PRODUCTION("https://login.schibsted.com"),
+    /**
+     * @deprecated  Replaced by {@link #STAGE}, since there is now only one stage environment
+     */
+    @Deprecated
     NORWEGIAN_STAGE("https://identity-pre.schibsted.com"),
     NORWEGIAN_PRODUCTION("https://payment.schibsted.no"),
+    /**
+     * @deprecated  Replaced by {@link #STAGE}, since there is now only one stage environment
+     */
+    @Deprecated
     SWEDISH_STAGE("https://identity-pre.schibsted.com"),
     SWEDISH_PRODUCTION("https://payment.schibsted.se");
 
