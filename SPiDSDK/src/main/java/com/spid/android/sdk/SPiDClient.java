@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class SPiDClient {
 
-    public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.3.7";
+    public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.3.9";
 
     public static final String OAUTH_TOKEN = "oauth_token";
 
