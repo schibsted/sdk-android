@@ -35,10 +35,10 @@ public class SPiDResponse {
      * @param exception exception
      */
     public SPiDResponse(Exception exception) {
-        code = SPiDException.UNKNOWN_CODE;
-        body = "";
-        headers = new HashMap<String, String>();
-        exception = exception;
+        this.code = SPiDException.UNKNOWN_CODE;
+        this.body = "";
+        this.headers = new HashMap<String, String>();
+        this.exception = exception;
     }
 
     /**
