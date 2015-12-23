@@ -84,7 +84,7 @@ public class SPiDKeychain {
         editor.remove("expires_at");
         editor.remove("refresh_token");
         editor.remove("user_id");
-        editor.commit();
+        editor.apply();
     }
 
     /**

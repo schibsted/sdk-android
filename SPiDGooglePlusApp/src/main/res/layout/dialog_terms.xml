@@ -5,7 +5,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:id="@+id/login_view"
-    android:background="#ffffff">
+    android:theme="@style/MyTheme">
 
     <WebView
         android:layout_width="fill_parent"
@@ -18,7 +18,6 @@
         android:layout_height="50dp"
         android:width="280dp"
         android:text="@string/done"
-        android:id="@+id/done_button"
-        android:layout_below="@+id/terms_webview" />
+        android:id="@+id/done_button" />
 
 </LinearLayout>

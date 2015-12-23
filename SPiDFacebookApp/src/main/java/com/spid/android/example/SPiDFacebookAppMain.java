@@ -45,7 +45,7 @@ public class SPiDFacebookAppMain extends Activity {
                     SPiDLogger.log("Error getting username");
                     Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
                 }
-                userTextView.setText("Welcome " + user + "!");
+                userTextView.setText(getString(R.string.welcome_user, user));
             }
 
             @Override

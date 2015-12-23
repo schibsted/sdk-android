@@ -2,10 +2,13 @@ package com.spid.android.example.nativeapp;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.spid.android.sdk.SPiDClient;
+import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.configuration.SPiDConfigurationBuilder;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
@@ -29,6 +33,8 @@ import java.util.Iterator;
 
 public class MainActivity extends Activity {
 
+    private BroadcastReceiver messageReceiver;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +42,18 @@ public class MainActivity extends Activity {
         SPiDConfiguration config = new SPiDConfigurationBuilder(getApplicationContext(),
                 null /* The environment you want to run in, stage or production, Norwegian or Swedish */,
                 "your-client-id", "your-client-secret", "your-app-url-scheme")
+                .signSecret("your-sign-secret")
                 .debugMode(true)
                 .build();
         SPiDClient.getInstance().configure(config);
+
+        messageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String userId = intent.getStringExtra(SPiDAccessToken.USER_ID);
+                SPiDLogger.log("User id was changed, new value: " + userId);
+            }
+        };
 
         Uri data = getIntent().getData();
         final boolean hasClientToken = !SPiDClient.getInstance().isAuthorized() || SPiDClient.getInstance().getAccessToken().isClientToken();
@@ -124,6 +139,19 @@ public class MainActivity extends Activity {
         TextView userTextView = (TextView) this.findViewById(R.id.activity_main_textview_userinfo);
         userTextView.setText(Html.fromHtml(userInfo));
         userTextView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(messageReceiver,
+                new IntentFilter(SPiDAccessToken.SPID_ACCESS_TOKEN_EVENT));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(messageReceiver);
     }
 
     protected class LoginListener implements SPiDAuthorizationListener {

@@ -37,4 +37,5 @@
     <string name="existing_account">Existing account</string>
     <string name="use_this_service_agreement">By using this service you are agreeing the</string>
     <string name="terms_of_use">Terms of use</string>
+    <string name="welcome_user">Welcome %1$s!</string>
 </resources>

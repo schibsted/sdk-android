@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     android:padding="20dp"
     android:orientation="vertical"
-    android:background="#ffffff"
-    android:minWidth="400dp">
+    android:minWidth="400dp"
+    android:theme="@style/MyTheme">
 
     <ImageView
         android:layout_width="wrap_content"

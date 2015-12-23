@@ -86,7 +86,7 @@ public class SPiDException extends RuntimeException {
         this.error = error;
         this.errorCode = errorCode;
         this.errorType = type;
-        this.descriptions = new HashMap<String, String>();
+        this.descriptions = new HashMap<>();
         this.descriptions.put("error", description);
     }
 
@@ -110,7 +110,7 @@ public class SPiDException extends RuntimeException {
         this.error = SPID_EXCEPTION;
         this.errorCode = UNKNOWN_CODE;
         this.errorType = SPID_EXCEPTION;
-        this.descriptions = new HashMap<String, String>();
+        this.descriptions = new HashMap<>();
         this.descriptions.put("error", message);
     }
 
@@ -124,7 +124,7 @@ public class SPiDException extends RuntimeException {
         String error;
         String errorCodeString;
         String type;
-        Map<String, String> descriptions = new HashMap<String, String>();
+        Map<String, String> descriptions = new HashMap<>();
 
         JSONObject errorObject = data.optJSONObject("error");
         if (errorObject != null) {
@@ -185,7 +185,7 @@ public class SPiDException extends RuntimeException {
      * @return Descriptions as a <code>Map</code>
      */
     private static Map<String, String> descriptionsFromJSONObject(JSONObject jsonObject) {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         Iterator keys = jsonObject.keys();
         while (keys.hasNext()) {
             String key = (String) keys.next();

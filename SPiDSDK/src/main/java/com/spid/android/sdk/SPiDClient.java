@@ -2,6 +2,7 @@ package com.spid.android.sdk;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
@@ -63,9 +64,8 @@ public class SPiDClient {
      */
     private SPiDClient() {
         config = null;
-        token = null;
         authorizationListener = null;
-        waitingRequests = new ArrayList<SPiDRequest>();
+        waitingRequests = new ArrayList<>();
     }
 
     /**
@@ -84,7 +84,7 @@ public class SPiDClient {
      */
     public void configure(SPiDConfiguration config) {
         this.config = config;
-        token = SPiDKeychain.decryptAccessTokenFromSharedPreferences(config.getClientSecret());
+        setAccessToken(SPiDKeychain.decryptAccessTokenFromSharedPreferences(config.getClientSecret()));
     }
 
     /**
@@ -242,10 +242,22 @@ public class SPiDClient {
     }
 
     /**
+     * Sends a local broadcast if the access token is updated using an Intent with the action {@link com.spid.android.sdk.accesstoken.SPiDAccessToken#SPID_ACCESS_TOKEN_EVENT}
+     * and the user's id added as a String extra with the key {@link com.spid.android.sdk.accesstoken.SPiDAccessToken#USER_ID}
+     *
      * @param accessToken Current access token
      */
     public void setAccessToken(SPiDAccessToken accessToken) {
+        if ((token != null && !token.equals(accessToken)) || (accessToken != null && !accessToken.equals(token))) {
+            broadcastUserId(accessToken != null ? accessToken.getUserID() : null);
+        }
         this.token = accessToken;
+    }
+
+    private void broadcastUserId(String userId) {
+        Intent intent = new Intent(SPiDAccessToken.SPID_ACCESS_TOKEN_EVENT);
+        intent.putExtra(SPiDAccessToken.USER_ID, userId);
+        LocalBroadcastManager.getInstance(getConfig().getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -270,7 +282,6 @@ public class SPiDClient {
     public void getOneTimeCode(SPiDRequestListener listener) {
         SPiDRequest request = new SPiDApiPostRequest("/oauth/exchange", listener);
         request.addBodyParameter("clientId", config.getServerClientID());
-        request.addBodyParameter("client_id", config.getServerClientID());
         request.addBodyParameter("type", RequestType.CODE.toString());
         request.executeAuthorizedRequest();
     }
@@ -311,7 +322,7 @@ public class SPiDClient {
      * Runs requests that have been on hold during authentication
      */
     public void runWaitingRequests() {
-        List<SPiDRequest> requests = new ArrayList<SPiDRequest>(waitingRequests);
+        List<SPiDRequest> requests = new ArrayList<>(waitingRequests);
         waitingRequests.clear();
 
         for (SPiDRequest request : requests) {
@@ -336,7 +347,7 @@ public class SPiDClient {
      * Clears current access token for SPiDClient and SharedPreferences
      */
     public void clearAccessToken() {
-        token = null;
+        setAccessToken(null);
         SPiDKeychain.clearAccessTokenFromSharedPreferences();
     }
 

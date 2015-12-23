@@ -10,4 +10,7 @@
     <string name="loginWebViewText">Login to SPiD with WebView</string>
     <string name="tokenExpires">Token expires at: </string>
     <string name="oneTimeCode">One time code:</string>
+    <string name="token_expires_at">Token expires at: %1$s</string>
+    <string name="welcome_user">Welcome %1$s!</string>
+    <string name="one_time_code">One time code: %1$s</string>
 </resources>

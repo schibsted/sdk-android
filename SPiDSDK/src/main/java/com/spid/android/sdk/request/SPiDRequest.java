@@ -61,9 +61,9 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
         super();
         this.url = url;
         this.method = method;
-        this.headers = new HashMap<String, String>();
-        this.query = new HashMap<String, String>();
-        this.body = new HashMap<String, String>();
+        this.headers = new HashMap<>();
+        this.query = new HashMap<>();
+        this.body = new HashMap<>();
 
         this.listener = listener;
 
@@ -198,7 +198,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             if (POST.equalsIgnoreCase(method)) {
                 httpRequest = new HttpPost(url);
 
-                List<NameValuePair> postList = new ArrayList<NameValuePair>();
+                List<NameValuePair> postList = new ArrayList<>();
                 for (Map.Entry<String, String> entry : body.entrySet()) {
                     postList.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
                 }
@@ -211,7 +211,7 @@ public class SPiDRequest extends AsyncTask<Void, Void, SPiDResponse> {
             // Add custom User-Agent
             headers.put("User-Agent", SPiDClient.getInstance().getConfig().getUserAgent());
 
-            List<Header> headerList = new ArrayList<Header>();
+            List<Header> headerList = new ArrayList<>();
             for (Map.Entry<String, String> entry : headers.entrySet()) {
                 headerList.add(new BasicHeader(entry.getKey(), entry.getValue()));
             }

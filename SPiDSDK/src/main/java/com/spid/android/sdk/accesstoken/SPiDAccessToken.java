@@ -1,7 +1,7 @@
 package com.spid.android.sdk.accesstoken;
 
 import com.spid.android.sdk.exceptions.SPiDAccessTokenException;
-import org.json.JSONException;
+
 import org.json.JSONObject;
 
 import java.util.Calendar;
@@ -12,6 +12,8 @@ import java.util.Date;
  */
 public class SPiDAccessToken {
 
+    public static final String USER_ID = "userId";
+    public static final String SPID_ACCESS_TOKEN_EVENT = "com.spid.android.sdk.ACCESS_TOKEN_EVENT";
     public static final String SPID_ACCESS_TOKEN_KEY = "access_token";
     public static final String SPID_ACCESS_TOKEN_KEY_EXPIRES_IN = "expires_in";
     public static final String REFRESH_SPID_ACCESS_TOKEN_KEY = "refresh_token";
@@ -106,5 +108,36 @@ public class SPiDAccessToken {
      */
     public boolean isClientToken() {
         return (userID == null || Boolean.FALSE.toString().equalsIgnoreCase(userID) || userID.equals("0"));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+
+        SPiDAccessToken comparedToken = (SPiDAccessToken) other;
+
+        if (accessToken != null ? !accessToken.equals(comparedToken.accessToken) : comparedToken.accessToken != null)
+            return false;
+        if (expiresAt != null ? !expiresAt.equals(comparedToken.expiresAt) : comparedToken.expiresAt != null)
+            return false;
+        if (refreshToken != null ? !refreshToken.equals(comparedToken.refreshToken) : comparedToken.refreshToken != null)
+            return false;
+        return !(userID != null ? !userID.equals(comparedToken.userID) : comparedToken.userID != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accessToken != null ? accessToken.hashCode() : 0;
+        result = 31 * result + (expiresAt != null ? expiresAt.hashCode() : 0);
+        result = 31 * result + (refreshToken != null ? refreshToken.hashCode() : 0);
+        result = 31 * result + (userID != null ? userID.hashCode() : 0);
+        return result;
     }
 }

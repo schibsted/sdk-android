@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:id="@+id/View" android:background="#ffffff">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:id="@+id/View"
+    android:theme="@style/MyTheme">
 
     <ImageView
             android:layout_width="wrap_content"

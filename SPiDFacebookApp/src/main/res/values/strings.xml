@@ -16,4 +16,5 @@
     <string name="newAccount">New account</string>
     <string name="existingAccount">Existing account</string>
     <string name="done">Done</string>
+    <string name="welcome_user">Welcome %1$s!</string>
 </resources>

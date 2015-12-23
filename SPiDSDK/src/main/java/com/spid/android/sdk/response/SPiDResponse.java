@@ -37,7 +37,7 @@ public class SPiDResponse {
     public SPiDResponse(Exception exception) {
         this.code = SPiDException.UNKNOWN_CODE;
         this.body = "";
-        this.headers = new HashMap<String, String>();
+        this.headers = new HashMap<>();
         this.exception = exception;
     }
 
@@ -48,7 +48,7 @@ public class SPiDResponse {
      */
     public SPiDResponse(HttpResponse httpResponse) {
         code = httpResponse.getStatusLine().getStatusCode();
-        headers = new HashMap<String, String>();
+        headers = new HashMap<>();
         exception = null;
         BufferedReader reader = null;
 

@@ -317,7 +317,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                     SPiDLogger.log("Error getting username");
                     Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
                 }
-                userTextView.setText("Welcome " + user + "!");
+                userTextView.setText(getString(R.string.welcome_user, user));
             }
 
             @Override
@@ -395,7 +395,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
      * Method to resolve any signin errors
      * */
     private void resolveSignInError() {
-        SPiDLogger.log("Connection status: " + googleApiClient.isConnected() + " " + googleApiClient.isConnecting());
         if (mConnectionResult != null && mConnectionResult.hasResolution()) {
             try {
                 intentInProgress = true;
@@ -469,6 +468,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
     public interface GoogleTokenListener {
-        public void onComplete(String token);
+        void onComplete(String token);
     }
 }

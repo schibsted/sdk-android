@@ -39,7 +39,7 @@ public class SPiDExampleAppMain extends Activity {
 
         TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
         String expiresAt = SPiDClient.getInstance().getAccessToken().getExpiresAt() != null ? SPiDClient.getInstance().getAccessToken().getExpiresAt().toString() : "";
-        tokenExpiresTextView.setText("Token expires at: " + expiresAt);
+        tokenExpiresTextView.setText(getString(R.string.token_expires_at, expiresAt));
 
         getUserName(this);
     }
@@ -56,7 +56,7 @@ public class SPiDExampleAppMain extends Activity {
                     SPiDLogger.log("Error getting username");
                     Toast.makeText(context, "Error getting username", Toast.LENGTH_LONG).show();
                 }
-                userTextView.setText("Welcome " + user + "!");
+                userTextView.setText(getString(R.string.welcome_user, user));
             }
 
             @Override
@@ -80,7 +80,7 @@ public class SPiDExampleAppMain extends Activity {
                 public void onComplete() {
                     TextView tokenExpiresTextView = (TextView) findViewById(R.id.tokenExpiresTextView);
                     String expiresAt = SPiDClient.getInstance().getAccessToken().getExpiresAt().toString();
-                    tokenExpiresTextView.setText("Token expires at: " + expiresAt);
+                    tokenExpiresTextView.setText(getString(R.string.token_expires_at, expiresAt));
                 }
 
                 @Override
@@ -111,7 +111,7 @@ public class SPiDExampleAppMain extends Activity {
                         Toast.makeText(context, "Error getting one time code", Toast.LENGTH_LONG).show();
                     }
                     TextView oneTimeCodeTextView = (TextView) findViewById(R.id.oneTimeCodeTextView);
-                    oneTimeCodeTextView.setText("One time code: " + oneTimeCode);
+                    oneTimeCodeTextView.setText(getString(R.string.one_time_code, oneTimeCode));
                 }
 
                 @Override

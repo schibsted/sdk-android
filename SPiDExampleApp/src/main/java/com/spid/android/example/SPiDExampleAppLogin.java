@@ -35,7 +35,6 @@ public class SPiDExampleAppLogin extends Activity {
                 .signSecret("your-sign-secret")
                 .debugMode(true)
                 .build();
-
         SPiDClient.getInstance().configure(config);
 
         if (SPiDClient.getInstance().isAuthorized() && !SPiDClient.getInstance().getAccessToken().isClientToken()) {
