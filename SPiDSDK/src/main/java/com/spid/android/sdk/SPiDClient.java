@@ -319,6 +319,26 @@ public class SPiDClient {
     }
 
     /**
+     * Request wrapper to get agreements
+     *
+     * @param listener Listener called on completion or failure, can be <code>null</code>
+     */
+    public void getAgreements(SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDApiGetRequest("/user/" + token.getUserID() + "/agreements", listener);
+        request.executeAuthorizedRequest();
+    }
+
+    /**
+     * Request wrapper to accept both the client and the platform agreement
+     *
+     * @param listener Listener called on completion or failure, can be <code>null</code>
+     */
+    public void acceptAgreements(SPiDRequestListener listener) {
+        SPiDRequest request = new SPiDApiPostRequest("/user/" + token.getUserID() + "/agreements/accept", listener);
+        request.executeAuthorizedRequest();
+    }
+
+    /**
      * Runs requests that have been on hold during authentication
      */
     public void runWaitingRequests() {
