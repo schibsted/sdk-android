@@ -14,4 +14,6 @@
     <string name="agreementToTerms">By using this service you are agreeing to the</string>
     <string name="newUser">New user?</string>
     <string name="termsOfUse">Terms of use</string>
+    <string name="getAgreements">Get agreements</string>
+    <string name="acceptAgreement">Accept agreement</string>
 </resources>

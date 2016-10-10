@@ -45,6 +45,24 @@
             android:background="@android:color/darker_gray" />
 
         <Button
+            android:id="@+id/activity_main_button_agreements"
+            style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            android:text="@string/getAgreements" />
+
+        <Button
+            android:id="@+id/activity_main_button_accept_agreement"
+            style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18sp"
+            android:text="@string/acceptAgreement" />
+
+        <Button
             android:id="@+id/activity_main_button_logout"
             style="@android:style/Widget.Holo.Light.Button.Borderless.Small"
             android:layout_width="fill_parent"
