@@ -77,6 +77,12 @@ public class MainActivity extends Activity {
         Button logoutButton = (Button) findViewById(R.id.activity_main_button_logout);
         logoutButton.setOnClickListener(new LogoutButtonListener(this));
 
+        Button getAgreementsButton = (Button) findViewById(R.id.activity_main_button_agreements);
+        getAgreementsButton.setOnClickListener(new GetAgreementsButtonListener(this));
+
+        Button acceptAgreementButton = (Button) findViewById(R.id.activity_main_button_accept_agreement);
+        acceptAgreementButton.setOnClickListener(new AcceptAgreementButtonListener(this));
+
         fetchUserInfo();
     }
 
@@ -196,6 +202,67 @@ public class MainActivity extends Activity {
                     SPiDLogger.log("Error logging out: " + exception.getMessage());
                     Toast.makeText(context, "Error logging out...", Toast.LENGTH_LONG).show();
                     recreate();
+                }
+            });
+        }
+    }
+
+    private class GetAgreementsButtonListener implements View.OnClickListener {
+        final Context context;
+
+        private GetAgreementsButtonListener(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onClick(View v) {
+            SPiDClient.getInstance().getAgreements(new SPiDRequestListener() {
+                @Override
+                public void onComplete(SPiDResponse result) {
+                    try {
+                        JSONObject agreementsJsonObject = result.getJsonObject().getJSONObject("data").getJSONObject("agreements");
+                        boolean platform = agreementsJsonObject.getBoolean("platform");
+                        boolean client = agreementsJsonObject.getBoolean("client");
+
+                        String message = "Platform: " + (platform ? "Accepted" : "Not accepted");
+                        message += "\n";
+                        message += "Client: " + (client ? "Accepted" : "Not accepted");
+
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                    } catch (JSONException exception) {
+                        SPiDLogger.log("Error decoding agreements from SPiD: " + exception.getMessage());
+                        Toast.makeText(context, "Unable to load agreements", Toast.LENGTH_LONG).show();
+                    }
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    SPiDLogger.log("Error getting agreements: " + exception.getMessage());
+                    Toast.makeText(context, "Error getting agreements...", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    private class AcceptAgreementButtonListener implements View.OnClickListener {
+        final Context context;
+
+        private AcceptAgreementButtonListener(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onClick(View v) {
+            SPiDClient.getInstance().acceptAgreements(new SPiDRequestListener() {
+                @Override
+                public void onComplete(SPiDResponse result) {
+                    Toast.makeText(context, "Agreement accepted", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(Exception exception) {
+                    SPiDLogger.log("Error accepting ageement: " + exception.getMessage());
+                    Toast.makeText(context, "Error accepting ageement...", Toast.LENGTH_LONG).show();
                 }
             });
         }
