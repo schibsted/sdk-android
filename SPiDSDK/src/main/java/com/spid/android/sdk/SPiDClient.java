@@ -30,9 +30,6 @@ import java.util.List;
  * Main class for SPiD, contains a singleton
  */
 public class SPiDClient {
-
-    public static final String SPID_ANDROID_SDK_VERSION_STRING = "1.3.9";
-
     public static final String OAUTH_TOKEN = "oauth_token";
 
     private static final SPiDClient instance = new SPiDClient();
