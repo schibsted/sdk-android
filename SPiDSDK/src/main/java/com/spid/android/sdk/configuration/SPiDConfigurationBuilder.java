@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
+import com.spid.android.sdk.BuildConfig;
 import com.spid.android.sdk.SPiDClient;
 import com.spid.android.sdk.logger.SPiDLogger;
 
@@ -187,7 +188,7 @@ public class SPiDConfigurationBuilder {
         String applicationName = (String) (applicationInfo != null ? packageManager.getApplicationLabel(applicationInfo) : "UnknownApplication");
         String applicationVersion = packageInfo != null ? packageInfo.versionName : "UnknownVersion";
 
-        return applicationName + "/" + applicationVersion + " " + "SPiDAndroidSDK/" + SPiDClient.SPID_ANDROID_SDK_VERSION_STRING + " " + "Android/" + android.os.Build.MODEL + "/API " + Build.VERSION.SDK_INT;
+        return applicationName + "/" + applicationVersion + " " + "SPiDAndroidSDK/" + BuildConfig.VERSION_NAME + " " + "Android/" + android.os.Build.MODEL + "/API " + Build.VERSION.SDK_INT;
     }
 
     /**
