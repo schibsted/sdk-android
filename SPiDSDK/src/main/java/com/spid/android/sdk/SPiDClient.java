@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.configuration.SPiDConfiguration;
 import com.spid.android.sdk.exceptions.SPiDAuthorizationAlreadyRunningException;
+import com.spid.android.sdk.exceptions.SPiDException;
 import com.spid.android.sdk.exceptions.SPiDInvalidResponseException;
 import com.spid.android.sdk.keychain.SPiDKeychain;
 import com.spid.android.sdk.listener.SPiDAuthorizationListener;
@@ -225,6 +226,20 @@ public class SPiDClient {
     }
 
     /**
+     * @return <code>true</code> if there is a user access token (userID is valid), otherwise <code>false</code>
+     */
+    public boolean hasUserToken() {
+        return token != null && !token.isClientToken();
+    }
+
+    /**
+     * @return <code>true</code> if there is a valid user access token, otherwise <code>false</code>
+     */
+    public boolean isAuthorizedAndHasUserToken() {
+        return isAuthorized() && hasUserToken();
+    }
+
+    /**
      * @return Current configuration
      */
     public SPiDConfiguration getConfig() {
@@ -311,6 +326,9 @@ public class SPiDClient {
      * @param listener Listener called on completion or failure, can be <code>null</code>
      */
     public void getCurrentUser(SPiDRequestListener listener) {
+        if (!isAuthorizedAndHasUserToken()) {
+            throw new SPiDException("userID unavailable - are you logged in?");
+        }
         SPiDRequest request = new SPiDApiGetRequest("/user/" + token.getUserID(), listener);
         request.executeAuthorizedRequest();
     }
@@ -321,6 +339,9 @@ public class SPiDClient {
      * @param listener Listener called on completion or failure, can be <code>null</code>
      */
     public void getAgreements(SPiDRequestListener listener) {
+        if (!isAuthorizedAndHasUserToken()) {
+            throw new SPiDException("userID is invalid - are you logged in?");
+        }
         SPiDRequest request = new SPiDApiGetRequest("/user/" + token.getUserID() + "/agreements", listener);
         request.executeAuthorizedRequest();
     }
@@ -331,6 +352,9 @@ public class SPiDClient {
      * @param listener Listener called on completion or failure, can be <code>null</code>
      */
     public void acceptAgreements(SPiDRequestListener listener) {
+        if (!isAuthorizedAndHasUserToken()) {
+            throw new SPiDException("userID is invalid - are you logged in?");
+        }
         SPiDRequest request = new SPiDApiPostRequest("/user/" + token.getUserID() + "/agreements/accept", listener);
         request.executeAuthorizedRequest();
     }
