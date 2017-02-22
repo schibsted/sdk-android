@@ -1,4 +1,4 @@
-package test.com.spid.android.sdk;
+package com.spid.android.sdk;
 
 import com.spid.android.sdk.accesstoken.SPiDAccessToken;
 import com.spid.android.sdk.exceptions.SPiDAccessTokenException;

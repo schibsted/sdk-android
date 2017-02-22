@@ -37,7 +37,7 @@ public class SPiDClient {
     private SPiDConfiguration config;
     private SPiDAccessToken token;
     private SPiDAuthorizationListener authorizationListener;
-    private final List<SPiDRequest> waitingRequests;
+    private final List<SPiDRequest> waitingRequests = new ArrayList<>();
 
     private enum RequestType {
 
@@ -59,11 +59,7 @@ public class SPiDClient {
     /**
      * Constructor for SPiDClient, private since class is a singleton and should always be accessed through <code>getInstance()</code>
      */
-    private SPiDClient() {
-        config = null;
-        authorizationListener = null;
-        waitingRequests = new ArrayList<>();
-    }
+    protected SPiDClient() { }
 
     /**
      * Singleton method for SPiDClient which returns the SPiDClient instance
@@ -251,7 +247,7 @@ public class SPiDClient {
         this.token = accessToken;
     }
 
-    private void broadcastUserId(String userId) {
+    protected void broadcastUserId(String userId) {
         Intent intent = new Intent(SPiDAccessToken.SPID_ACCESS_TOKEN_EVENT);
         intent.putExtra(SPiDAccessToken.USER_ID, userId);
         LocalBroadcastManager.getInstance(getConfig().getContext()).sendBroadcast(intent);
