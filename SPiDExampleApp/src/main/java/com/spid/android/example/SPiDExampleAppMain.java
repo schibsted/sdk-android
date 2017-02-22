@@ -95,7 +95,7 @@ public class SPiDExampleAppMain extends Activity {
     protected class OneTimeCodeButtonListener implements View.OnClickListener {
         final Context context;
 
-        public OneTimeCodeButtonListener(Context context) {
+        OneTimeCodeButtonListener(Context context) {
             this.context = context;
         }
 
@@ -126,7 +126,7 @@ public class SPiDExampleAppMain extends Activity {
     protected class LogoutButtonListener implements View.OnClickListener {
         final Context context;
 
-        public LogoutButtonListener(Context context) {
+        LogoutButtonListener(Context context) {
             this.context = context;
         }
 
