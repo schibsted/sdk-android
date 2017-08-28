@@ -29,7 +29,7 @@ import org.json.JSONException;
 public class MainActivity extends Activity {
 
     // this redirect must be a registered redirect url in your client configuration
-    private static final String REDIRECT_URL = "your-app-url-scheme://spid/login"; // for example spid-123://spid/login
+    private static final String REDIRECT_URL = "your-app-url-scheme://login"; // for example spid-123://login
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

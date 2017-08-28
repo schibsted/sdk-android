@@ -24,6 +24,6 @@ public class SPiDRefreshTokenRequest extends SPiDTokenRequest {
         this.addBodyParameter("client_id", config.getClientID());
         this.addBodyParameter("client_secret", config.getClientSecret());
         this.addBodyParameter("refresh_token", accessToken != null ? accessToken.getRefreshToken() : null);
-        this.addBodyParameter("redirect_uri", config.getRedirectURL() + "spid/login");
+        this.addBodyParameter("redirect_uri", config.getRedirectURL() + "login");
     }
 }
