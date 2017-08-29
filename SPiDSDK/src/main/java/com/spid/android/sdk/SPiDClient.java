@@ -130,7 +130,7 @@ public class SPiDClient {
      */
     public boolean handleIntent(Uri data, SPiDAuthorizationListener listener) {
         if (shouldHandleIntent(data)) {
-            if (data.getPath().endsWith("login")) {
+            if (data.getHost().endsWith("login")) {
                 String code = data.getQueryParameter(RequestType.CODE.toString());
                 if (code == null) {
                     if (listener != null) {
@@ -199,7 +199,7 @@ public class SPiDClient {
                 authorizationListener = listener;
                 String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
                 SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(authorizationListener));
-                request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "spid/logout");
+                request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "logout");
                 request.addQueryParameter("oauth_token", token.getAccessToken());
                 request.setMaxRetryCount(-1);
                 request.execute();

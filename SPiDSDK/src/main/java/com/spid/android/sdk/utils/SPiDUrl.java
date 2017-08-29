@@ -89,11 +89,11 @@ public final class SPiDUrl {
         String encodedRedirectURL;
         final String encoding = "UTF-8";
         try {
-            encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "spid/login", encoding);
+            encodedRedirectURL = URLEncoder.encode(config.getRedirectURL() + "login", encoding);
         } catch(UnsupportedEncodingException uee) {
             // Shouldn't be possible since we use UTF-8 which is default in Android
             SPiDLogger.log("Failed to getEncodedLoginUrl url " + config.getRedirectURL() + " using encoding " + encoding);
-            encodedRedirectURL = config.getRedirectURL() + "spid/login";
+            encodedRedirectURL = config.getRedirectURL() + "login";
         }
         return encodedRedirectURL;
     }
