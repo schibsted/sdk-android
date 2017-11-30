@@ -197,7 +197,7 @@ public class SPiDClient {
         if (token != null) {
             if (authorizationListener == null) {
                 authorizationListener = listener;
-                String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/logout";
+                String requestURL = SPiDClient.getInstance().getConfig().getServerURL() + "/api/2/logout";
                 SPiDRequest request = new SPiDRequest(requestURL, new LogoutListener(authorizationListener));
                 request.addQueryParameter("redirect_uri", SPiDClient.getInstance().getConfig().getRedirectURL() + "logout");
                 request.addQueryParameter("oauth_token", token.getAccessToken());
