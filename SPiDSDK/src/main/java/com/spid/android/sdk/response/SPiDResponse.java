@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,6 +40,22 @@ public class SPiDResponse {
         this.body = "";
         this.headers = new HashMap<>();
         this.exception = exception;
+    }
+
+    public SPiDResponse(int code, Map<String, List<String>> headers, String body) {
+        this.code = code;
+        this.headers = new HashMap<>();
+
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            for(String value : entry.getValue()) {
+                this.headers.put(entry.getKey(), value); // TODO: Known bug that this does not allow duplicate headers
+            }
+        }
+
+        this.exception = null;
+        this.body = body;
+
+        postCreateResponse();
     }
 
     /**
@@ -71,6 +88,10 @@ public class SPiDResponse {
             closeQuietly(reader);
         }
 
+        postCreateResponse();
+    }
+
+    private void postCreateResponse() {
         if (!TextUtils.isEmpty(body)) {
             try {
                 this.jsonObject = new JSONObject(this.body);
